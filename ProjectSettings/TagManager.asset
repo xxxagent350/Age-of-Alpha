@@ -8,6 +8,7 @@ TagManager:
   - Surround
   - Damager
   - Module
+  - Bullet
   layers:
   - Default
   - TransparentFX
@@ -19,7 +20,7 @@ TagManager:
   - Surround
   - Damager
   - Module
-  - 
+  - Bullet
   - 
   - 
   - 

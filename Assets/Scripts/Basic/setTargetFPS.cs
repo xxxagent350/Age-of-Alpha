@@ -5,9 +5,17 @@ using UnityEngine;
 public class setTargetFPS : MonoBehaviour
 {
 
+    [SerializeField] int targetFPS = 60;
+
     private void Start()
     {
-        Application.targetFrameRate = 60;
+        SlowUpdate();
+    }
+
+    void SlowUpdate()
+    {
+        Application.targetFrameRate = targetFPS;
+        Invoke(nameof(SlowUpdate), 3);
     }
 
 }
