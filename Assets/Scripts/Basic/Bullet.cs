@@ -130,7 +130,7 @@ public class Bullet : MonoBehaviour
     void DamageModules(string targetTeamID)
     {
         RaycastHit2D hitInfo = Physics2D.Raycast(transform.position, OneFrameVectorMove, 100, moduleLayer);
-        if (hitInfo.collider != null && hitInfo.collider.transform.parent != null && hitInfo.collider.transform.parent.GetComponent<ShipStats>() != null && hitInfo.collider.transform.parent.GetComponent<ShipStats>().teamID == targetTeamID)
+        if (hitInfo.collider != null && hitInfo.collider.GetComponentInParent<ShipStats>() != null && hitInfo.collider.GetComponentInParent<ShipStats>().teamID == targetTeamID)
         {
             //модуль того же корабля, в который попала пуля
             Module module = hitInfo.collider.GetComponent<Module>();

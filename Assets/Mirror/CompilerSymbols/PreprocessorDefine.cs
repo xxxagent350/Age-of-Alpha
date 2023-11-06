@@ -9,6 +9,7 @@ namespace Mirror
         /// Add define symbols as soon as Unity gets done compiling.
         /// </summary>
         [InitializeOnLoadMethod]
+        [System.Obsolete]
         public static void AddDefineSymbols()
         {
             string currentDefines = PlayerSettings.GetScriptingDefineSymbolsForGroup(EditorUserBuildSettings.selectedBuildTargetGroup);

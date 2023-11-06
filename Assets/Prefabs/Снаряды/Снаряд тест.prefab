@@ -134,12 +134,12 @@ MonoBehaviour:
   teamID: 
   firstInteractionLayers:
     serializedVersion: 2
-    m_Bits: 192
+    m_Bits: 64
   moduleLayer:
     serializedVersion: 2
-    m_Bits: 512
+    m_Bits: 128
   damage: 10
-  speed: 1000
+  speed: 100
   lifetime: 10
 --- !u!50 &8011630480685169540
 Rigidbody2D:
