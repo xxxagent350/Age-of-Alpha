@@ -1,31 +1,54 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class SlottingAgent : MonoBehaviour
 {
-    
+
+    bool starting = true;
+    bool shift;
+    float shipSize;
+    [SerializeField] InputField sizeInput;
+    [SerializeField] Toggle shiftInput;
+
+    private void Start()
+    {
+        shift = GameObject.FindGameObjectWithTag("Ship").GetComponent<shipSellsData>().cellsShift;
+        shiftInput.isOn = shift;
+        shipSize = GameObject.FindGameObjectWithTag("Ship").GetComponent<shipSellsData>().shipSize;
+        sizeInput.text = shipSize + "";
+        UpdateUI();
+        starting = false;
+    }
+
     public void ChangeSize(string newSize)
     {
-        if (newSize != "")
+        if (!starting && newSize != "")
         {
             var numberParts = newSize.Split("."[0]);
             if (numberParts.Length == 2)
             {
-                GameObject.FindGameObjectWithTag("Ship").GetComponent<shipSellsData>().ChangeSize(float.Parse(numberParts[0] + "," + numberParts[1]));
+                shipSize = float.Parse(numberParts[0] + "," + numberParts[1]);
             }
             else
             {
-                GameObject.FindGameObjectWithTag("Ship").GetComponent<shipSellsData>().ChangeSize(float.Parse(newSize));
+                shipSize = float.Parse(newSize);
             }
-            
+            UpdateUI();
         }
     }
 
-    public void CellsShift(bool shift)
+    public void CellsShift(bool shiftChange)
     {
-        GameObject.FindGameObjectWithTag("Ship").GetComponent<shipSellsData>().ChangeCellsShift(shift);
+        if (!starting)
+        {
+            GetComponent<AudioSource>().Play();
+            shift = shiftChange;
+            UpdateUI();
+        }
+    }
 
+    void UpdateUI()
+    {
         if (shift)
         {
             GameObject.Find("Сетка главная").transform.position = new Vector3(0.5f, 0.5f, 0);
@@ -34,6 +57,10 @@ public class SlottingAgent : MonoBehaviour
         {
             GameObject.Find("Сетка главная").transform.position = new Vector3(0, 0, 0);
         }
+
+        GameObject.FindGameObjectWithTag("Ship").GetComponent<shipSellsData>().ChangeCellsShift(shift);
+        GameObject.FindGameObjectWithTag("Ship").GetComponent<shipSellsData>().ChangeSize(shipSize);
+
     }
 
 }
