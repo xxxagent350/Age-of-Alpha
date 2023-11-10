@@ -9,6 +9,7 @@ public class SlottingAgent : MonoBehaviour
     float shipSize;
     [SerializeField] InputField sizeInput;
     [SerializeField] Toggle shiftInput;
+    [SerializeField] GameObject shiftOff;
 
     private void Start()
     {
@@ -51,16 +52,23 @@ public class SlottingAgent : MonoBehaviour
     {
         if (shift)
         {
+            shiftOff.SetActive(false);
             GameObject.Find("Сетка главная").transform.position = new Vector3(0.5f, 0.5f, 0);
         }
         else
         {
+            Invoke(nameof(SetShiftOn), 0.12f);
             GameObject.Find("Сетка главная").transform.position = new Vector3(0, 0, 0);
         }
 
         GameObject.FindGameObjectWithTag("Ship").GetComponent<shipSellsData>().ChangeCellsShift(shift);
         GameObject.FindGameObjectWithTag("Ship").GetComponent<shipSellsData>().ChangeSize(shipSize);
 
+    }
+
+    void SetShiftOn()
+    {
+        shiftOff.SetActive(true);
     }
 
 }
