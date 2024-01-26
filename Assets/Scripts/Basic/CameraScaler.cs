@@ -1,180 +1,145 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class CameraScaler : MonoBehaviour
 {
-
     [Header("Ќастройки")]
+    [SerializeField] UIPressedInfo touchesDetector;
     [SerializeField] float maxZoom;
     [SerializeField] float minZoom;
     float sensitivity;
     [SerializeField] float mouseScrollSensitivity = 0.1f;
     [SerializeField] Vector2 minPos;
     [SerializeField] Vector2 maxPos;
+    [HideInInspector] public bool dontMove;
 
-    Touch touch_1;
-    Touch touch_2;
-    float last_distance;
-    bool ready_to_scale;
-
-    bool ready_to_transform;
-    Vector2 last_touch_point;
-
-    int last_touch_count;
-    int touch_count;
-    bool mouse_pressed;
+    bool readyToScale;
+    float lastDistance;
+    int lastTouchCount;
+    int touchCount;
+    bool readyToTransform;
+    Vector2 lastTouchPoint;
+    Camera camera_;
+    float transformZ;
+    bool criticalZoom;
 
     private void Awake()
     {
-
-        Application.targetFrameRate = 60;
-
+        Application.targetFrameRate = 120;
+        camera_ = GetComponent<Camera>();
+        transformZ = transform.position.z;
     }
 
     private void Update()
     {
-
-        if (Input.touchCount == 0 && Input.GetMouseButtonDown(0) == true)
+        //вычисление средней позиции нажати€ в пиксел€х на экране
+        Vector2 averageTouchPoint = new Vector2();
+        int averageTouchPointMass = 0;
+        for (int touchPoint = 0; touchPoint < touchesDetector.publicTouchesPositions.Length; touchPoint++)
         {
-            mouse_pressed = true;
+            averageTouchPoint = (averageTouchPoint * averageTouchPointMass + touchesDetector.publicTouchesPositions[touchPoint]) / (averageTouchPointMass + 1);
+            averageTouchPointMass++;
         }
+        //вычисление средней позиции нажати€ в юнитах(глобально)
+        float pixelsPerUnit = Screen.height / (camera_.orthographicSize * 2);
+        Vector3 pointInUnits = averageTouchPoint / pixelsPerUnit;
+        pointInUnits -= new Vector3(Screen.width / 2 / pixelsPerUnit, Screen.height / 2 / pixelsPerUnit);
+        pointInUnits += new Vector3(transform.position.x, transform.position.y);
+        pointInUnits = new Vector3(pointInUnits.x, pointInUnits.y, transformZ);
 
-        if (Input.GetMouseButtonUp(0) == true)
+        //определение на грани ли зум
+        float zoom = camera_.orthographicSize;
+        if (zoom >= maxZoom || zoom <= minZoom)
         {
-            mouse_pressed = false;
-        }
-
-        if (mouse_pressed == false)
-        {
-            touch_count = Input.touchCount;
+            criticalZoom = true;
         }
         else
         {
-            touch_count = 1;
+            criticalZoom = false;
         }
+        //
 
-        if (Input.touchCount == 2)
+        //зум
+        if (touchesDetector.publicTouchesPositions.Length >= 2) //если больше или равно 2 нажатий на экран
         {
-            //зум
-            touch_1 = Input.GetTouch(0);
-            touch_2 = Input.GetTouch(1);
-
-            if (Vector2.Distance(touch_1.position, touch_2.position) > 0)
+            float averageDistance = 0;
+            int averageDistanceMass = 0;
+            foreach (Vector2 point in touchesDetector.publicTouchesPositions)
             {
-                if (ready_to_scale == false)
+                averageDistance = (averageDistance * averageDistanceMass + Vector2.Distance(averageTouchPoint, point)) / (averageDistanceMass + 1);
+            }
+
+            if (averageDistance > 0)
+            {
+                if (readyToScale == false)
                 {
-
-                    ready_to_scale = true;
-                    last_distance = Vector2.Distance(touch_1.position, touch_2.position);
-
+                    readyToScale = true;
+                    lastDistance = averageDistance;
                 }
                 else
                 {
-
-                    float to_scale = Vector2.Distance(touch_1.position, touch_2.position) / last_distance;
-                    GetComponent<Camera>().orthographicSize /= to_scale;
-                    //transform.localPosition = new Vector3(transform.localPosition.x * to_scale, transform.localPosition.y * to_scale, 0);
-                    last_distance = Vector2.Distance(touch_1.position, touch_2.position);
-
+                    float toScale = averageDistance / lastDistance;
+                    if (!criticalZoom)
+                    {
+                        transform.position += (transform.position - pointInUnits) * (1 - toScale);
+                        transform.position = new Vector3(transform.position.x, transform.position.y, transformZ);
+                    }
+                    camera_.orthographicSize /= toScale;
+                    lastDistance = averageDistance;
                 }
             }
 
         }
         else
         {
-            ready_to_scale = false;
+            readyToScale = false;
         }
 
-        GetComponent<Camera>().orthographicSize /= 1 + (Input.mouseScrollDelta.y * mouseScrollSensitivity);
+        //масштабирование колесиком мыши
+        camera_.orthographicSize /= 1 + (Input.mouseScrollDelta.y * mouseScrollSensitivity);
 
-        if (GetComponent<Camera>().orthographicSize > maxZoom)
+        if (!criticalZoom)
         {
-
-            GetComponent<Camera>().orthographicSize = maxZoom;
-
+            Vector3 pointInUnitsMouse = Input.mousePosition / pixelsPerUnit;
+            pointInUnitsMouse -= new Vector3(Screen.width / 2 / pixelsPerUnit, Screen.height / 2 / pixelsPerUnit);
+            pointInUnitsMouse += new Vector3(transform.position.x, transform.position.y);
+            pointInUnitsMouse = new Vector3(pointInUnitsMouse.x, pointInUnitsMouse.y, transformZ);
+            transform.position += (pointInUnitsMouse - transform.position) * Input.mouseScrollDelta.y * mouseScrollSensitivity;
+            transform.position = new Vector3(transform.position.x, transform.position.y, transformZ);
         }
+        //
 
-        if (GetComponent<Camera>().orthographicSize < minZoom)
+        //возвращение зума в заданные границы максимума и минимума при их пересечении
+        zoom = camera_.orthographicSize;
+        if (zoom > maxZoom)
         {
-
-            GetComponent<Camera>().orthographicSize = minZoom;
-
+            camera_.orthographicSize = maxZoom;
         }
+        if (zoom < minZoom)
+        {
+            camera_.orthographicSize = minZoom;
+        }
+        //
 
+        touchCount = touchesDetector.publicTouchesPositions.Length;
 
-
-        if (((Input.touchCount != 0 && Input.touchCount <= 2) || mouse_pressed == true) && last_touch_count == touch_count)
+        if (touchCount >= 1 && lastTouchCount == touchCount)
         {
             //движение
-            if (Input.touchCount != 0)
+            if (readyToTransform == false)
             {
-                if (ready_to_transform == false)
-                {
-
-                    ready_to_transform = true;
-                    Vector2 average_last_touch = new Vector2(0, 0);
-
-                    for (int i = 0; i < Input.touchCount; i++)
-                    {
-                        average_last_touch += Input.GetTouch(i).position;
-                    }
-
-                    average_last_touch = new Vector2(average_last_touch.x / Input.touchCount, average_last_touch.y / Input.touchCount);
-
-                    last_touch_point = average_last_touch;
-
-                }
-                else
-                {
-
-                    Vector2 average_now_touch = new Vector2(0, 0);
-
-                    for (int i = 0; i < Input.touchCount; i++)
-                    {
-                        average_now_touch += Input.GetTouch(i).position;
-                    }
-
-                    average_now_touch = new Vector2(average_now_touch.x / Input.touchCount, average_now_touch.y / Input.touchCount);
-
-                    sensitivity = (GetComponent<Camera>().orthographicSize * 2) / Screen.height;
-                    Vector2 pos_plus = (average_now_touch - last_touch_point) * sensitivity;
-                    transform.localPosition -= new Vector3(pos_plus.x, pos_plus.y, 0);
-
-
-                    Vector2 average_last_touch = new Vector2(0, 0);
-
-                    for (int i = 0; i < Input.touchCount; i++)
-                    {
-                        average_last_touch += Input.GetTouch(i).position;
-                    }
-
-                    average_last_touch = new Vector2(average_last_touch.x / Input.touchCount, average_last_touch.y / Input.touchCount);
-
-                    last_touch_point = average_last_touch;
-
-                }
+                readyToTransform = true;
+                lastTouchPoint = averageTouchPoint;
             }
-
-            if (mouse_pressed == true)
+            else
             {
-                if (ready_to_transform == false)
+                sensitivity = (camera_.orthographicSize * 2) / Screen.height;
+                Vector2 pos_plus = (averageTouchPoint - lastTouchPoint) * sensitivity;
+                if (!dontMove)
                 {
-
-                    ready_to_transform = true;
-                    last_touch_point = Input.mousePosition;
-
-                }
-                else
-                {
-
-                    sensitivity = (GetComponent<Camera>().orthographicSize * 2) / Screen.height;
-                    Vector2 pos_plus = (new Vector2(Input.mousePosition.x, Input.mousePosition.y) - last_touch_point) * sensitivity;
                     transform.localPosition -= new Vector3(pos_plus.x, pos_plus.y, 0);
-
-                    last_touch_point = Input.mousePosition;
-
                 }
+
+                lastTouchPoint = averageTouchPoint;
             }
 
             if (transform.localPosition.x > maxPos.x)
@@ -197,19 +162,8 @@ public class CameraScaler : MonoBehaviour
         }
         else
         {
-            if (mouse_pressed == false)
-            {
-                last_touch_count = Input.touchCount;
-            }
-            else
-            {
-                last_touch_count = 1;
-            }
-            
-            ready_to_transform = false;
+            readyToTransform = false;
+            lastTouchCount = touchCount;
         }
-
-
     }
-
 }

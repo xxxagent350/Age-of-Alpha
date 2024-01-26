@@ -7,7 +7,6 @@ public class ShipStats : MonoBehaviour
 
     [HideInInspector] public string teamID;
 
-    public float shellDurability;
     [SerializeField] float modulesCollidersKeepActiveTime = 3;
     float modulesCollidersKeepActiveTimer;
     bool modulesCollidersActive = true;
@@ -43,7 +42,6 @@ public class ShipStats : MonoBehaviour
 
     public void TakeDamage(float damage)
     {
-        shellDurability -= damage;
         modulesCollidersKeepActiveTimer = 0;
         if (!modulesCollidersActive)
         {
