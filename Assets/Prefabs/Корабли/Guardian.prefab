@@ -84,6 +84,37 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!1 &3924940553933414825
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2640616632753772192}
+  m_Layer: 0
+  m_Name: ModulesUI
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2640616632753772192
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3924940553933414825}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 5657618822050915832}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &7990263361158837100
 GameObject:
   m_ObjectHideFlags: 0
@@ -148,6 +179,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
+  - {fileID: 2640616632753772192}
   - {fileID: 8578325709139400004}
   - {fileID: 7490135190224819978}
   m_Father: {fileID: 0}
@@ -275,7 +307,7 @@ MonoBehaviour:
   Name: Guardian
   Size: 0.5
   Mass: 27000
-  cellsShift: 1
+  cellsOffset: {x: 0, y: 0}
   cellsDataX: 0100000001000000010000000200000000000000fffffffffeffffff00000000fffffffffeffffff00000000ffffffff00000000010000000100000000000000ffffffffffffffff02000000ffffffff01000000fdffffff03000000feffffff020000000000000001000000ffffffff01000000ffffffff02000000feffffff
   cellsDataY: 0300000002000000ffffffff0000000003000000ffffffffffffffff000000000000000000000000feffffff01000000010000000100000000000000020000000200000003000000fffffffffefffffffeffffff00000000000000000100000001000000ffffffff0400000004000000fdfffffffdfffffffefffffffeffffff
   cellsDataType: 0000000000000000010000000000000000000000010000000000000000000000000000000000000002000000000000000000000000000000000000000000000000000000000000000000000002000000020000000000000000000000000000000000000002000000000000000000000001000000010000000000000000000000

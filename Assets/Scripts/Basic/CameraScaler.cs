@@ -12,6 +12,9 @@ public class CameraScaler : MonoBehaviour
     [SerializeField] Vector2 maxPos;
     [HideInInspector] public bool dontMove;
 
+    [Header("Можно оставить пустым")]
+    [SerializeField] Transform background;
+
     bool readyToScale;
     float lastDistance;
     int lastTouchCount;
@@ -22,11 +25,21 @@ public class CameraScaler : MonoBehaviour
     float transformZ;
     bool criticalZoom;
 
+    Vector2 startBackgroundScale;
+    float startCameraSize;
+    bool backgroundExists;
+
     private void Awake()
     {
         Application.targetFrameRate = 120;
         camera_ = GetComponent<Camera>();
         transformZ = transform.position.z;
+        startCameraSize = camera_.orthographicSize;
+        if (background != null)
+        {
+            backgroundExists = true;
+            startBackgroundScale = background.localScale;
+        }
     }
 
     private void Update()
@@ -141,29 +154,36 @@ public class CameraScaler : MonoBehaviour
 
                 lastTouchPoint = averageTouchPoint;
             }
-
-            if (transform.localPosition.x > maxPos.x)
-            {
-                transform.localPosition = new Vector3(maxPos.x, transform.localPosition.y, transform.localPosition.z);
-            }
-            if (transform.localPosition.x < minPos.x)
-            {
-                transform.localPosition = new Vector3(minPos.x, transform.localPosition.y, transform.localPosition.z);
-            }
-            if (transform.localPosition.y > maxPos.y)
-            {
-                transform.localPosition = new Vector3(transform.localPosition.x, maxPos.y, transform.localPosition.z);
-            }
-            if (transform.localPosition.y < minPos.y)
-            {
-                transform.localPosition = new Vector3(transform.localPosition.x, minPos.y, transform.localPosition.z);
-            }
-
         }
         else
         {
             readyToTransform = false;
             lastTouchCount = touchCount;
+        }
+
+        if (transform.localPosition.x > maxPos.x)
+        {
+            transform.localPosition = new Vector3(maxPos.x, transform.localPosition.y, transform.localPosition.z);
+        }
+        if (transform.localPosition.x < minPos.x)
+        {
+            transform.localPosition = new Vector3(minPos.x, transform.localPosition.y, transform.localPosition.z);
+        }
+        if (transform.localPosition.y > maxPos.y)
+        {
+            transform.localPosition = new Vector3(transform.localPosition.x, maxPos.y, transform.localPosition.z);
+        }
+        if (transform.localPosition.y < minPos.y)
+        {
+            transform.localPosition = new Vector3(transform.localPosition.x, minPos.y, transform.localPosition.z);
+        }
+    }
+
+    private void LateUpdate()
+    {
+        if (backgroundExists)
+        {
+            background.localScale = startBackgroundScale * (camera_.orthographicSize / startCameraSize);
         }
     }
 }
