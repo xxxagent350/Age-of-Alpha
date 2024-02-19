@@ -4,8 +4,13 @@
 EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
-  m_Scenes: []
+  m_Scenes:
+  - enabled: 1
+    path: "Assets/Scenes/\u0420\u0430\u0441\u0441\u0442\u0430\u043D\u043E\u0432\u043A\u0430
+      \u041C\u043E\u0434\u0443\u043B\u0435\u0439.unity"
+    guid: 2803e876caf35994ebacb10c464a7d81
   m_configObjects:
+    com.unity.adaptiveperformance.google.android.provider_settings: {fileID: 11400000, guid: 8165b6fae06524649a34920681a12421, type: 2}
     com.unity.adaptiveperformance.loader_settings: {fileID: 11400000, guid: 8e49c9d674ccadc4599deef1bf86e6b9, type: 2}
     com.unity.adaptiveperformance.simulator.provider_settings: {fileID: 11400000, guid: 243d0b9891d8c524ca54c67a0b883259, type: 2}
   m_UseUCBPForAssetBundles: 0

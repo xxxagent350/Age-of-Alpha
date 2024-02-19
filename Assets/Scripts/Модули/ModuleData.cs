@@ -1,9 +1,26 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class ModuleData : MonoBehaviour
 {
+    [SerializeField] categories category;
+    [SerializeField] types type;
+    [SerializeField] float maxDurability;
+    float durability;
+
+    private void Start()
+    {
+        durability = maxDurability;
+    }
+
+    public void TakeDamage(float damage)
+    {
+        durability -= damage;
+        if (durability <= 0)
+        {
+            Destroy(gameObject);
+        }
+    }
+
     enum categories
     {
         Weapons,
@@ -14,19 +31,25 @@ public class ModuleData : MonoBehaviour
         SpecialModules
     }
 
-    [SerializeField]
     enum types
     {
+        None,
         //Weapons
         Ballistics,
-
+        Lasers,
+        Rockets,
+        Special,
         //Defence
+        Armour,
+        EnergyShields,
         //EnergyBlocks
+        Generators,
+        Batteries,
         //Engines
+        AccelerationEngines,
+        RotationEngines,
         //Drones
         //SpecialModules
+        ControlModules
     }
-
-    [SerializeField] categories category;
-    [SerializeField] types type;
 }

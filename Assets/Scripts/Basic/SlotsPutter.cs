@@ -4,7 +4,12 @@ using UnityEngine.UI;
 
 public class SlotsPutter : MonoBehaviour
 {
-    [SerializeField] GameObject[] cellsUI;
+    [SerializeField] bool editor;
+    public ItemData itemData;
+    ItemData lastItemData;
+    GameObject[] cellsUI;
+    [SerializeField] float cellsUISizeMod = -1;
+    float cellsUISizeModLastValue;
     [SerializeField] Image mainSlotButton;
     [SerializeField] GameObject mainSlotPrefab;
     [SerializeField] Image universalSlotButton;
@@ -35,22 +40,34 @@ public class SlotsPutter : MonoBehaviour
     int lastCellsUICount;
     bool itemDataExists;
 
+    public Vector2 minCellsPositions;
+    public Vector2 maxCellsPositions;
+
     private void Start()
     {
         camera_ = GetComponent<Camera>();
-        if ((ItemData)FindFirstObjectByType(typeof(ItemData)) != null)
+        cellsUI = new GameObject[0];
+        cellsUISizeModLastValue = cellsUISizeMod;
+        if (editor)
+        {
+            itemData = (ItemData)FindFirstObjectByType(typeof(ItemData));
+        }
+        if (itemData != null)
         {
             ReloadCellsUI();
-            CountCellsNumber();
-            ChangeCellsOpacity();
-            itemDataExists = true;
+            if (editor)
+            {
+                CountCellsNumber();
+                ChangeCellsOpacity();
+                itemDataExists = true;
+            }
         }
     }
 
     public void ChangeCellsOpacityValue(float newValue)
     {
         cellsOpacity = newValue;
-        if ((ItemData)FindFirstObjectByType(typeof(ItemData)) == null)
+        if (itemData == null)
         {
             return;
         }
@@ -93,48 +110,73 @@ public class SlotsPutter : MonoBehaviour
 
     private void Update()
     {
-        if (itemDataExists)
+        if (cellsUISizeMod != cellsUISizeModLastValue)
         {
-            if ((ItemData)FindFirstObjectByType(typeof(ItemData)) == null)
+            cellsUISizeModLastValue = cellsUISizeMod;
+            ReloadCellsUI();
+        }
+        if (editor)
+        {
+            if (itemData == null)
             {
-                GameObject.Find("Canvas").GetComponent<ItemDataChanger>().RefreshInfo();
-                itemDataExists = false;
+                itemData = (ItemData)FindFirstObjectByType(typeof(ItemData));
+            }
+            if (itemDataExists)
+            {
+                if (itemData == null)
+                {
+                    GameObject.Find("Canvas").GetComponent<ItemDataChanger>().RefreshInfo();
+                    itemDataExists = false;
+                    RemoveAllCellsUI();
+                    cellsNumInfo.text = "Ячеек: ... (... - основные, ... - универсальные, ... - для двигателей)";
+                }
+            }
+            else
+            {
+                if (itemData != null)
+                {
+                    itemDataExists = true;
+                    RenderAllCellsUI();
+                    CountCellsNumber();
+                    GameObject.Find("Canvas").GetComponent<ItemDataChanger>().RefreshInfo();
+                }
+            }
+
+            allCellsDeleteAskTimer += Time.deltaTime;
+            if (allCellsDeleteAskTimer > 3)
+            {
+                allCellsDeleteText.text = "Удалить все ячейки";
+            }
+            else
+            {
+                allCellsDeleteText.text = "Точно?";
+            }
+            GetInputs();
+            Painter();
+            if (lastCellsUICount != cellsUI.Length)
+            {
+                lastCellsUICount = cellsUI.Length;
+                ChangeCellsOpacity();
+            }
+        }
+        else
+        {
+            if (itemData != lastItemData && itemData != null)
+            {
+                lastItemData = itemData;
+                ReloadCellsUI();
+            }
+            if (itemData == null)
+            {
+                lastItemData = null;
                 RemoveAllCellsUI();
-                cellsNumInfo.text = "Ячеек: ... (... - основные, ... - универсальные, ... - для двигателей)";
             }
-        }
-        else
-        {
-            if ((ItemData)FindFirstObjectByType(typeof(ItemData)) != null)
-            {
-                itemDataExists = true;
-                RenderAllCellsUI();
-                CountCellsNumber();
-                GameObject.Find("Canvas").GetComponent<ItemDataChanger>().RefreshInfo();
-            }
-        }
-        
-        allCellsDeleteAskTimer += Time.deltaTime;
-        if (allCellsDeleteAskTimer > 3)
-        {
-            allCellsDeleteText.text = "Удалить все ячейки";
-        }
-        else
-        {
-            allCellsDeleteText.text = "Точно?";
-        }
-        GetInputs();
-        Painter();
-        if (lastCellsUICount != cellsUI.Length)
-        {
-            lastCellsUICount = cellsUI.Length;
-            ChangeCellsOpacity();
         }
     }
 
     void ChangeCellsOpacity()
     {
-        if ((ItemData)FindFirstObjectByType(typeof(ItemData)) == null)
+        if (itemData == null)
         {
             return;
         }
@@ -185,7 +227,7 @@ public class SlotsPutter : MonoBehaviour
 
     public void CheckClick()
     {
-        if ((ItemData)FindFirstObjectByType(typeof(ItemData)) == null)
+        if (itemData == null)
         {
             return;
         }
@@ -197,7 +239,6 @@ public class SlotsPutter : MonoBehaviour
 
     void Click(Vector2 point)
     {
-        ItemData itemData = (ItemData)FindFirstObjectByType(typeof(ItemData));
         if (itemData == null)
         {
             return;
@@ -227,13 +268,12 @@ public class SlotsPutter : MonoBehaviour
 
     void Painter()
     {
-        if ((ItemData)FindFirstObjectByType(typeof(ItemData)) == null)
+        if (itemData == null)
         {
             return;
         }
         if (paintMode)
         {
-            ItemData itemData = (ItemData)FindFirstObjectByType(typeof(ItemData));
             GameObject item = itemData.gameObject;
 
             if (itemData != null && choosenSlotType != -1)
@@ -268,11 +308,10 @@ public class SlotsPutter : MonoBehaviour
 
     void CountCellsNumber()
     {
-        if ((ItemData)FindFirstObjectByType(typeof(ItemData)) == null)
+        if (itemData == null)
         {
             return;
         }
-        ItemData itemData = (ItemData)FindFirstObjectByType(typeof(ItemData));
         int allCellsNum = itemData.cellsDataX.Length;
         int mainCellsNum = 0;
         int universalNum = 0;
@@ -294,7 +333,9 @@ public class SlotsPutter : MonoBehaviour
 
     public void DeleteAllCells()
     {
-        if ((ItemData)FindFirstObjectByType(typeof(ItemData)) == null)
+        minCellsPositions = new Vector2();
+        maxCellsPositions = new Vector2();
+        if (itemData == null)
         {
             return;
         }
@@ -308,7 +349,6 @@ public class SlotsPutter : MonoBehaviour
         {
             allCellsDeleteAskTimer = 3;
         }
-        ItemData itemData = (ItemData)FindFirstObjectByType(typeof(ItemData));
         itemData.cellsDataX = new int[0];
         itemData.cellsDataY = new int[0];
         itemData.cellsDataType = new int[0];
@@ -318,7 +358,7 @@ public class SlotsPutter : MonoBehaviour
 
     public void ReloadCellsUI()
     {
-        if ((ItemData)FindFirstObjectByType(typeof(ItemData)) == null)
+        if (itemData == null)
         {
             return;
         }
@@ -328,17 +368,25 @@ public class SlotsPutter : MonoBehaviour
 
     void RenderAllCellsUI()
     {
-        if ((ItemData)FindFirstObjectByType(typeof(ItemData)) == null)
+        if (itemData == null)
         {
             return;
         }
-        ItemData itemData = (ItemData)FindFirstObjectByType(typeof(ItemData));
         Vector2 offset = itemData.cellsOffset;
 
         cellsUI = new GameObject[itemData.cellsDataX.Length];
         for (int cell = 0; cell < itemData.cellsDataX.Length; cell++)
         {
             Vector2 position = new Vector2(itemData.cellsDataX[cell], itemData.cellsDataY[cell]) + offset;
+            if (position.x < minCellsPositions.x)
+                minCellsPositions = new Vector2(position.x, minCellsPositions.y);
+            if (position.y < minCellsPositions.y)
+                minCellsPositions = new Vector2(minCellsPositions.x, position.y);
+            if (position.x > maxCellsPositions.x)
+                maxCellsPositions = new Vector2(position.x, maxCellsPositions.y);
+            if (position.y > maxCellsPositions.y)
+                maxCellsPositions = new Vector2(maxCellsPositions.x, position.y);
+
             if (itemData.cellsDataType[cell] == 0)
             {
                 cellsUI[cell] = Instantiate(mainSlotPrefab, position, Quaternion.identity);
@@ -351,12 +399,34 @@ public class SlotsPutter : MonoBehaviour
             {
                 cellsUI[cell] = Instantiate(engineSlotPrefab, position, Quaternion.identity);
             }
+            if (cellsUISizeMod > 0)
+            {
+                cellsUI[cell].transform.localScale *= cellsUISizeMod;
+            }
+        }
+        if (!editor)
+        {
+            if (GameObject.Find("Сетка главная") != null)
+            {
+                GameObject.Find("Сетка главная").transform.position = new Vector2(0.5f + itemData.cellsOffset.x, 0.5f + itemData.cellsOffset.y);
+            }
+            CameraScaler cameraScaler = GetComponent<CameraScaler>();
+            cameraScaler.minPos = minCellsPositions - new Vector2(1, 1);
+            cameraScaler.maxPos = maxCellsPositions + new Vector2(1, 1);
+            cameraScaler.maxZoom = maxCellsPositions.y - minCellsPositions.y;
+            if (cameraScaler.maxZoom < cameraScaler.minZoom)
+            {
+                cameraScaler.maxZoom = cameraScaler.minZoom;
+            }
         }
         ChangeCellsOpacity();
     }
 
     void RemoveAllCellsUI()
     {
+        minCellsPositions = new Vector2();
+        maxCellsPositions = new Vector2();
+
         foreach (GameObject cell in cellsUI)
         {
             Destroy(cell);
@@ -366,8 +436,6 @@ public class SlotsPutter : MonoBehaviour
 
     void AddCellDataInArray(int xPos, int yPos, int type)
     {
-        ItemData itemData = (ItemData)FindFirstObjectByType(typeof(ItemData));
-
         for (int cell = 0; cell < itemData.cellsDataX.Length; cell++)
         {
             if (xPos == itemData.cellsDataX[cell] && yPos == itemData.cellsDataY[cell])
@@ -394,7 +462,6 @@ public class SlotsPutter : MonoBehaviour
 
     void DeleteCellDataInArray(int index)
     {
-        ItemData itemData = (ItemData)FindFirstObjectByType(typeof(ItemData));
         if (index == itemData.cellsDataX.Length - 1)
         {
             Array.Resize(ref itemData.cellsDataX, itemData.cellsDataX.Length - 1);

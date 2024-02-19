@@ -133,7 +133,7 @@ public class Bullet : MonoBehaviour
         if (hitInfo.collider != null && hitInfo.collider.GetComponentInParent<ShipStats>() != null && hitInfo.collider.GetComponentInParent<ShipStats>().teamID == targetTeamID)
         {
             //модуль того же корабля, в который попала пуля
-            GameModule module = hitInfo.collider.GetComponent<GameModule>();
+            ModuleData module = hitInfo.collider.GetComponent<ModuleData>();
             if (module != null)
             {
                 module.TakeDamage(damage);

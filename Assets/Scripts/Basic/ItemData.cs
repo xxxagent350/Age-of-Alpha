@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class ItemData : MonoBehaviour
 {
-
     public string Name;
     public float Size = 1;
     public int Mass;

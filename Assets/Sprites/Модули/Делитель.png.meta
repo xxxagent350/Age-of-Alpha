@@ -46,7 +46,7 @@ TextureImporter:
   nPOTScale: 0
   lightmap: 0
   compressionQuality: 50
-  spriteMode: 1
+  spriteMode: 2
   spriteExtrude: 1
   spriteMeshType: 1
   alignment: 0
@@ -110,7 +110,7 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: "\u0414\u0435\u043B\u0438\u0442\u0435\u043B\u044C_20231212141901_0"
+      name: "\u0414\u0435\u043B\u0438\u0442\u0435\u043B\u044C"
       rect:
         serializedVersion: 2
         x: 83
@@ -118,7 +118,7 @@ TextureImporter:
         width: 1882
         height: 1674
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -141,7 +141,7 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     nameFileIdTable:
-      "\u0414\u0435\u043B\u0438\u0442\u0435\u043B\u044C_20231212141901_0": -5677675015622232100
+      "\u0414\u0435\u043B\u0438\u0442\u0435\u043B\u044C": -5677675015622232100
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

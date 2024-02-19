@@ -4,12 +4,13 @@ public class CameraScaler : MonoBehaviour
 {
     [Header("Настройки")]
     [SerializeField] UIPressedInfo touchesDetector;
-    [SerializeField] float maxZoom;
-    [SerializeField] float minZoom;
+    bool includeAllTouchesWhileScaling;
+    public float maxZoom;
+    public float minZoom;
     float sensitivity;
     [SerializeField] float mouseScrollSensitivity = 0.1f;
-    [SerializeField] Vector2 minPos;
-    [SerializeField] Vector2 maxPos;
+    public Vector2 minPos;
+    public Vector2 maxPos;
     [HideInInspector] public bool dontMove;
 
     [Header("Можно оставить пустым")]
