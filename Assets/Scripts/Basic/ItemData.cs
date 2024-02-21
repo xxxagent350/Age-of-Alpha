@@ -4,7 +4,8 @@ using UnityEngine;
 
 public class ItemData : MonoBehaviour
 {
-    public string Name;
+    public string NameRu;
+    public string NameEng;
     public float Size = 1;
     public int Mass;
     public Vector2 cellsOffset;

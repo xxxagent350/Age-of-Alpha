@@ -130,7 +130,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a625874215b417d4aa8bb7410ce650d3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Name: "\u041F\u043B\u0430\u0437\u043C\u043E\u0433\u0430\u043D \"\u0414\u0435\u043B\u0438\u0442\u0435\u043B\u044C\""
+  NameRu: "\u041F\u043B\u0430\u0437\u043C\u043E\u0433\u0430\u043D \"\u0414\u0435\u043B\u0438\u0442\u0435\u043B\u044C\""
+  NameEng: Plasmogun "Splitter"
   Size: 0.055
   Mass: 250
   cellsOffset: {x: 0, y: 0}
@@ -149,6 +150,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0eb517a3fc55f384fa3070469e8136b8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  category: 0
+  category: 1
   type: 1
   maxDurability: 15

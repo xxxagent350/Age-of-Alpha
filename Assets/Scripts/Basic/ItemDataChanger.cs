@@ -29,7 +29,7 @@ public class ItemDataChanger : MonoBehaviour
             shipSize = itemData.Size;
             sizeInput.text = shipSize + "";
             bodyMassInput.text = itemData.Mass + "";
-            nameInput.text = itemData.Name;
+            nameInput.text = itemData.NameRu;
             cellsOffset = itemData.cellsOffset;
             shiftXInput.text = cellsOffset.x + "";
             shiftYInput.text = cellsOffset.y + "";
@@ -50,7 +50,7 @@ public class ItemDataChanger : MonoBehaviour
         if (itemData != null)
         {
             itemData.name = newName;
-            itemData.Name = newName;
+            itemData.NameRu = newName;
         }
     }
 

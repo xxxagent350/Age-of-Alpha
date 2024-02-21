@@ -13,7 +13,15 @@ public class TextTranslator : MonoBehaviour
     TextMeshProUGUI textMeshProUI;
     TextMeshPro textMeshPro;
 
-    private void Awake()
+    private void Start()
+    {
+        if (DataOperator.instance != null)
+            Translate();
+        else
+            Invoke(nameof(Translate), 0.05f);
+    }
+
+    void Translate()
     {
         //переводим
         if (DataOperator.instance.userLanguage == "Russian")
@@ -28,10 +36,16 @@ public class TextTranslator : MonoBehaviour
 
         //передаём компонентам текста перевод если они есть
         if (textUI != null)
+        {
             textUI.text = translate;
+        }
         if (textMeshProUI != null)
+        {
             textMeshProUI.text = translate;
+        }
         if (textMeshPro != null)
+        {
             textMeshPro.text = translate;
+        }
     }
 }

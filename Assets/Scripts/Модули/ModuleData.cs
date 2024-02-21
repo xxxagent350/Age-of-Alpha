@@ -2,8 +2,8 @@ using UnityEngine;
 
 public class ModuleData : MonoBehaviour
 {
-    [SerializeField] categories category;
-    [SerializeField] types type;
+    public categories category;
+    public types type;
     [SerializeField] float maxDurability;
     float durability;
 
@@ -21,8 +21,10 @@ public class ModuleData : MonoBehaviour
         }
     }
 
-    enum categories
+    public enum categories
     {
+        None, //для фильтра модулей
+
         Weapons,
         DefenceModules,
         EnergyBlocks,
@@ -31,9 +33,10 @@ public class ModuleData : MonoBehaviour
         SpecialModules
     }
 
-    enum types
+    public enum types
     {
-        None,
+        None, //для фильтра модулей
+
         //Weapons
         Ballistics,
         Lasers,

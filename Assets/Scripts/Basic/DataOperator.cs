@@ -6,15 +6,18 @@ using System.IO;
 
 public class DataOperator : MonoBehaviour
 {
+    [Header("Настройка")]
+    [SerializeField] AudioSource UIAudioSource;
+
+    [Header("Отладка")]
+    public Data[] gameData;
+    public string userLanguage;
+    [SerializeField] GameObject DataPathAccessErrorScreen;
+
     public static DataOperator instance = null;
     BinaryFormatter binaryFormatter;
     string dataPath;
     string deviceType;
-
-    [Header("Отладка")]
-    [SerializeField] Data[] gameData;
-    public string userLanguage;
-    [SerializeField] GameObject DataPathAccessErrorScreen;
 
     private void Awake()
     {
@@ -84,6 +87,13 @@ public class DataOperator : MonoBehaviour
                 gameData[gameData.Length - 1] = data;
             }
         }
+    }
+
+    public void PlayUISound(AudioClip sound, float volume)
+    {
+        UIAudioSource.clip = sound;
+        UIAudioSource.volume = volume;
+        UIAudioSource.Play();
     }
 
     public void SaveData(string name_, string dataString)
