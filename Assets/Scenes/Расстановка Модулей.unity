@@ -862,7 +862,6 @@ MonoBehaviour:
   - {fileID: 7756465846824925728, guid: 6a376f50c2640374d911d544f23431b1, type: 3}
   - {fileID: 7191714089331550314, guid: 9817d0242823e4d478b492430caea695, type: 3}
   moduleSlotPrefab: {fileID: 5661705787972915209, guid: 772ec096c53711140aa0f705878e0af4, type: 3}
-  UImodulesMenuSlot: {fileID: 0}
   scrollingContent: {fileID: 1141162520}
   weaponSlot: {fileID: 5607240948062396438, guid: 215723c03ec2cf04883702c62eb58c5b, type: 3}
   defenseSlot: {fileID: 5661705787972915209, guid: b7b95bbc7c0bd10458ca8e340ed3214f, type: 3}

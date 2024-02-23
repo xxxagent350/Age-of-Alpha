@@ -326,9 +326,12 @@ MonoBehaviour:
   behaviour: 
   clickSound: {fileID: 8300000, guid: e0b897fc304b2e349817a3e06e099892, type: 3}
   clickSoundVolume: 1
+  moduleDragging: {fileID: 2250444107458303807, guid: 2b0010e7350fb9b4883aca178a86dfc1, type: 3}
   image: {fileID: 1019175788039394879}
   name_: {fileID: 6312428732594940457}
   amount: {fileID: 7120586849975675797}
+  xPosChangeForSlotPutting: 35
+  yPosChangeForCancellingSlotPutting: 30
 --- !u!1 &6173543543416831216
 GameObject:
   m_ObjectHideFlags: 0

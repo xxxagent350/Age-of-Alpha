@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 1107662511184661817}
   - component: {fileID: 4455939632349034939}
   m_Layer: 0
-  m_Name: EditorMainModuleSlot
+  m_Name: MainModuleSlot
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
