@@ -4,10 +4,12 @@ using UnityEngine.EventSystems;
 
 public class UIPressedInfo : MonoBehaviour, IPointerDownHandler, IDragHandler, IPointerUpHandler
 {
+    [Header("Отладка")]
+    public Vector2[] publicTouchesPositions;
+
     int[] touchIDs;
     bool[] touched;
     Vector2[] touchesPositions;
-    public Vector2[] publicTouchesPositions;
 
     private void Awake()
     {

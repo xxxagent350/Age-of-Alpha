@@ -69,7 +69,7 @@ public class ModulesMenu : MonoBehaviour
         }
     }
 
-    void RenderMenuSlosts()
+    public void RenderMenuSlosts()
     {
         foreach (GameObject slot in menuSlots)
         {

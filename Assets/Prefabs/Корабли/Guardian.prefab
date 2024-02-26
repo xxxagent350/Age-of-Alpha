@@ -304,7 +304,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a625874215b417d4aa8bb7410ce650d3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Name: Guardian
+  NameRu: 
+  NameEng: 
   Size: 0.5
   Mass: 27000
   cellsOffset: {x: 0, y: 0}
@@ -323,7 +324,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fba7b76ceaaebb8419b62cfff1982716, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  UIModulePrefab: {fileID: 2250444107458303807, guid: cec6fecf65d672046ba6a993a9155336, type: 3}
   teamID: 142648236010992991281562095835
   modulesCollidersKeepActiveTime: 3
   spawnBullet: 0
   bullet: {fileID: 2288871660798619471, guid: b2e6515e7e7ba5c4aaad7541b8331a23, type: 3}
+  modulesOnShip: []

@@ -1,5 +1,4 @@
 using UnityEngine;
-using UnityEngine.UI;
 using System;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.IO;
@@ -91,9 +90,16 @@ public class DataOperator : MonoBehaviour
 
     public void PlayUISound(AudioClip sound, float volume)
     {
-        UIAudioSource.clip = sound;
-        UIAudioSource.volume = volume;
-        UIAudioSource.Play();
+        if (sound != null)
+        {
+            UIAudioSource.clip = sound;
+            UIAudioSource.volume = volume;
+            UIAudioSource.Play();
+        }
+        else
+        {
+            Debug.LogWarning("ѕопытка воспроизвести не заданный UI звук");
+        }
     }
 
     public void SaveData(string name_, string dataString)
@@ -124,6 +130,14 @@ public class DataOperator : MonoBehaviour
     {
         FileStream file = File.Create(dataPath + name_ + ".data");
         Data data = new Data(name_, dataModulesOnStorage);
+        binaryFormatter.Serialize(file, data);
+        file.Close();
+        AddDataToArray(data);
+    }
+    public void SaveData(string name_, ModuleOnShipData[] dataModulesOnShip)
+    {
+        FileStream file = File.Create(dataPath + name_ + ".data");
+        Data data = new Data(name_, dataModulesOnShip);
         binaryFormatter.Serialize(file, data);
         file.Close();
         AddDataToArray(data);
@@ -199,6 +213,19 @@ public class DataOperator : MonoBehaviour
         }
         return data;
     }
+    public ModuleOnShipData[] LoadDataModulesOnShip(string name_)
+    {
+        ModuleOnShipData[] data = null;
+        foreach (Data searchingData in gameData)
+        {
+            if (searchingData.dataName == name_)
+            {
+                data = searchingData.dataModulesOnShip;
+                break;
+            }
+        }
+        return data;
+    }
 
 
 
@@ -247,6 +274,7 @@ public class Data
     public int dataInt;
     public float dataFloat;
     public ModulesOnStorageData dataModulesOnStorage;
+    public ModuleOnShipData[] dataModulesOnShip;
 
     [HideInInspector] public string deviceUniqueIdentifier;
 
@@ -256,6 +284,7 @@ public class Data
         dataInt = 0;
         dataFloat = 0;
         dataModulesOnStorage = null;
+        dataModulesOnShip = null;
     }
 
     public Data(string dataName_, string dataString_)
@@ -284,6 +313,13 @@ public class Data
         SetDefaultDataValues();
         dataName = dataName_;
         dataModulesOnStorage = dataModulesOnStorage_;
+        deviceUniqueIdentifier = SystemInfo.deviceUniqueIdentifier;
+    }
+    public Data(string dataName_, ModuleOnShipData[] dataModulesOnShip_)
+    {
+        SetDefaultDataValues();
+        dataName = dataName_;
+        dataModulesOnShip = dataModulesOnShip_;
         deviceUniqueIdentifier = SystemInfo.deviceUniqueIdentifier;
     }
 }

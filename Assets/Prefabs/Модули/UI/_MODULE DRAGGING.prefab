@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3026669259898082929}
   - component: {fileID: 3340361728480749072}
+  - component: {fileID: 2506610029679674178}
   m_Layer: 0
   m_Name: _MODULE DRAGGING
   m_TagString: Untagged
@@ -72,7 +73,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 200
+  m_SortingOrder: 250
   m_Sprite: {fileID: -6749691083806249244, guid: f862475a406a1fd44bb33696ea0e6e3d, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -84,3 +85,19 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &2506610029679674178
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2250444107458303807}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ebe0375447b47534e855a21eeda76550, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  greenSlot: {fileID: 6937352971062761732, guid: 9b7d50e3c187d2b4089748ba8de75913, type: 3}
+  redSlot: {fileID: 6937352971062761732, guid: ec22bfe8fd728494cbbeb84ef927342b, type: 3}
+  errorSound: {fileID: 8300000, guid: 6682e6b3c91b2734586e7756accc4d4b, type: 3}
+  moduleDataName: 
