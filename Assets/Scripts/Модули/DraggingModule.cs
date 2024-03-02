@@ -6,6 +6,10 @@ public class DraggingModule : MonoBehaviour
     [SerializeField] GameObject greenSlot;
     [SerializeField] GameObject redSlot;
     [SerializeField] AudioClip errorSound;
+    [SerializeField] float errorSoundVolume = 1;
+    [SerializeField] AudioClip[] modulePutSounds;
+    [Header("Ёффект сварки")]
+    [SerializeField] GameObject weldingEffect; //эффект сварки
 
     [HideInInspector] public string moduleDataName;
     GameObject modulePrefab;
@@ -19,9 +23,12 @@ public class DraggingModule : MonoBehaviour
     Vector2 lastFrameRoundedMousePointInUnits;
     bool canBeInstalled;
     ModulesMenu modulesMenu;
+    Vector2 lastMousePos;
+    RectTransform menuStartLine; //син€€ полоска, после которой начинаетс€ меню модулей
 
     private void Start()
     {
+        menuStartLine = GameObject.Find("BorderMiddleLeft").GetComponent<RectTransform>();
         cellsUI = new GameObject[0];
         spriteRenderer = GetComponent<SpriteRenderer>();
         if (Input.touchCount > 0)
@@ -62,6 +69,7 @@ public class DraggingModule : MonoBehaviour
             else
             {
                 Vector2 mousePos = Input.GetTouch(0).position;
+                lastMousePos = mousePos;
                 mousePos = new Vector2(mousePos.x, mousePos.y + ((float)Screen.height / 8)); //смещает модуль над пальцем при игре на телефоне
                 if (mousePos.y > Screen.height)
                 {
@@ -78,9 +86,11 @@ public class DraggingModule : MonoBehaviour
             }
             else
             {
+                lastMousePos = GetWorldMousePosInUnits(Input.mousePosition);
                 lastFrameRoundedMousePointInUnits = GetRoundedMousePointInUnits(Input.mousePosition);
             }
         }
+        transform.position = lastMousePos;
         if (lastFrameRoundedMousePointInUnits != new Vector2(transform.position.x, transform.position.y))
         {
             DragModule();
@@ -89,27 +99,37 @@ public class DraggingModule : MonoBehaviour
 
     void DragModule()
     {
-        transform.position = lastFrameRoundedMousePointInUnits;
+        TryFoundShipData();
+        //transform.position = lastFrameRoundedMousePointInUnits;
         RenderAllCellsUIAndCheckIfModuleFits();
     }
 
     void TryPutModule()
     {
-        if (canBeInstalled)
+        if (lastMousePos.x < menuStartLine.position.x)
         {
-            //устанавливаем модуль на корабль
-            TryFoundShipData();
-            shipInstalledModulesData.AddModuleInArray(moduleDataName, transform.position);
-            //забираем одну штуку со склада
-            ModulesOnStorageData modulesOnStorageData = DataOperator.instance.LoadDataModulesOnStorage(moduleDataName);
-            modulesOnStorageData.amount -= 1;
-            DataOperator.instance.SaveData(moduleDataName, modulesOnStorageData);
-            //обновл€ем список предметов в меню
-            modulesMenu.RenderMenuSlosts();
-        }
-        else
-        {
-            DataOperator.instance.PlayUISound(errorSound, 1);
+            if (canBeInstalled)
+            {   
+                //задаЄм позицию модул€, подход€щую под €чейки
+                transform.position = lastFrameRoundedMousePointInUnits;
+                //устанавливаем модуль на корабль
+                TryFoundShipData();
+                shipInstalledModulesData.AddModuleInArray(moduleDataName, transform.position);
+                //забираем одну штуку со склада
+                ModulesOnStorageData modulesOnStorageData = DataOperator.instance.LoadDataModulesOnStorage(moduleDataName);
+                modulesOnStorageData.amount -= 1;
+                DataOperator.instance.SaveData(moduleDataName, modulesOnStorageData);
+                //обновл€ем список предметов в меню
+                modulesMenu.RenderMenuSlosts();
+                //играем случайный звук установки модул€
+                DataOperator.instance.PlayRandom3DSound(transform.position, modulePutSounds);
+                //создаЄм эффект сварки
+                CreateWeldingEffect(transform.position, spriteRenderer.sprite);
+            }
+            else
+            {
+                DataOperator.instance.PlayUISound(errorSound, errorSoundVolume);
+            }
         }
         Destroy(gameObject);
     }
@@ -147,13 +167,13 @@ public class DraggingModule : MonoBehaviour
         }
         canBeInstalled = true;
         Vector2 offset = moduleData.cellsOffset;
-        cellsUI = new GameObject[moduleData.cellsDataX.Length];
-        for (int cell = 0; cell < moduleData.cellsDataX.Length; cell++)
+        cellsUI = new GameObject[moduleData.itemSlotsData.Length];
+        for (int cell = 0; cell < moduleData.itemSlotsData.Length; cell++)
         {
-            Vector2 globalPosition = new Vector2(moduleData.cellsDataX[cell] + transform.position.x, moduleData.cellsDataY[cell] + transform.position.y) + offset - shipData.cellsOffset;
-            Vector2 localPosition = new Vector2(moduleData.cellsDataX[cell], moduleData.cellsDataY[cell]) + offset;
+            Vector2 globalPosition = new Vector2(moduleData.itemSlotsData[cell].position.x + transform.position.x, moduleData.itemSlotsData[cell].position.y + transform.position.y) + offset - shipData.cellsOffset;
+            Vector2 localPosition = new Vector2(moduleData.itemSlotsData[cell].position.x, moduleData.itemSlotsData[cell].position.y) + offset;
             GameObject slot;
-            if (CheckIfSlotCanBeInstalled(globalPosition, moduleData.cellsDataType[cell]))
+            if (CheckIfSlotCanBeInstalled(globalPosition, moduleData.itemSlotsData[cell].type))
             {
                 slot = Instantiate(greenSlot, new Vector3(), Quaternion.identity);
             }
@@ -176,7 +196,7 @@ public class DraggingModule : MonoBehaviour
         }
     }
 
-    bool CheckIfSlotCanBeInstalled(Vector2 position, int slotType)
+    bool CheckIfSlotCanBeInstalled(Vector2 position, slotsTypes slotType)
     {
         TryFoundShipData();
         if (shipData != null)
@@ -187,9 +207,9 @@ public class DraggingModule : MonoBehaviour
                 //перебираем все уже установленные модули на корабле
                 GameObject modulePrefab_ = modulesMenu.modulesPrefabs[moduleOnShip.module.moduleNum];
                 ItemData moduleData_ = modulePrefab_.GetComponent<ItemData>();
-                for (int moduleSlot_ = 0; moduleSlot_ < moduleData_.cellsDataX.Length; moduleSlot_++)
+                for (int moduleSlot_ = 0; moduleSlot_ < moduleData_.itemSlotsData.Length; moduleSlot_++)
                 {
-                    Vector2 moduleSlotPos = new Vector2(moduleData_.cellsDataX[moduleSlot_] + moduleOnShip.position.x, moduleData_.cellsDataY[moduleSlot_] + moduleOnShip.position.y) + moduleData_.cellsOffset - shipData.cellsOffset;
+                    Vector2 moduleSlotPos = new Vector2(moduleData_.itemSlotsData[moduleSlot_].position.x + moduleOnShip.position.x, moduleData_.itemSlotsData[moduleSlot_].position.y + moduleOnShip.position.y) + moduleData_.cellsOffset - shipData.cellsOffset;
                     if (Vector2.Distance(position, moduleSlotPos) < 0.01f)
                     {
                         return false;
@@ -198,22 +218,22 @@ public class DraggingModule : MonoBehaviour
             }
 
             //теперь провер€ем совместим ли слот
-            for (int slot = 0; slot < shipData.cellsDataX.Length; slot++)
+            for (int slot = 0; slot < shipData.itemSlotsData.Length; slot++)
             {
-                if (Mathf.Abs(shipData.cellsDataX[slot] - position.x) < 0.01f && Mathf.Abs(shipData.cellsDataY[slot] - position.y) < 0.01f)
+                if (Mathf.Abs(shipData.itemSlotsData[slot].position.x - position.x) < 0.01f && Mathf.Abs(shipData.itemSlotsData[slot].position.y - position.y) < 0.01f)
                 {
-                    if (slotType == 0) //обычна€ €чейка модул€ который перетаскиваетс€
+                    if (slotType == slotsTypes.standart) //обычна€ €чейка модул€ который перетаскиваетс€
                     {
-                        if (shipData.cellsDataType[slot] == 0 || shipData.cellsDataType[slot] == 1)
+                        if (shipData.itemSlotsData[slot].type == slotsTypes.standart || shipData.itemSlotsData[slot].type == slotsTypes.universal)
                             return true;
                     }
-                    if (slotType == 1) //универсальна€ €чейка
+                    if (slotType == slotsTypes.universal) //универсальна€ €чейка
                     {
                         return true;
                     }
-                    if (slotType == 2) //€чейка дл€ двигателей
+                    if (slotType == slotsTypes.engine) //€чейка дл€ двигателей
                     {
-                        if (shipData.cellsDataType[slot] == 2 || shipData.cellsDataType[slot] == 1)
+                        if (shipData.itemSlotsData[slot].type == slotsTypes.engine || shipData.itemSlotsData[slot].type == slotsTypes.universal)
                             return true;
                     }
                 }
@@ -223,6 +243,133 @@ public class DraggingModule : MonoBehaviour
         else
         {
             return false;
+        }
+    }
+
+
+    //создать эффект сварки
+    void CreateWeldingEffect(Vector2 position, Sprite sprite)
+    {
+        Rect spriteRect = sprite.textureRect;
+        Texture2D texture = sprite.texture;
+        if (!texture.isReadable)
+        {
+            Debug.LogError("”становите галочку напротив Read/Write дл€ текстуры " + texture.name);
+            return;
+        }
+
+        float raycastAccuracy = 100f; //точность райкаста
+        int maxWhileIterations = 100;
+        int whileIterations = 0;
+
+        bool createdRight = false;
+        bool createdUp = false;
+        bool createdLeft = false;
+        bool createdDown = false;
+        int numCreatedSides = 0;
+
+        int slotsNum = moduleData.itemSlotsData.Length;
+        int minEffectsNum = Mathf.RoundToInt(slotsNum - Mathf.Pow(Mathf.Sqrt(slotsNum) - 2, 2) + 1) * 4;
+        int effectsSpawnedNum = 0;
+
+        while ((numCreatedSides < 3 || effectsSpawnedNum < minEffectsNum) && whileIterations < maxWhileIterations)
+        {
+            whileIterations++;
+            int side = Random.Range(0, 4);
+            
+            if (side == 0) //райкастим справа (луч влево)
+            {
+                Vector2 raycastPoint = new Vector2(spriteRect.xMax, Random.Range(spriteRect.yMin, spriteRect.yMax));
+                int step = (int)((spriteRect.xMax - spriteRect.xMin) / raycastAccuracy) + 1;
+                while (raycastPoint.x > spriteRect.xMin)
+                {
+                    raycastPoint = new Vector2(raycastPoint.x - step, raycastPoint.y);
+
+                    if (texture.GetPixel((int)raycastPoint.x, (int)raycastPoint.y).a > 0.25f)
+                    {
+                        Vector2 pivot = sprite.pivot;
+                        Vector2 effectPosition = position;
+                        effectPosition += (raycastPoint - pivot - new Vector2(spriteRect.xMin, spriteRect.yMin)) / sprite.pixelsPerUnit * modulePrefab.transform.Find("Image").localScale;
+                        Instantiate(weldingEffect, effectPosition, Quaternion.identity);
+                        createdRight = true;
+                        effectsSpawnedNum++;
+                        break;
+                    }
+                }
+            }
+
+            if (side == 1) //райкастим сверху (луч вниз)
+            {
+                Vector2 raycastPoint = new Vector2(Random.Range(spriteRect.xMin, spriteRect.xMax), spriteRect.yMax);
+                int step = (int)((spriteRect.yMax - spriteRect.yMin) / raycastAccuracy) + 1;
+                while (raycastPoint.y > spriteRect.yMin)
+                {
+                    raycastPoint = new Vector2(raycastPoint.x, raycastPoint.y - step);
+
+                    if (texture.GetPixel((int)raycastPoint.x, (int)raycastPoint.y).a > 0.25f)
+                    {
+                        Vector2 pivot = sprite.pivot;
+                        Vector2 effectPosition = position;
+                        effectPosition += (raycastPoint - pivot - new Vector2(spriteRect.xMin, spriteRect.yMin)) / sprite.pixelsPerUnit * modulePrefab.transform.Find("Image").localScale;
+                        Instantiate(weldingEffect, effectPosition, Quaternion.identity);
+                        createdUp = true;
+                        effectsSpawnedNum++;
+                        break;
+                    }
+                }
+            }
+
+            if (side == 2) //райкастим слева (луч вправо)
+            {
+                Vector2 raycastPoint = new Vector2(spriteRect.xMin, Random.Range(spriteRect.yMin, spriteRect.yMax));
+                int step = (int)((spriteRect.xMax - spriteRect.xMin) / raycastAccuracy) + 1;
+                while (raycastPoint.x < spriteRect.xMax)
+                {
+                    raycastPoint = new Vector2(raycastPoint.x + step, raycastPoint.y);
+
+                    if (texture.GetPixel((int)raycastPoint.x, (int)raycastPoint.y).a > 0.25f)
+                    {
+                        Vector2 pivot = sprite.pivot;
+                        Vector2 effectPosition = position;
+                        effectPosition += (raycastPoint - pivot - new Vector2(spriteRect.xMin, spriteRect.yMin)) / sprite.pixelsPerUnit * modulePrefab.transform.Find("Image").localScale;
+                        Instantiate(weldingEffect, effectPosition, Quaternion.identity);
+                        createdLeft = true;
+                        effectsSpawnedNum++;
+                        break;
+                    }
+                }
+            }
+
+            if (side == 3) //райкастим снизу (луч вверх)
+            {
+                Vector2 raycastPoint = new Vector2(Random.Range(spriteRect.xMin, spriteRect.xMax), spriteRect.yMin);
+                int step = (int)((spriteRect.yMax - spriteRect.yMin) / raycastAccuracy) + 1;
+                while (raycastPoint.y < spriteRect.yMax)
+                {
+                    raycastPoint = new Vector2(raycastPoint.x, raycastPoint.y + step);
+
+                    if (texture.GetPixel((int)raycastPoint.x, (int)raycastPoint.y).a > 0.25f)
+                    {
+                        Vector2 pivot = sprite.pivot;
+                        Vector2 effectPosition = position;
+                        effectPosition += (raycastPoint - pivot - new Vector2(spriteRect.xMin, spriteRect.yMin)) / sprite.pixelsPerUnit * modulePrefab.transform.Find("Image").localScale;
+                        Instantiate(weldingEffect, effectPosition, Quaternion.identity);
+                        createdDown = true;
+                        effectsSpawnedNum++;
+                        break;
+                    }
+                }
+            }
+
+            numCreatedSides = 0;
+            if (createdRight)
+                numCreatedSides++;
+            if (createdUp)
+                numCreatedSides++;
+            if (createdLeft)
+                numCreatedSides++;
+            if (createdDown)
+                numCreatedSides++;
         }
     }
 }

@@ -71,6 +71,39 @@ public class ShipStats : MonoBehaviour
         modulesUI[modulesUI.Length - 1] = UImoduleGO;
     }
 
+    public void RemoveModuleFromArray(Vector2 position)
+    {
+        for (int moduleNum = 0; moduleNum < modulesOnShip.Length; moduleNum++)
+        {
+            if (Vector2.Distance(position, modulesOnShip[moduleNum].position) < 0.01f)
+            {
+                if (moduleNum != modulesOnShip.Length - 1)
+                {
+                    for (int movingModule = moduleNum; movingModule < modulesOnShip.Length - 1; movingModule++)
+                    {
+                        modulesOnShip[movingModule] = modulesOnShip[movingModule + 1];
+                    }
+                }
+                Array.Resize(ref modulesOnShip, modulesOnShip.Length - 1);
+                RemoveModuleUI(moduleNum);
+                break;
+            }
+        }
+    }
+
+    public void RemoveModuleUI(int numInArray)
+    {
+        Destroy(modulesUI[numInArray]);
+        if (numInArray != modulesUI.Length - 1)
+        {
+            for (int movingModule = numInArray; movingModule < modulesUI.Length - 1; movingModule++)
+            {
+                modulesUI[movingModule] = modulesUI[movingModule + 1];
+            }
+        }
+        Array.Resize(ref modulesUI, modulesUI.Length - 1);
+    }
+
     public void TakeDamage(float damage)
     {
         modulesCollidersKeepActiveTimer = 0;

@@ -2,21 +2,25 @@ using UnityEngine;
 using System;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.IO;
+using Random = UnityEngine.Random;
 
 public class DataOperator : MonoBehaviour
 {
     [Header("Настройка")]
     [SerializeField] AudioSource UIAudioSource;
+    [SerializeField] GameObject defaultAudioSourcePrefab;
 
     [Header("Отладка")]
     public Data[] gameData;
     public string userLanguage;
     [SerializeField] GameObject DataPathAccessErrorScreen;
 
+    Camera camera_;
     public static DataOperator instance = null;
     BinaryFormatter binaryFormatter;
     string dataPath;
     string deviceType;
+    [HideInInspector] public float cameraSize;
 
     private void Awake()
     {
@@ -86,6 +90,71 @@ public class DataOperator : MonoBehaviour
                 gameData[gameData.Length - 1] = data;
             }
         }
+    }
+
+    private void Update()
+    {
+        if (TryFoundCamera())
+        {
+            cameraSize = camera_.orthographicSize;
+        }
+    }
+
+    public Camera GetCamera()
+    {
+        TryFoundCamera();
+        return camera_;
+    }
+
+    bool TryFoundCamera()
+    {
+        if (camera_ == null)
+        {
+            camera_ = (Camera)FindFirstObjectByType(typeof(Camera));
+            if (camera_ == null)
+            {
+                return false;
+            }
+            else
+            {
+                return true;
+            }
+        }
+        else
+        {
+            return true;
+        }
+    }
+
+    public void PlayRandom3DSound(Vector3 position, AudioClip[] audioClips)
+    {
+        int audioClipNum = Random.Range(0, audioClips.Length);
+        GameObject soundGO = Instantiate(defaultAudioSourcePrefab, position, Quaternion.identity);
+        AudioSource soundCMP = soundGO.GetComponent<AudioSource>();
+        soundCMP.clip = audioClips[audioClipNum];
+        soundCMP.Play();
+        Destroy(soundGO, audioClips[audioClipNum].length + 0.05f);
+    }
+    public void PlayRandom3DSound(Vector3 position, AudioClip[] audioClips, float volume)
+    {
+        int audioClipNum = Random.Range(0, audioClips.Length);
+        GameObject soundGO = Instantiate(defaultAudioSourcePrefab, position, Quaternion.identity);
+        AudioSource soundCMP = soundGO.GetComponent<AudioSource>();
+        soundCMP.clip = audioClips[audioClipNum];
+        soundCMP.volume = volume;
+        soundCMP.Play();
+        Destroy(soundGO, audioClips[audioClipNum].length + 0.05f);
+    }
+    public void PlayRandom3DSound(Vector3 position, AudioClip[] audioClips, float volume, float minDistance)
+    {
+        int audioClipNum = Random.Range(0, audioClips.Length);
+        GameObject soundGO = Instantiate(defaultAudioSourcePrefab, position, Quaternion.identity);
+        AudioSource soundCMP = soundGO.GetComponent<AudioSource>();
+        soundCMP.clip = audioClips[audioClipNum];
+        soundCMP.volume = volume;
+        soundCMP.minDistance = minDistance;
+        soundCMP.Play();
+        Destroy(soundGO, audioClips[audioClipNum].length + 0.05f);
     }
 
     public void PlayUISound(AudioClip sound, float volume)
@@ -321,5 +390,31 @@ public class Data
         dataName = dataName_;
         dataModulesOnShip = dataModulesOnShip_;
         deviceUniqueIdentifier = SystemInfo.deviceUniqueIdentifier;
+    }
+}
+
+[Serializable]
+public class Limits
+{
+    public float minValue;
+    public float maxValue;
+    float constantRandomValue;
+    bool constantRandomValueGenerated = false;
+
+    //каждый раз выдаёт случайное число в заданных лимитах
+    public float GetRandomValue()
+    {
+        return Random.Range(minValue, maxValue);
+    }
+
+    //один раз генерирует случайное число в заданных лимитах и потом всё время выдаёт его
+    public float GetConstantRandomValue()
+    {
+        if (!constantRandomValueGenerated)
+        {
+            constantRandomValueGenerated = true;
+            constantRandomValue = Random.Range(minValue, maxValue);
+        }
+        return constantRandomValue;
     }
 }

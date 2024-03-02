@@ -1,6 +1,6 @@
-using System.Collections;
-using System.Collections.Generic;
+using System;
 using UnityEngine;
+
 
 public class ItemData : MonoBehaviour
 {
@@ -9,9 +9,7 @@ public class ItemData : MonoBehaviour
     public float Size = 1;
     public int Mass;
     public Vector2 cellsOffset;
-    public int[] cellsDataX;
-    public int[] cellsDataY;
-    public int[] cellsDataType;
+    public slotsData[] itemSlotsData;
 
     private void Start()
     {
@@ -35,5 +33,19 @@ public class ItemData : MonoBehaviour
     {
         cellsOffset = shift;
     }
+}
 
+[Serializable]
+public class slotsData
+{
+    public Vector2Int position;
+    public slotsTypes type;
+}
+
+public enum slotsTypes
+{
+    none,
+    standart,
+    universal,
+    engine
 }

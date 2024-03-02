@@ -19,7 +19,7 @@ public class SlotsPutter : MonoBehaviour
     [SerializeField] GameObject engineSlotPrefab;
     [SerializeField] AudioSource buttonSoundSource;
     [SerializeField] AudioSource longPressSoundSource;
-    int choosenSlotType = -1;
+    slotsTypes choosenSlotType = slotsTypes.none;
 
     [SerializeField] AudioClip[] slotPutSounds;
     [SerializeField] AudioSource slotPutSoundSource;
@@ -76,34 +76,34 @@ public class SlotsPutter : MonoBehaviour
 
     public void ChooseMainSlotType()
     {
-        if (choosenSlotType != 0)
+        if (choosenSlotType != slotsTypes.standart)
         {
             mainSlotButton.color = new Color(mainSlotButton.color.r, mainSlotButton.color.g, mainSlotButton.color.b, 0.5f);
             universalSlotButton.color = new Color(mainSlotButton.color.r, mainSlotButton.color.g, mainSlotButton.color.b, 1f);
             engineSlotButton.color = new Color(mainSlotButton.color.r, mainSlotButton.color.g, mainSlotButton.color.b, 1f);
-            choosenSlotType = 0;
+            choosenSlotType = slotsTypes.standart;
             buttonSoundSource.Play();
         }
     }
     public void ChooseUniversalSlotType()
     {
-        if (choosenSlotType != 1)
+        if (choosenSlotType != slotsTypes.universal)
         {
             mainSlotButton.color = new Color(mainSlotButton.color.r, mainSlotButton.color.g, mainSlotButton.color.b, 1f);
             universalSlotButton.color = new Color(mainSlotButton.color.r, mainSlotButton.color.g, mainSlotButton.color.b, 0.5f);
             engineSlotButton.color = new Color(mainSlotButton.color.r, mainSlotButton.color.g, mainSlotButton.color.b, 1f);
-            choosenSlotType = 1;
+            choosenSlotType = slotsTypes.universal;
             buttonSoundSource.Play();
         }
     }
     public void ChooseEngineSlotType()
     {
-        if (choosenSlotType != 2)
+        if (choosenSlotType != slotsTypes.engine)
         {
             mainSlotButton.color = new Color(mainSlotButton.color.r, mainSlotButton.color.g, mainSlotButton.color.b, 1f);
             universalSlotButton.color = new Color(mainSlotButton.color.r, mainSlotButton.color.g, mainSlotButton.color.b, 1f);
             engineSlotButton.color = new Color(mainSlotButton.color.r, mainSlotButton.color.g, mainSlotButton.color.b, 0.5f);
-            choosenSlotType = 2;
+            choosenSlotType = slotsTypes.engine;
             buttonSoundSource.Play();
         }
     }
@@ -245,7 +245,7 @@ public class SlotsPutter : MonoBehaviour
         }
         GameObject item = itemData.gameObject;
 
-        if (item != null && choosenSlotType != -1)
+        if (item != null && choosenSlotType != slotsTypes.none)
         {
             float pixelsPerUnit = Screen.height / (camera_.orthographicSize * 2);
             Vector2 pointInUnits = point / pixelsPerUnit;
@@ -259,7 +259,12 @@ public class SlotsPutter : MonoBehaviour
             slotPutSoundSource.Play();
 
             Vector2 roundedPointInUnits = new Vector2(Mathf.RoundToInt(pointInUnits.x), Mathf.RoundToInt(pointInUnits.y));
-            AddCellDataInArray(Mathf.RoundToInt(roundedPointInUnits.x), Mathf.RoundToInt(roundedPointInUnits.y), choosenSlotType);
+
+            slotsData newSlotData = new slotsData();
+            newSlotData.position = new Vector2Int(Mathf.RoundToInt(roundedPointInUnits.x), Mathf.RoundToInt(roundedPointInUnits.y));
+            newSlotData.type = choosenSlotType;
+
+            AddCellDataInArray(newSlotData);
             CountCellsNumber();
             ReloadCellsUI();
 
@@ -276,7 +281,7 @@ public class SlotsPutter : MonoBehaviour
         {
             GameObject item = itemData.gameObject;
 
-            if (itemData != null && choosenSlotType != -1)
+            if (itemData != null && choosenSlotType != slotsTypes.none)
             {
                 float pixelsPerUnit = Screen.height / (camera_.orthographicSize * 2);
                 Vector2 pointInUnits = pressPoint / pixelsPerUnit;
@@ -289,13 +294,13 @@ public class SlotsPutter : MonoBehaviour
                 int xPos = Mathf.RoundToInt(roundedPointInUnits.x);
                 int yPos = Mathf.RoundToInt(roundedPointInUnits.y);
 
-                for (int cell = 0; cell < itemData.cellsDataX.Length; cell++)
+                for (int cell = 0; cell < itemData.itemSlotsData.Length; cell++)
                 {
-                    if (xPos == itemData.cellsDataX[cell] && yPos == itemData.cellsDataY[cell])
+                    if (xPos == itemData.itemSlotsData[cell].position.x && yPos == itemData.itemSlotsData[cell].position.y)
                     {
-                        if (itemData.cellsDataType[cell] != choosenSlotType)
+                        if (itemData.itemSlotsData[cell].type != choosenSlotType)
                         {
-                            itemData.cellsDataType[cell] = choosenSlotType;
+                            itemData.itemSlotsData[cell].type = choosenSlotType;
                             ReloadCellsUI();
                         }
                         return;
@@ -312,17 +317,17 @@ public class SlotsPutter : MonoBehaviour
         {
             return;
         }
-        int allCellsNum = itemData.cellsDataX.Length;
+        int allCellsNum = itemData.itemSlotsData.Length;
         int mainCellsNum = 0;
         int universalNum = 0;
         int engineNum = 0;
         for (int cell = 0; cell < allCellsNum; cell++)
         {
-            if (itemData.cellsDataType[cell] == 0)
+            if (itemData.itemSlotsData[cell].type == slotsTypes.standart)
                 mainCellsNum++;
-            if (itemData.cellsDataType[cell] == 1)
+            if (itemData.itemSlotsData[cell].type == slotsTypes.universal)
                 universalNum++;
-            if (itemData.cellsDataType[cell] == 2)
+            if (itemData.itemSlotsData[cell].type == slotsTypes.engine)
                 engineNum++;
         }
         if (cellsNumInfo != null)
@@ -349,9 +354,7 @@ public class SlotsPutter : MonoBehaviour
         {
             allCellsDeleteAskTimer = 3;
         }
-        itemData.cellsDataX = new int[0];
-        itemData.cellsDataY = new int[0];
-        itemData.cellsDataType = new int[0];
+        itemData.itemSlotsData = new slotsData[0];
         RemoveAllCellsUI();
         CountCellsNumber();
     }
@@ -374,10 +377,10 @@ public class SlotsPutter : MonoBehaviour
         }
         Vector2 offset = itemData.cellsOffset;
 
-        cellsUI = new GameObject[itemData.cellsDataX.Length];
-        for (int cell = 0; cell < itemData.cellsDataX.Length; cell++)
+        cellsUI = new GameObject[itemData.itemSlotsData.Length];
+        for (int cell = 0; cell < itemData.itemSlotsData.Length; cell++)
         {
-            Vector2 position = new Vector2(itemData.cellsDataX[cell], itemData.cellsDataY[cell]) + offset;
+            Vector2 position = itemData.itemSlotsData[cell].position + offset;
             if (position.x < minCellsPositions.x)
                 minCellsPositions = new Vector2(position.x, minCellsPositions.y);
             if (position.y < minCellsPositions.y)
@@ -387,15 +390,15 @@ public class SlotsPutter : MonoBehaviour
             if (position.y > maxCellsPositions.y)
                 maxCellsPositions = new Vector2(maxCellsPositions.x, position.y);
 
-            if (itemData.cellsDataType[cell] == 0)
+            if (itemData.itemSlotsData[cell].type == slotsTypes.standart)
             {
                 cellsUI[cell] = Instantiate(mainSlotPrefab, position, Quaternion.identity);
             }
-            if (itemData.cellsDataType[cell] == 1)
+            if (itemData.itemSlotsData[cell].type == slotsTypes.universal)
             {
                 cellsUI[cell] = Instantiate(universalSlotPrefab, position, Quaternion.identity);
             }
-            if (itemData.cellsDataType[cell] == 2)
+            if (itemData.itemSlotsData[cell].type == slotsTypes.engine)
             {
                 cellsUI[cell] = Instantiate(engineSlotPrefab, position, Quaternion.identity);
             }
@@ -434,15 +437,15 @@ public class SlotsPutter : MonoBehaviour
         cellsUI = new GameObject[0];
     }
 
-    void AddCellDataInArray(int xPos, int yPos, int type)
+    void AddCellDataInArray(slotsData slotData)
     {
-        for (int cell = 0; cell < itemData.cellsDataX.Length; cell++)
+        for (int cell = 0; cell < itemData.itemSlotsData.Length; cell++)
         {
-            if (xPos == itemData.cellsDataX[cell] && yPos == itemData.cellsDataY[cell])
+            if (slotData.position.x == itemData.itemSlotsData[cell].position.x && slotData.position.y == itemData.itemSlotsData[cell].position.y)
             {
-                if (itemData.cellsDataType[cell] != type)
+                if (itemData.itemSlotsData[cell].type != slotData.type)
                 {
-                    itemData.cellsDataType[cell] = type;
+                    itemData.itemSlotsData[cell].type = slotData.type;
                 }
                 else
                 {
@@ -452,33 +455,21 @@ public class SlotsPutter : MonoBehaviour
             }
         }
 
-        Array.Resize(ref itemData.cellsDataX, itemData.cellsDataX.Length + 1);
-        itemData.cellsDataX[itemData.cellsDataX.Length - 1] = xPos;
-        Array.Resize(ref itemData.cellsDataY, itemData.cellsDataY.Length + 1);
-        itemData.cellsDataY[itemData.cellsDataY.Length - 1] = yPos;
-        Array.Resize(ref itemData.cellsDataType, itemData.cellsDataType.Length + 1);
-        itemData.cellsDataType[itemData.cellsDataType.Length - 1] = type;
+        Array.Resize(ref itemData.itemSlotsData, itemData.itemSlotsData.Length + 1);
+        itemData.itemSlotsData[itemData.itemSlotsData.Length - 1] = slotData;
     }
 
     void DeleteCellDataInArray(int index)
     {
-        if (index == itemData.cellsDataX.Length - 1)
+        if (index == itemData.itemSlotsData.Length - 1)
         {
-            Array.Resize(ref itemData.cellsDataX, itemData.cellsDataX.Length - 1);
-            Array.Resize(ref itemData.cellsDataY, itemData.cellsDataY.Length - 1);
-            Array.Resize(ref itemData.cellsDataType, itemData.cellsDataType.Length - 1);
+            Array.Resize(ref itemData.itemSlotsData, itemData.itemSlotsData.Length - 1);
         }
         else
         {
-            int xPosRezerve = itemData.cellsDataX[itemData.cellsDataX.Length - 1];
-            int yPosRezerve = itemData.cellsDataY[itemData.cellsDataY.Length - 1];
-            int typeRezerve = itemData.cellsDataType[itemData.cellsDataType.Length - 1];
-            Array.Resize(ref itemData.cellsDataX, itemData.cellsDataX.Length - 1);
-            Array.Resize(ref itemData.cellsDataY, itemData.cellsDataY.Length - 1);
-            Array.Resize(ref itemData.cellsDataType, itemData.cellsDataType.Length - 1);
-            itemData.cellsDataX[index] = xPosRezerve;
-            itemData.cellsDataY[index] = yPosRezerve;
-            itemData.cellsDataType[index] = typeRezerve;
+            slotsData slotDataRezerve = itemData.itemSlotsData[itemData.itemSlotsData.Length - 1];
+            Array.Resize(ref itemData.itemSlotsData, itemData.itemSlotsData.Length - 1);
+            itemData.itemSlotsData[index] = slotDataRezerve;
         }
     }
 

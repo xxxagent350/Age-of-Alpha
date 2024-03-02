@@ -11,11 +11,11 @@ public class CameraScaler : MonoBehaviour
     [SerializeField] float mouseScrollSensitivity = 0.1f;
     public Vector2 minPos;
     public Vector2 maxPos;
-    [HideInInspector] public bool dontMove;
 
     [Header("Можно оставить пустым")]
     [SerializeField] Transform background;
 
+    [HideInInspector] public bool dontMove;
     bool readyToScale;
     float lastDistance;
     int lastTouchCount;
