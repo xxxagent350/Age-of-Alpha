@@ -323,10 +323,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9b0e2a052922b6b45946e4571a701de2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  russian: "\u0415\u0441\u043B\u0438 \u0432\u044B \u0432\u0438\u0434\u0438\u0442\u0435
-    \u044D\u0442\u043E, \u043E\u0442\u043F\u0440\u0430\u0432\u044C\u0442\u0435 \u0441\u043A\u0440\u0438\u043D\u0448\u043E\u0442
-    \u043D\u0430\u043C \u043D\u0430 \u043F\u043E\u0447\u0442\u0443:"
-  english: 'If you see this, send a screenshot to our email:'
+  text:
+    RussianText: "\u0415\u0441\u043B\u0438 \u0432\u044B \u0432\u0438\u0434\u0438\u0442\u0435
+      \u044D\u0442\u043E, \u043E\u0442\u043F\u0440\u0430\u0432\u044C\u0442\u0435
+      \u0441\u043A\u0440\u0438\u043D\u0448\u043E\u0442 \u043D\u0430\u043C \u043D\u0430
+      \u043F\u043E\u0447\u0442\u0443:"
+    EnglishText: 'If you see this, send a screenshot to our email:'
 --- !u!114 &4532751517449604553
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -491,9 +493,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   UIAudioSource: {fileID: 1592101764647440592}
   defaultAudioSourcePrefab: {fileID: 5498154045212141642, guid: b4a1cc3d0bcc76249bbb4287755fb175, type: 3}
-  gameData: []
-  userLanguage: 
   DataPathAccessErrorScreen: {fileID: 4409338878380001049}
+  gameData: []
+  userLanguage: 0
+  userGraphics: 0
+  cameraSize: 0
 --- !u!82 &1592101764647440592
 AudioSource:
   m_ObjectHideFlags: 0
@@ -648,8 +652,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9b0e2a052922b6b45946e4571a701de2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  russian: "\u041A\u0440\u0438\u0442\u0438\u0447\u0435\u0441\u043A\u0430\u044F \u043E\u0448\u0438\u0431\u043A\u0430"
-  english: Critical error
+  text:
+    RussianText: "\u041A\u0440\u0438\u0442\u0438\u0447\u0435\u0441\u043A\u0430\u044F
+      \u043E\u0448\u0438\u0431\u043A\u0430"
+    EnglishText: Critical error
 --- !u!114 &5637173255809421484
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -742,9 +748,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9b0e2a052922b6b45946e4571a701de2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  russian: "\u041E\u0448\u0438\u0431\u043A\u0430 \u0434\u043E\u0441\u0442\u0443\u043F\u0430
-    \u043A \u0434\u0430\u043D\u043D\u044B\u043C \u0438\u0433\u0440\u044B"
-  english: Game data access error
+  text:
+    RussianText: "\u041E\u0448\u0438\u0431\u043A\u0430 \u0434\u043E\u0441\u0442\u0443\u043F\u0430
+      \u043A \u0434\u0430\u043D\u043D\u044B\u043C \u0438\u0433\u0440\u044B"
+    EnglishText: Game data access error
 --- !u!114 &7989334835605819737
 MonoBehaviour:
   m_ObjectHideFlags: 0

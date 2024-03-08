@@ -92,8 +92,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9b0e2a052922b6b45946e4571a701de2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  russian: "\u042D\u043D\u0435\u0440\u0433\u043E\u0431\u043B\u043E\u043A\u0438"
-  english: Energy blocks
+  text:
+    RussianText: "\u042D\u043D\u0435\u0440\u0433\u043E\u0431\u043B\u043E\u043A\u0438"
+    EnglishText: Energy blocks
 --- !u!1 &4955730314891234745
 GameObject:
   m_ObjectHideFlags: 0
@@ -414,6 +415,12 @@ MonoBehaviour:
   behaviour: energyModulesSorting
   clickSound: {fileID: 8300000, guid: e0b897fc304b2e349817a3e06e099892, type: 3}
   clickSoundVolume: 1
+  moduleDragging: {fileID: 0}
+  image: {fileID: 0}
+  name_: {fileID: 0}
+  amount: {fileID: 0}
+  xPosChangeForSlotPutting: 0
+  yPosChangeForCancellingSlotPutting: 0
 --- !u!1 &7230325152158879349
 GameObject:
   m_ObjectHideFlags: 0

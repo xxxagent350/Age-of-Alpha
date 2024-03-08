@@ -242,8 +242,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9b0e2a052922b6b45946e4571a701de2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  russian: "\u0417\u0430\u0449\u0438\u0442\u043D\u044B\u0435 \u043C\u043E\u0434\u0443\u043B\u0438"
-  english: Defense modules
+  text:
+    RussianText: "\u0417\u0430\u0449\u0438\u0442\u043D\u044B\u0435 \u043C\u043E\u0434\u0443\u043B\u0438"
+    EnglishText: Defense modules
 --- !u!1 &5661705787972915209
 GameObject:
   m_ObjectHideFlags: 0
@@ -401,6 +402,12 @@ MonoBehaviour:
   behaviour: defenseModulesSorting
   clickSound: {fileID: 8300000, guid: e0b897fc304b2e349817a3e06e099892, type: 3}
   clickSoundVolume: 1
+  moduleDragging: {fileID: 0}
+  image: {fileID: 0}
+  name_: {fileID: 0}
+  amount: {fileID: 0}
+  xPosChangeForSlotPutting: 0
+  yPosChangeForCancellingSlotPutting: 0
 --- !u!1 &5811839176282146904
 GameObject:
   m_ObjectHideFlags: 0

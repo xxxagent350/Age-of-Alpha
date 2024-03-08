@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4733877325850768605}
   - component: {fileID: 6567651552391792953}
+  - component: {fileID: 4546165892639970328}
   m_Layer: 0
   m_Name: Image
   m_TagString: Untagged
@@ -84,6 +85,23 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &4546165892639970328
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 734651983682334321}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fffab13043219e54097d49c59958c69d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  sprite:
+    highQualitySprite: {fileID: -5677675015622232100, guid: 842ba8ed08cda5f439864ccd225193fb, type: 3}
+    mediumQualitySprite: {fileID: -5677675015622232100, guid: 6b755bfed65bf644eba6af5ef519b708, type: 3}
+    lowQualitySprite: {fileID: -5677675015622232100, guid: 18f932d1556fb354b90d27ab42824f82, type: 3}
+    graphicsPreset: 3
 --- !u!1 &2901564947838014947
 GameObject:
   m_ObjectHideFlags: 0
@@ -95,6 +113,8 @@ GameObject:
   - component: {fileID: 8107207667145103266}
   - component: {fileID: 7755495142518832679}
   - component: {fileID: 562912438653888125}
+  - component: {fileID: -4660713206179284107}
+  - component: {fileID: -1869552462642006438}
   m_Layer: 7
   m_Name: "\u041F\u043B\u0430\u0437\u043C\u043E\u0433\u0430\u043D _\u0414\u0435\u043B\u0438\u0442\u0435\u043B\u044C_"
   m_TagString: Module
@@ -130,8 +150,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a625874215b417d4aa8bb7410ce650d3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  NameRu: "\u041F\u043B\u0430\u0437\u043C\u043E\u0433\u0430\u043D \"\u0414\u0435\u043B\u0438\u0442\u0435\u043B\u044C\""
-  NameEng: Plasmogun "Splitter"
+  Name:
+    RussianText: "\u041F\u043B\u0430\u0437\u043C\u043E\u0433\u0430\u043D \"\u0414\u0435\u043B\u0438\u0442\u0435\u043B\u044C\""
+    EnglishText: Plasmogun "Splitter"
   Size: 0.055
   Mass: 250
   cellsOffset: {x: 0, y: 0}
@@ -152,4 +173,29 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   category: 1
   type: 1
-  maxDurability: 15
+--- !u!114 &-4660713206179284107
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2901564947838014947}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b526bc281128517409016a80db5249a7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  maxHP: 20
+  HP: 0
+--- !u!114 &-1869552462642006438
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2901564947838014947}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d532639bca2502343ad290112f5352d3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

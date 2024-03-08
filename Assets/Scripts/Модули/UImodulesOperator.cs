@@ -61,7 +61,7 @@ public class UImodulesOperator : MonoBehaviour
 
                         //удаляем модуль с корабля и возвращаем на склад
                         TryFoundShipData();
-                        shipInstalledModulesData.RemoveModuleFromArray(clickedModuleOnShipPos);
+                        shipInstalledModulesData.RemoveModule(clickedModuleOnShipPos);
                         ModulesOnStorageData modulesOnStorageData = DataOperator.instance.LoadDataModulesOnStorage(moduleDataName);
                         modulesOnStorageData.amount += 1;
                         DataOperator.instance.SaveData(moduleDataName, modulesOnStorageData);
@@ -79,11 +79,32 @@ public class UImodulesOperator : MonoBehaviour
         }
         else
         {
-            dragging = false;
-            nowPressed = false;
-            notDraggingAtThisPress = false;
+            if (uiPressedInfo.publicTouchesPositions.Length < 2)
+            {
+                if (nowPressed && !notDraggingAtThisPress && !dragging)
+                {
+                    //показываем параметры модуля если на него кликнули
+                    string moduleDataName = TryFoundModuleAtPos(shipMousePoint);
+                    if (moduleDataName != "")
+                    {
+                        DataOperator.instance.PlayUISound(moduleTakeSound, moduleTakeSoundVolume);
+                        modulesMenu.ShowModuleParametres(DataOperator.instance.LoadDataModulesOnStorage(moduleDataName).module);
+                    }
+                    else
+                    {
+                        modulesMenu.BackFromModuleParametres();
+                    }
+                }
+                dragging = false;
+                nowPressed = false;
+                notDraggingAtThisPress = false;
+            }
+            else
+            {
+                notDraggingAtThisPress = true;
+            }
         }
-        if (dragging || !notDraggingAtThisPress)
+        if (dragging || (!notDraggingAtThisPress && uiPressedInfo.publicTouchesPositions.Length < 2))
         {
             cameraScaler.dontMove = true;
         }
@@ -120,12 +141,12 @@ public class UImodulesOperator : MonoBehaviour
                 Vector2 moduleSlotPos = new Vector2(moduleData_.itemSlotsData[moduleSlot_].position.x + moduleOnShip.position.x, moduleData_.itemSlotsData[moduleSlot_].position.y + moduleOnShip.position.y) + moduleData_.cellsOffset - shipData.cellsOffset;
                 if (Vector2.Distance(position, moduleSlotPos) < 0.01f)
                 {
-                    clickedModuleOnShipPos = moduleOnShip.position;
+                    clickedModuleOnShipPos = moduleOnShip.position.GetVector2();
                     return "ModulesOnStorageData(" + modulePrefab_.name + ")";
                 }
             }
         }
-        return "";
+        return ""; //ничего не нашли
     }
 
     Vector2 GetWorldMousePosInUnits(Vector2 mousePos)

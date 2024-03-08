@@ -61,6 +61,17 @@ public class ModulesMenuSlot : MonoBehaviour, IPointerDownHandler
             behaviour == "backFromDroneModules" ||
             behaviour == "backFromSpecialModules")
             modulesMenu.ShowAllSlots();
+
+        if (behaviour == "moduleSlot")
+        {
+            TryToFindModulesMenu();
+            modulesMenu.ShowModuleParametres(DataOperator.instance.LoadDataModulesOnStorage(moduleDataName).module);
+        }
+        if (behaviour == "backFromModuleParametres")
+        {
+            TryToFindModulesMenu();
+            modulesMenu.BackFromModuleParametres();
+        }
     }
 
     public void SetModuleData(string moduleDataName_)
@@ -71,11 +82,8 @@ public class ModulesMenuSlot : MonoBehaviour, IPointerDownHandler
         ModulesOnStorageData modulesOnStorageData = DataOperator.instance.LoadDataModulesOnStorage(moduleDataName_);
         GameObject modulePrefab = modulesMenu.modulesPrefabs[modulesOnStorageData.module.moduleNum];
         image.sprite = modulePrefab.transform.Find("Image").GetComponent<SpriteRenderer>().sprite;
-        name = modulePrefab.GetComponent<ItemData>().NameRu;
-        if (DataOperator.instance.userLanguage == "Russian")
-            name_.text = modulePrefab.GetComponent<ItemData>().NameRu;
-        if (DataOperator.instance.userLanguage == "English")
-            name_.text = modulePrefab.GetComponent<ItemData>().NameEng;
+        name = modulePrefab.GetComponent<ItemData>().Name.EnglishText;
+        name_.text = modulePrefab.GetComponent<ItemData>().Name.GetTranslatedText();
         amount.text = modulesOnStorageData.amount + "";
     }
 
@@ -109,7 +117,12 @@ public class ModulesMenuSlot : MonoBehaviour, IPointerDownHandler
             menuYPosWhenClicked = scrollingContent.position.y;
         }
     }
-    
+
+    private void OnDisable()
+    {
+        checkingClick = false;
+    }
+
     void Update()
     {
         if (behaviour == "moduleSlot" && checkingClick)
@@ -127,12 +140,15 @@ public class ModulesMenuSlot : MonoBehaviour, IPointerDownHandler
 
             if (Input.touchCount < 2 && touch.position.x < startTouchPoint.x - xPosChangeForSlotPutting)
             {
-                //начато перетаскивание модуля из меню
+                //попытка перетаскивания модуля из меню
                 checkingClick = false;
-                DataOperator.instance.PlayUISound(clickSound, clickSoundVolume);
-                scrollingContent.position = new Vector3(scrollingContent.position.x, menuYPosWhenClicked, scrollingContent.position.z);
-                scrollingMenu.enabled = false;
-                CreateModuleDragging();
+                if (CheckIfModuleCanBeInstalled())
+                {
+                    DataOperator.instance.PlayUISound(clickSound, clickSoundVolume);
+                    scrollingContent.position = new Vector3(scrollingContent.position.x, menuYPosWhenClicked, scrollingContent.position.z);
+                    scrollingMenu.enabled = false;
+                    CreateModuleDragging();
+                }
             }
             if (Mathf.Abs(startTouchPoint.y - touch.position.y) > yPosChangeForCancellingSlotPutting)
             {
@@ -140,6 +156,45 @@ public class ModulesMenuSlot : MonoBehaviour, IPointerDownHandler
                 checkingClick = false;
             }
         }
+    }
+
+    bool CheckIfModuleCanBeInstalled()
+    {
+        //проверка на наличие на складе
+        if (DataOperator.instance.LoadDataModulesOnStorage(moduleDataName).amount <= 0)
+        {
+            return false;
+        }
+
+        //проверка блока управления (он может быть только один на корабле)
+        ModulesOnStorageData modulesOnStorageData = DataOperator.instance.LoadDataModulesOnStorage(moduleDataName);
+        GameObject modulePrefab = modulesMenu.modulesPrefabs[modulesOnStorageData.module.moduleNum];
+        if (modulePrefab.GetComponent<ModuleData>().type == ModuleData.types.ControlModules)
+        {
+            SlotsPutter slotsPutter = (SlotsPutter)FindFirstObjectByType(typeof(SlotsPutter));
+            ShipStats shipInstalledModulesData;
+            if (slotsPutter != null)
+                shipInstalledModulesData = slotsPutter.itemData.GetComponent<ShipStats>();
+            else
+                return false;
+            if (shipInstalledModulesData == null)
+                return false;
+
+            foreach (ModuleOnShipData moduleOnShip in shipInstalledModulesData.modulesOnShip)
+            {
+                if (modulesMenu.modulesPrefabs[moduleOnShip.module.moduleNum].GetComponent<ModuleData>().type == ModuleData.types.ControlModules)
+                {
+                    TranslatedText errorMessageText = new TranslatedText();
+                    errorMessageText.RussianText = "На корабле может быть установлен только 1 блок управления";
+                    errorMessageText.EnglishText = "Only 1 control block can be installed on a ship";
+                    modulesMenu.moduleInstallationErrorMessageComponent.ShowErrorMessage(errorMessageText.GetTranslatedText());
+                    return false;
+                }
+            }
+        }
+        
+        //если после всех проверок функция не вернула false, возвращаем true
+        return true;
     }
 
     //создание GameObject для перетаскивания из меню на корабль

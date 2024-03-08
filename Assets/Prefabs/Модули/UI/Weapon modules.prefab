@@ -242,8 +242,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9b0e2a052922b6b45946e4571a701de2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  russian: "\u041E\u0440\u0443\u0436\u0438\u0435"
-  english: Weapons
+  text:
+    RussianText: "\u041E\u0440\u0443\u0436\u0438\u0435"
+    EnglishText: Weapons
 --- !u!1 &5028173728228517749
 GameObject:
   m_ObjectHideFlags: 0
@@ -476,6 +477,12 @@ MonoBehaviour:
   behaviour: weaponModulesSorting
   clickSound: {fileID: 8300000, guid: e0b897fc304b2e349817a3e06e099892, type: 3}
   clickSoundVolume: 1
+  moduleDragging: {fileID: 0}
+  image: {fileID: 0}
+  name_: {fileID: 0}
+  amount: {fileID: 0}
+  xPosChangeForSlotPutting: 0
+  yPosChangeForCancellingSlotPutting: 0
 --- !u!1 &8378099852403399125
 GameObject:
   m_ObjectHideFlags: 0

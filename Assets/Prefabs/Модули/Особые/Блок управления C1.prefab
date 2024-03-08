@@ -11,6 +11,9 @@ GameObject:
   - component: {fileID: 7997544255636513898}
   - component: {fileID: 4715768984142745003}
   - component: {fileID: 8013857172749943899}
+  - component: {fileID: 4011909845827919833}
+  - component: {fileID: -6788804639658198636}
+  - component: {fileID: -8321460500064220682}
   m_Layer: 7
   m_Name: "\u0411\u043B\u043E\u043A \u0443\u043F\u0440\u0430\u0432\u043B\u0435\u043D\u0438\u044F
     C1"
@@ -47,11 +50,30 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a625874215b417d4aa8bb7410ce650d3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  NameRu: "\u0411\u043B\u043E\u043A \u0443\u043F\u0440\u0430\u0432\u043B\u0435\u043D\u0438\u044F
-    C1"
-  NameEng: Control unit C1
+  Name:
+    RussianText: "\u0411\u043B\u043E\u043A \u0443\u043F\u0440\u0430\u0432\u043B\u0435\u043D\u0438\u044F
+      C1"
+    EnglishText: Control block C1
+  description:
+    RussianText: "\u0411\u043B\u043E\u043A \u0443\u043F\u0440\u0430\u0432\u043B\u0435\u043D\u0438\u044F,
+      \"\u0433\u043E\u043B\u043E\u0432\u0430\" \u043A\u043E\u0440\u0430\u0431\u043B\u044F.
+      \u041E\u0431\u0435\u0441\u043F\u0435\u0447\u0438\u0432\u0430\u0435\u0442 \u0441\u0432\u044F\u0437\u044C
+      \u0438 \u0443\u043F\u0440\u0430\u0432\u043B\u0435\u043D\u0438\u0435, \u0438\u043C\u0435\u0435\u0442
+      \u0432\u0441\u0442\u0440\u043E\u0435\u043D\u043D\u044B\u0439 \u0440\u0430\u0434\u0430\u0440,
+      \u043D\u0435\u0431\u043E\u043B\u044C\u0448\u043E\u0439 \u0433\u0435\u043D\u0435\u0440\u0430\u0442\u043E\u0440
+      \u0438 \u0431\u0430\u0442\u0430\u0440\u0435\u044E. \u0415\u0441\u043B\u0438
+      \u043E\u043D \u0431\u0443\u0434\u0435\u0442 \u0443\u043D\u0438\u0447\u0442\u043E\u0436\u0435\u043D,
+      \u0442\u043E \u0432\u044B \u043F\u043E\u0442\u0435\u0440\u044F\u0435\u0442\u0435
+      \u043A\u043E\u043D\u0442\u0440\u043E\u043B\u044C \u043D\u0430\u0434 \u043A\u043E\u0440\u0430\u0431\u043B\u0451\u043C,
+      \u043F\u043E\u044D\u0442\u043E\u043C\u0443 \u0435\u0433\u043E \u0441\u0442\u043E\u0438\u0442
+      \u0441\u0442\u0430\u0432\u0438\u0442\u044C \u0432 \u0441\u0430\u043C\u043E\u0435
+      \u0437\u0430\u0449\u0438\u0449\u0451\u043D\u043D\u043E\u0435 \u043C\u0435\u0441\u0442\u043E"
+    EnglishText: The control unit, the "head" of the ship. It provides communication
+      and control, has a built-in radar, a small generator and a battery. If it is
+      destroyed, you will lose control of the ship, so it should be placed in the
+      most protected location
   Size: 0.08
-  Mass: 500
+  Mass: 600
   cellsOffset: {x: 0, y: 0.5}
   itemSlotsData:
   - position: {x: 0, y: -1}
@@ -72,7 +94,48 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   category: 6
   type: 11
-  maxDurability: 75
+  allowedOnlyOneOnShip: 0
+--- !u!114 &4011909845827919833
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3744825288711606085}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b526bc281128517409016a80db5249a7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  maxHP: 80
+  HP: 0
+--- !u!114 &-6788804639658198636
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3744825288711606085}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ff6474a8d493621419660da746fb07a4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  power: 1.5
+--- !u!114 &-8321460500064220682
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3744825288711606085}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 230bc3a0484ed3a478375e6eb77e8412, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  maxCapacity: 3
+  capacity: 0
 --- !u!1 &7022142667446955869
 GameObject:
   m_ObjectHideFlags: 0
@@ -83,6 +146,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5701969443786582940}
   - component: {fileID: 5567579370999180738}
+  - component: {fileID: 2260054402932437393}
   m_Layer: 0
   m_Name: Image
   m_TagString: Untagged
@@ -146,14 +210,31 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 50
-  m_Sprite: {fileID: 3335716219264985208, guid: 2f52ff17d73304345b584589d2955ea7, type: 3}
+  m_Sprite: {fileID: 3335716219264985208, guid: d162dd0a7115ab346a43caeeb3f48b1b, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
-  m_Size: {x: 14.38, y: 16.21}
+  m_Size: {x: 13.56, y: 19.4}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &2260054402932437393
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7022142667446955869}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fffab13043219e54097d49c59958c69d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  sprite:
+    highQualitySprite: {fileID: 3335716219264985208, guid: d162dd0a7115ab346a43caeeb3f48b1b, type: 3}
+    mediumQualitySprite: {fileID: 3335716219264985208, guid: 1c96c57b4ac81c347a19ff3b07da509b, type: 3}
+    lowQualitySprite: {fileID: 3335716219264985208, guid: 585007390ef094a4fbd96030bd90eb50, type: 3}
+    graphicsPreset: 0

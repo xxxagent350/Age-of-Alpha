@@ -7,23 +7,38 @@ public class ShipStats : MonoBehaviour
     [SerializeField] GameObject UIModulePrefab;
 
     [Header("Отладка")]
-    [HideInInspector] public string teamID;
     public ModuleOnShipData[] modulesOnShip;
-    [SerializeField] float modulesCollidersKeepActiveTime = 3;
-    float modulesCollidersKeepActiveTimer;
-    bool modulesCollidersActive = true;
     public bool spawnBullet;//
     public GameObject bullet;//
 
+    [HideInInspector] public string teamID; //ID команды. Одинаковый - союзники, разный - враги
+    float energyGeneration; //суммарная генерация энергии со всех модулей
+    float energyCapacity; //максимальное количество запасаемой энергии во всех модулях
+    float maxAcceleration; //максимальное ускорение со всех двигателей
+    float maxAngularRotation; //максимальное УГЛОВОЕ ускорение со всех двигателей
+    string shipName;
     GameObject[] modulesUI;
+
     float radiansAngle;
     ModulesMenu modulesMenu;
+    [SerializeField] float modulesCollidersKeepActiveTime = 3;
+    float modulesCollidersKeepActiveTimer;
+    bool modulesCollidersActive = true;
 
-    private void Awake()
+    private void Start()
     {
+        TryFoundModulesMenu();
+        shipName = GetComponent<ItemData>().Name.EnglishText;
         modulesUI = new GameObject[0];
         teamID = UnityEngine.Random.Range(1000000000, 2000000000) + "" + UnityEngine.Random.Range(1000000000, 2000000000) + "" + UnityEngine.Random.Range(1000000000, 2000000000);
         ModulesCollidersSetActive(false);
+
+        modulesOnShip = DataOperator.instance.LoadDataModulesOnShip("ModulesOnShipData(" + shipName + ")");
+        if (modulesOnShip == null)
+        {
+            modulesOnShip = new ModuleOnShipData[0];
+        }
+        RenderAllModulesOnShip();
     }
 
     private void FixedUpdate()
@@ -45,18 +60,24 @@ public class ShipStats : MonoBehaviour
         }
     }
 
-    public void AddModuleInArray(string moduleDataName, Vector2 position)
+    void RenderAllModulesOnShip()
     {
-        if (modulesMenu == null)
+        for (int moduleNum = 0; moduleNum < modulesOnShip.Length; moduleNum++)
         {
-            modulesMenu = (ModulesMenu)FindFirstObjectByType(typeof(ModulesMenu));
+            RenderModuleUI(modulesOnShip[moduleNum].module, modulesOnShip[moduleNum].position.GetVector2());
         }
+    }
+
+    public void AddModule(string moduleDataName, Vector2 position)
+    {
+        
         Array.Resize(ref modulesOnShip, modulesOnShip.Length + 1);
         ModulesOnStorageData modulesOnStorageData = DataOperator.instance.LoadDataModulesOnStorage(moduleDataName);
         Module module = modulesOnStorageData.module;
 
         modulesOnShip[modulesOnShip.Length - 1] = new ModuleOnShipData(module, position);
         RenderModuleUI(module, position);
+        DataOperator.instance.SaveData("ModulesOnShipData(" + shipName + ")", modulesOnShip);
     }
 
     public void RenderModuleUI(Module module, Vector2 position)
@@ -64,18 +85,18 @@ public class ShipStats : MonoBehaviour
         GameObject modulePrefab = modulesMenu.modulesPrefabs[module.moduleNum];
         GameObject UImoduleGO = Instantiate(UIModulePrefab, position, Quaternion.identity);
         UImoduleGO.name = modulePrefab.name + " (UI)";
-        UImoduleGO.GetComponent<SpriteRenderer>().sprite = modulePrefab.transform.Find("Image").GetComponent<SpriteRenderer>().sprite;
+        UImoduleGO.GetComponent<SpriteChanger>().sprite = modulePrefab.transform.Find("Image").GetComponent<SpriteChanger>().sprite;
         UImoduleGO.transform.localScale = modulePrefab.transform.Find("Image").localScale;
 
         Array.Resize(ref modulesUI, modulesUI.Length + 1);
         modulesUI[modulesUI.Length - 1] = UImoduleGO;
     }
 
-    public void RemoveModuleFromArray(Vector2 position)
+    public void RemoveModule(Vector2 position)
     {
         for (int moduleNum = 0; moduleNum < modulesOnShip.Length; moduleNum++)
         {
-            if (Vector2.Distance(position, modulesOnShip[moduleNum].position) < 0.01f)
+            if (Vector2.Distance(position, modulesOnShip[moduleNum].position.GetVector2()) < 0.01f)
             {
                 if (moduleNum != modulesOnShip.Length - 1)
                 {
@@ -89,6 +110,7 @@ public class ShipStats : MonoBehaviour
                 break;
             }
         }
+        DataOperator.instance.SaveData("ModulesOnShipData(" + shipName + ")", modulesOnShip);
     }
 
     public void RemoveModuleUI(int numInArray)
@@ -103,6 +125,16 @@ public class ShipStats : MonoBehaviour
         }
         Array.Resize(ref modulesUI, modulesUI.Length - 1);
     }
+
+    void TryFoundModulesMenu()
+    {
+        if (modulesMenu == null)
+        {
+            modulesMenu = (ModulesMenu)FindFirstObjectByType(typeof(ModulesMenu));
+        }
+    }
+
+
 
     public void TakeDamage(float damage)
     {
@@ -130,11 +162,11 @@ public class ShipStats : MonoBehaviour
 public class ModuleOnShipData
 {
     public Module module;
-    public Vector2 position;
+    public Vector2Serializable position;
 
     public ModuleOnShipData(Module module_, Vector2 position_)
     {
         module = module_;
-        position = position_;
+        position = new Vector2Serializable(position_);
     }
 }

@@ -9,7 +9,7 @@ public class DraggingModule : MonoBehaviour
     [SerializeField] float errorSoundVolume = 1;
     [SerializeField] AudioClip[] modulePutSounds;
     [Header("Ёффект сварки")]
-    [SerializeField] GameObject weldingEffect; //эффект сварки
+    [SerializeField] Effect weldingEffect; //эффекты сварки
 
     [HideInInspector] public string moduleDataName;
     GameObject modulePrefab;
@@ -24,11 +24,13 @@ public class DraggingModule : MonoBehaviour
     bool canBeInstalled;
     ModulesMenu modulesMenu;
     Vector2 lastMousePos;
-    RectTransform menuStartLine; //син€€ полоска, после которой начинаетс€ меню модулей
+    Vector2 lastMousePosInUnits;
+    [SerializeField] RectTransform menuStartLine; //син€€ полоска, после которой начинаетс€ меню модулей
+    bool destroyed;
 
     private void Start()
     {
-        menuStartLine = GameObject.Find("BorderMiddleLeft").GetComponent<RectTransform>();
+        menuStartLine = GameObject.Find("Canvas").transform.Find("ModulesMenu").Find("Border").Find("BorderMiddleLeft").GetComponent<RectTransform>();
         cellsUI = new GameObject[0];
         spriteRenderer = GetComponent<SpriteRenderer>();
         if (Input.touchCount > 0)
@@ -68,14 +70,9 @@ public class DraggingModule : MonoBehaviour
             }
             else
             {
-                Vector2 mousePos = Input.GetTouch(0).position;
-                lastMousePos = mousePos;
-                mousePos = new Vector2(mousePos.x, mousePos.y + ((float)Screen.height / 8)); //смещает модуль над пальцем при игре на телефоне
-                if (mousePos.y > Screen.height)
-                {
-                    mousePos = new Vector2(mousePos.x, Screen.height);
-                }
-                lastFrameRoundedMousePointInUnits = GetRoundedMousePointInUnits(mousePos);
+                lastMousePos = Input.GetTouch(0).position;
+                lastMousePosInUnits = GetWorldMousePosInUnits(Input.GetTouch(0).position, false);
+                lastFrameRoundedMousePointInUnits = GetRoundedMousePointInUnits(Input.GetTouch(0).position);
             }
         }
         else
@@ -86,11 +83,12 @@ public class DraggingModule : MonoBehaviour
             }
             else
             {
-                lastMousePos = GetWorldMousePosInUnits(Input.mousePosition);
+                lastMousePos = Input.mousePosition;
+                lastMousePosInUnits = GetWorldMousePosInUnits(Input.mousePosition, false);
                 lastFrameRoundedMousePointInUnits = GetRoundedMousePointInUnits(Input.mousePosition);
             }
         }
-        transform.position = lastMousePos;
+        transform.position = lastMousePosInUnits;
         if (lastFrameRoundedMousePointInUnits != new Vector2(transform.position.x, transform.position.y))
         {
             DragModule();
@@ -114,7 +112,7 @@ public class DraggingModule : MonoBehaviour
                 transform.position = lastFrameRoundedMousePointInUnits;
                 //устанавливаем модуль на корабль
                 TryFoundShipData();
-                shipInstalledModulesData.AddModuleInArray(moduleDataName, transform.position);
+                shipInstalledModulesData.AddModule(moduleDataName, transform.position);
                 //забираем одну штуку со склада
                 ModulesOnStorageData modulesOnStorageData = DataOperator.instance.LoadDataModulesOnStorage(moduleDataName);
                 modulesOnStorageData.amount -= 1;
@@ -131,12 +129,17 @@ public class DraggingModule : MonoBehaviour
                 DataOperator.instance.PlayUISound(errorSound, errorSoundVolume);
             }
         }
+        destroyed = true;
+        foreach (GameObject cell in cellsUI)
+        {
+            Destroy(cell);
+        }
         Destroy(gameObject);
     }
 
     Vector2 GetRoundedMousePointInUnits(Vector2 mousePos)
     {
-        Vector2 worldMousePosInUnits = GetWorldMousePosInUnits(mousePos);
+        Vector2 worldMousePosInUnits = GetWorldMousePosInUnits(mousePos, true);
         Vector2 roundedPointInUnits = new Vector2(Mathf.RoundToInt(worldMousePosInUnits.x), Mathf.RoundToInt(worldMousePosInUnits.y));
         Vector2 cellsShift = moduleData.cellsOffset;
         roundedPointInUnits += cellsShift;
@@ -144,14 +147,17 @@ public class DraggingModule : MonoBehaviour
         return roundedPointInUnits;
     }
 
-    Vector2 GetWorldMousePosInUnits(Vector2 mousePos)
+    Vector2 GetWorldMousePosInUnits(Vector2 mousePos, bool withModuleAndShipOffset)
     {
         float pixelsPerUnit = Screen.height / (camera_.orthographicSize * 2);
         Vector2 pointInUnits = mousePos / pixelsPerUnit;
         pointInUnits -= new Vector2(Screen.width / 2 / pixelsPerUnit, Screen.height / 2 / pixelsPerUnit);
-        Vector2 cellsShift = moduleData.cellsOffset;
-        pointInUnits -= cellsShift;
-        pointInUnits -= shipData.cellsOffset;
+        if (withModuleAndShipOffset)
+        {
+            Vector2 cellsShift = moduleData.cellsOffset;
+            pointInUnits -= cellsShift;
+            pointInUnits -= shipData.cellsOffset;
+        }
         pointInUnits += new Vector2(camera_.transform.position.x, camera_.transform.position.y);
         return pointInUnits;
     }
@@ -161,27 +167,43 @@ public class DraggingModule : MonoBehaviour
 
     void RenderAllCellsUIAndCheckIfModuleFits()
     {
-        foreach (GameObject cell in cellsUI)
+        if (!destroyed)
         {
-            Destroy(cell);
-        }
-        canBeInstalled = true;
-        Vector2 offset = moduleData.cellsOffset;
-        cellsUI = new GameObject[moduleData.itemSlotsData.Length];
-        for (int cell = 0; cell < moduleData.itemSlotsData.Length; cell++)
-        {
-            Vector2 globalPosition = new Vector2(moduleData.itemSlotsData[cell].position.x + transform.position.x, moduleData.itemSlotsData[cell].position.y + transform.position.y) + offset - shipData.cellsOffset;
-            Vector2 localPosition = new Vector2(moduleData.itemSlotsData[cell].position.x, moduleData.itemSlotsData[cell].position.y) + offset;
-            GameObject slot;
-            if (CheckIfSlotCanBeInstalled(globalPosition, moduleData.itemSlotsData[cell].type))
+            transform.position = lastFrameRoundedMousePointInUnits;//
+            foreach (GameObject cell in cellsUI)
             {
-                slot = Instantiate(greenSlot, new Vector3(), Quaternion.identity);
+                Destroy(cell);
+            }
+            if (lastMousePos.x < menuStartLine.position.x)
+            {
+                canBeInstalled = true;
+                Vector2 offset = moduleData.cellsOffset;
+                cellsUI = new GameObject[moduleData.itemSlotsData.Length];
+                for (int cell = 0; cell < moduleData.itemSlotsData.Length; cell++)
+                {
+                    Vector2 globalPosition = new Vector2(moduleData.itemSlotsData[cell].position.x + transform.position.x, moduleData.itemSlotsData[cell].position.y + transform.position.y) + offset - shipData.cellsOffset;
+                    Vector2 localPosition = new Vector2(moduleData.itemSlotsData[cell].position.x, moduleData.itemSlotsData[cell].position.y) + offset;
+                    GameObject slot;
+                    if (CheckIfSlotCanBeInstalled(globalPosition, moduleData.itemSlotsData[cell].type))
+                    {
+                        slot = Instantiate(greenSlot, new Vector3(), Quaternion.identity);
+                    }
+                    else
+                    {
+                        slot = Instantiate(redSlot, new Vector3(), Quaternion.identity);
+                        canBeInstalled = false;
+                    }
+                    cellsUI[cell] = slot;
+                    //slot.transform.parent = transform;
+                    //slot.transform.localPosition = new Vector3(localPosition.x * (1 / transform.localScale.x), localPosition.y * (1 / transform.localScale.y), 0);
+                    slot.transform.position = globalPosition + shipData.cellsOffset;
+                }
             }
             else
             {
-                slot = Instantiate(redSlot, new Vector3(), Quaternion.identity);
                 canBeInstalled = false;
             }
+            transform.position = lastMousePosInUnits;
             if (!canBeInstalled)
             {
                 spriteRenderer.color = new Color(1, 0.35f, 0.35f);
@@ -190,9 +212,6 @@ public class DraggingModule : MonoBehaviour
             {
                 spriteRenderer.color = new Color(0.35f, 1, 0.35f);
             }
-            cellsUI[cell] = slot;
-            slot.transform.parent = transform;
-            slot.transform.localPosition = new Vector3(localPosition.x * (1 / transform.localScale.x), localPosition.y * (1 / transform.localScale.y), 0);
         }
     }
 
@@ -290,7 +309,7 @@ public class DraggingModule : MonoBehaviour
                         Vector2 pivot = sprite.pivot;
                         Vector2 effectPosition = position;
                         effectPosition += (raycastPoint - pivot - new Vector2(spriteRect.xMin, spriteRect.yMin)) / sprite.pixelsPerUnit * modulePrefab.transform.Find("Image").localScale;
-                        Instantiate(weldingEffect, effectPosition, Quaternion.identity);
+                        weldingEffect.SpawnEffects(effectPosition, Quaternion.identity);
                         createdRight = true;
                         effectsSpawnedNum++;
                         break;
@@ -311,7 +330,7 @@ public class DraggingModule : MonoBehaviour
                         Vector2 pivot = sprite.pivot;
                         Vector2 effectPosition = position;
                         effectPosition += (raycastPoint - pivot - new Vector2(spriteRect.xMin, spriteRect.yMin)) / sprite.pixelsPerUnit * modulePrefab.transform.Find("Image").localScale;
-                        Instantiate(weldingEffect, effectPosition, Quaternion.identity);
+                        weldingEffect.SpawnEffects(effectPosition, Quaternion.identity);
                         createdUp = true;
                         effectsSpawnedNum++;
                         break;
@@ -332,7 +351,7 @@ public class DraggingModule : MonoBehaviour
                         Vector2 pivot = sprite.pivot;
                         Vector2 effectPosition = position;
                         effectPosition += (raycastPoint - pivot - new Vector2(spriteRect.xMin, spriteRect.yMin)) / sprite.pixelsPerUnit * modulePrefab.transform.Find("Image").localScale;
-                        Instantiate(weldingEffect, effectPosition, Quaternion.identity);
+                        weldingEffect.SpawnEffects(effectPosition, Quaternion.identity);
                         createdLeft = true;
                         effectsSpawnedNum++;
                         break;
@@ -353,7 +372,7 @@ public class DraggingModule : MonoBehaviour
                         Vector2 pivot = sprite.pivot;
                         Vector2 effectPosition = position;
                         effectPosition += (raycastPoint - pivot - new Vector2(spriteRect.xMin, spriteRect.yMin)) / sprite.pixelsPerUnit * modulePrefab.transform.Find("Image").localScale;
-                        Instantiate(weldingEffect, effectPosition, Quaternion.identity);
+                        weldingEffect.SpawnEffects(effectPosition, Quaternion.identity);
                         createdDown = true;
                         effectsSpawnedNum++;
                         break;

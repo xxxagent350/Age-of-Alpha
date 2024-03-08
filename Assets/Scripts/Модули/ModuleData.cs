@@ -4,22 +4,6 @@ public class ModuleData : MonoBehaviour
 {
     public categories category;
     public types type;
-    [SerializeField] float maxDurability;
-    float durability;
-
-    private void Start()
-    {
-        durability = maxDurability;
-    }
-
-    public void TakeDamage(float damage)
-    {
-        durability -= damage;
-        if (durability <= 0)
-        {
-            Destroy(gameObject);
-        }
-    }
 
     public enum categories
     {

@@ -100,12 +100,18 @@ MonoBehaviour:
   greenSlot: {fileID: 6937352971062761732, guid: 9b7d50e3c187d2b4089748ba8de75913, type: 3}
   redSlot: {fileID: 6937352971062761732, guid: ec22bfe8fd728494cbbeb84ef927342b, type: 3}
   errorSound: {fileID: 8300000, guid: 6682e6b3c91b2734586e7756accc4d4b, type: 3}
-  errorSoundVolume: 0.2
+  errorSoundVolume: 0.1
   modulePutSounds:
   - {fileID: 8300000, guid: 98f8619c753d4c94aa9a23486722c2fa, type: 3}
   - {fileID: 8300000, guid: ba3f4cf38ff73bf4895f15ac8d1d3bd2, type: 3}
   - {fileID: 8300000, guid: 6a7d3f8abc4777e4f9f870b1683c5e93, type: 3}
   - {fileID: 8300000, guid: 434ad030c5b6d7c43bee7626212d7dc2, type: 3}
   - {fileID: 8300000, guid: b12a71ec2052055428bb25b149b93eb0, type: 3}
-  weldingEffect: {fileID: 4603580620584501774, guid: c56e85264eed13c43a251107f11681c1, type: 3}
+  weldingEffect:
+    HighQualityEffects:
+    - {fileID: 7711316227389586793, guid: 6742e3f7d3ceddc41992a925fdd2cb6b, type: 3}
+    MediumQualityEffects:
+    - {fileID: 3511368116322048737, guid: ca7dcf5ace127bd478a87cc27ff245a6, type: 3}
+    LowQualityEffects:
+    - {fileID: 6446297701061306515, guid: 4f09db3ef1c3f7e499088b4fcbfa365e, type: 3}
   moduleDataName: 
