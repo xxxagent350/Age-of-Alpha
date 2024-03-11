@@ -325,8 +325,11 @@ MonoBehaviour:
   Name:
     RussianText: "\u0417\u0430\u0449\u0438\u0442\u043D\u0438\u043A"
     EnglishText: Defender
+  description:
+    RussianText: 
+    EnglishText: 
   Size: 0.5
-  Mass: 27000
+  Mass: 27
   cellsOffset: {x: 0, y: -0.3}
   itemSlotsData:
   - position: {x: 1, y: 3}
@@ -403,6 +406,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   UIModulePrefab: {fileID: 2250444107458303807, guid: cec6fecf65d672046ba6a993a9155336, type: 3}
   modulesOnShip: []
+  totalMass: 0
+  totalEnergyCapacity: 0
+  totalEnergyGeneration: 0
+  totalEnginesConsumption: 0
+  totalWeaponConsumption: 0
+  totalSystemsConsumption: 0
+  totalSpeed: 0
+  totalAngularSpeed: 0
   spawnBullet: 0
   bullet: {fileID: 2288871660798619471, guid: b2e6515e7e7ba5c4aaad7541b8331a23, type: 3}
   teamID: 102276960612822620211294916550

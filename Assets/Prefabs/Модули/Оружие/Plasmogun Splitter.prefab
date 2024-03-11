@@ -101,7 +101,7 @@ MonoBehaviour:
     highQualitySprite: {fileID: -5677675015622232100, guid: 842ba8ed08cda5f439864ccd225193fb, type: 3}
     mediumQualitySprite: {fileID: -5677675015622232100, guid: 6b755bfed65bf644eba6af5ef519b708, type: 3}
     lowQualitySprite: {fileID: -5677675015622232100, guid: 18f932d1556fb354b90d27ab42824f82, type: 3}
-    graphicsPreset: 3
+    graphicsPreset: 0
 --- !u!1 &2901564947838014947
 GameObject:
   m_ObjectHideFlags: 0
@@ -116,7 +116,7 @@ GameObject:
   - component: {fileID: -4660713206179284107}
   - component: {fileID: -1869552462642006438}
   m_Layer: 7
-  m_Name: "\u041F\u043B\u0430\u0437\u043C\u043E\u0433\u0430\u043D _\u0414\u0435\u043B\u0438\u0442\u0435\u043B\u044C_"
+  m_Name: Plasmogun Splitter
   m_TagString: Module
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -153,8 +153,11 @@ MonoBehaviour:
   Name:
     RussianText: "\u041F\u043B\u0430\u0437\u043C\u043E\u0433\u0430\u043D \"\u0414\u0435\u043B\u0438\u0442\u0435\u043B\u044C\""
     EnglishText: Plasmogun "Splitter"
+  description:
+    RussianText: 
+    EnglishText: 
   Size: 0.055
-  Mass: 250
+  Mass: 0.7
   cellsOffset: {x: 0, y: 0}
   itemSlotsData:
   - position: {x: 0, y: 0}
@@ -186,6 +189,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   maxHP: 20
+  resistanceToFireDamage: 0
+  resistanceToEnergyDamage: 0
+  resistanceToPhysicalDamage: 0
   HP: 0
 --- !u!114 &-1869552462642006438
 MonoBehaviour:

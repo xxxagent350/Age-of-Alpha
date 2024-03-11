@@ -6,7 +6,7 @@ using TMPro;
 public class ModulesMenu : MonoBehaviour
 {
     [Header("Настройка")]
-    public GameObject[] modulesPrefabs;
+    //public GameObject[] DataOperator.instance.modulesPrefabs;
     [SerializeField] GameObject moduleSlotPrefab;
     [SerializeField] RectTransform scrollingContent;
 
@@ -17,6 +17,12 @@ public class ModulesMenu : MonoBehaviour
     [SerializeField] Text moduleParametresName;
     [SerializeField] TextMeshProUGUI moduleParametresInfo;
     public ModuleInstallationErrorMessage moduleInstallationErrorMessageComponent;
+    [SerializeField] GameObject noModulesOnStorageText;
+    [SerializeField] TextMeshProUGUI shipStatsText;
+
+    [SerializeField] GameObject infoButton;
+    [SerializeField] Sprite infoButtonEnabledSprite;
+    [SerializeField] Sprite infoButtonDisabledSprite;
 
     //слоты категорий модулей
     [SerializeField] GameObject weaponSlot;
@@ -28,6 +34,7 @@ public class ModulesMenu : MonoBehaviour
 
     [Header("Отладка")]
     [SerializeField] bool give999Modules;
+    [SerializeField] GameObject[] menuSlots;
 
     ModuleData[] modulesComponents;
     ModuleData.categories categoryFilter = ModuleData.categories.None;
@@ -42,66 +49,106 @@ public class ModulesMenu : MonoBehaviour
     bool dronesCategoryExists;
     bool specialCategoryExists;
 
-    [SerializeField] GameObject[] menuSlots;
+    ShipStats shipStats;
+    bool shipStatsButtonEnabled;
 
     private void Start()
     {
+        if (!PlayerPrefs.HasKey("ShowShipStatsLastButtonState"))
+        {
+            PlayerPrefs.SetInt("ShowShipStatsLastButtonState", 1);
+        }
+        if (PlayerPrefs.GetInt("ShowShipStatsLastButtonState") == 0)
+        {
+            DisableShipStats();
+        }
+        else
+        {
+            EnableShipStats();
+        }
+        TryFoundShipStats();
         moduleInfoContentStartYPos = moduleInfoContent.position.y;
         menuSlots = new GameObject[0];
-        modulesComponents = new ModuleData[modulesPrefabs.Length];
-        for (int i = 0; i < modulesPrefabs.Length; i++)
+        modulesComponents = new ModuleData[DataOperator.instance.modulesPrefabs.Length];
+        for (int i = 0; i < DataOperator.instance.modulesPrefabs.Length; i++)
         {
-            modulesComponents[i] = modulesPrefabs[i].GetComponent<ModuleData>();
+            modulesComponents[i] = DataOperator.instance.modulesPrefabs[i].GetComponent<ModuleData>();
         }
         RenderMenuSlosts();
         BackFromModuleParametres();
-        //string text = "Прочность: 15\nМасса: 600 (550 + <color=red>50</color>)\nМощность: 6 (5 + <color=green>1</color>)";
-        //moduleDescription.SetText(text);
+    }
+
+    void TryFoundShipStats()
+    {
+        if (shipStats == null)
+        {
+            shipStats = (ShipStats)FindFirstObjectByType(typeof(ShipStats));
+        }
     }
 
     void CalculateModulesCategoriesAndTypes() //хочешь развить свой мозг? попробуй в этом разобраться
     {
-        foreach (Data data in DataOperator.instance.gameData)
+        weaponCategoryExists = false;
+        defenseCategoryExists = false;
+        energyCategoryExists = false;
+        enginesCategoryExists = false;
+        dronesCategoryExists = false;
+        specialCategoryExists = false;
+
+        ModulesOnStorageData[] modulesOnStorageData = DataOperator.instance.GetModulesOnStorageDataClonedArray();
+        foreach (ModulesOnStorageData moduleOnStorageData in modulesOnStorageData)
         {
-            if (data.dataModulesOnStorage != null && data.dataModulesOnStorage.amount > 0)
-            {
-                ModuleData.categories category = modulesComponents[data.dataModulesOnStorage.module.moduleNum].category;
-                if (category == ModuleData.categories.Weapons)
-                    weaponCategoryExists = true;
-                if (category == ModuleData.categories.DefenceModules)
-                    defenseCategoryExists = true;
-                if (category == ModuleData.categories.EnergyBlocks)
-                    energyCategoryExists = true;
-                if (category == ModuleData.categories.Engines)
-                    enginesCategoryExists = true;
-                if (category == ModuleData.categories.Drones)
-                    dronesCategoryExists = true;
-                if (category == ModuleData.categories.SpecialModules)
-                    specialCategoryExists = true;
-            }
+            ModuleData.categories category = modulesComponents[moduleOnStorageData.module.moduleNum].category;
+            if (category == ModuleData.categories.Weapons)
+                weaponCategoryExists = true;
+            if (category == ModuleData.categories.DefenceModules)
+                defenseCategoryExists = true;
+            if (category == ModuleData.categories.EnergyBlocks)
+                energyCategoryExists = true;
+            if (category == ModuleData.categories.Engines)
+                enginesCategoryExists = true;
+            if (category == ModuleData.categories.Drones)
+                dronesCategoryExists = true;
+            if (category == ModuleData.categories.SpecialModules)
+                specialCategoryExists = true;
         }
     }
 
     public void RenderMenuSlosts()
     {
+        SetShipStats();
+        CalculateModulesCategoriesAndTypes();
         RemoveAllMenuSlots();
         BackFromModuleParametres();
 
         if (categoryFilter == ModuleData.categories.None) //сортировка по категориям
         {
-            CalculateModulesCategoriesAndTypes();
-            if (weaponCategoryExists)
-                AddSlot(weaponSlot);
-            if (defenseCategoryExists)
-                AddSlot(defenseSlot);
-            if (energyCategoryExists)
-                AddSlot(energySlot);
-            if (enginesCategoryExists)
-                AddSlot(enginesSlot);
-            if (dronesCategoryExists)
-                AddSlot(dronesSlot);
-            if (specialCategoryExists)
-                AddSlot(specialSlot);
+            if (!weaponCategoryExists &&
+                !defenseCategoryExists &&
+                !energyCategoryExists &&
+                !enginesCategoryExists &&
+                !dronesCategoryExists &&
+                !specialCategoryExists)
+            {
+                noModulesOnStorageText.SetActive(true);
+            }
+            else
+            {
+                noModulesOnStorageText.SetActive(false);
+                CalculateModulesCategoriesAndTypes();
+                if (weaponCategoryExists)
+                    AddSlot(weaponSlot);
+                if (defenseCategoryExists)
+                    AddSlot(defenseSlot);
+                if (energyCategoryExists)
+                    AddSlot(energySlot);
+                if (enginesCategoryExists)
+                    AddSlot(enginesSlot);
+                if (dronesCategoryExists)
+                    AddSlot(dronesSlot);
+                if (specialCategoryExists)
+                    AddSlot(specialSlot);
+            }
         }
         if (categoryFilter == ModuleData.categories.Weapons)
         {
@@ -155,16 +202,14 @@ public class ModulesMenu : MonoBehaviour
 
     void AddSlotsOfCategory(ModuleData.categories category)
     {
-        foreach (Data data in DataOperator.instance.gameData)
+        ModulesOnStorageData[] modulesOnStorageData = DataOperator.instance.GetModulesOnStorageDataClonedArray();
+        foreach (ModulesOnStorageData moduleOnStorageData in modulesOnStorageData)
         {
-            if (data.dataModulesOnStorage != null && data.dataModulesOnStorage.amount > 0)
+            GameObject modulePrefab = DataOperator.instance.modulesPrefabs[moduleOnStorageData.module.moduleNum];
+            if (modulePrefab.GetComponent<ModuleData>().category == category)
             {
-                GameObject modulePrefab = modulesPrefabs[data.dataModulesOnStorage.module.moduleNum];
-                if (modulePrefab.GetComponent<ModuleData>().category == category)
-                {
-                    GameObject slot = AddSlot(moduleSlotPrefab);
-                    slot.GetComponent<ModulesMenuSlot>().SetModuleData(data.dataName);
-                }
+                GameObject slot = AddSlot(moduleSlotPrefab);
+                slot.GetComponent<ModulesMenuSlot>().SetModuleData(moduleOnStorageData.module);
             }
         }
     }
@@ -189,9 +234,9 @@ public class ModulesMenu : MonoBehaviour
 
     void Give999Modules()
     {
-        for (int module = 0; module < modulesPrefabs.Length; module++)
+        for (int module = 0; module < DataOperator.instance.modulesPrefabs.Length; module++)
         {
-            DataOperator.instance.SaveData("ModulesOnStorageData(" + modulesPrefabs[module].name + ")", new ModulesOnStorageData(new Module(module, new string[0], new float[0]), 999));
+            DataOperator.instance.SaveData(new ModulesOnStorageData(new Module(module, new ModuleUpgrade[0]), 999));
         }
         CalculateModulesCategoriesAndTypes();
         RenderMenuSlosts();
@@ -238,7 +283,7 @@ public class ModulesMenu : MonoBehaviour
 
     public void ShowModuleParametres(Module module)
     {
-        GameObject modulePrefab = modulesPrefabs[module.moduleNum];
+        GameObject modulePrefab = DataOperator.instance.modulesPrefabs[module.moduleNum];
 
         moduleParametresImage.sprite = modulePrefab.transform.Find("Image").GetComponent<SpriteRenderer>().sprite;
         moduleParametresName.text = modulePrefab.GetComponent<ItemData>().Name.GetTranslatedText();
@@ -259,7 +304,7 @@ public class ModulesMenu : MonoBehaviour
     {
         TranslatedText text = new TranslatedText();
 
-        GameObject modulePrefab = modulesPrefabs[module.moduleNum];
+        GameObject modulePrefab = DataOperator.instance.modulesPrefabs[module.moduleNum];
         ItemData itemData = modulePrefab.GetComponent<ItemData>();
         Armour armourComponent = modulePrefab.GetComponent<Armour>();
         Engine engineComponent = modulePrefab.GetComponent<Engine>();
@@ -267,12 +312,28 @@ public class ModulesMenu : MonoBehaviour
         EnergyGenerator generatorComponent = modulePrefab.GetComponent<EnergyGenerator>();
         Battery batteryComponent = modulePrefab.GetComponent<Battery>();
 
-        text.RussianText += "Масса: " + itemData.Mass;
-        text.EnglishText += "Mass: " + itemData.Mass;
+        text.RussianText += "Масса: " + DataOperator.instance.RoundFloat(itemData.Mass);
+        text.EnglishText += "Mass: " + DataOperator.instance.RoundFloat(itemData.Mass);
         if (armourComponent != null)
         {
-            text.RussianText += "\nПрочность: " + armourComponent.maxHP;
-            text.EnglishText += "\nDurability: " + armourComponent.maxHP;
+            text.RussianText += "\nПрочность: " + DataOperator.instance.RoundFloat(armourComponent.maxHP);
+            text.EnglishText += "\nDurability: " + DataOperator.instance.RoundFloat(armourComponent.maxHP);
+
+            if (armourComponent.resistanceToPhysicalDamage > 0)
+            {
+                text.RussianText += "\nСопротивление к физическому урону: " + DataOperator.instance.RoundFloat(armourComponent.resistanceToPhysicalDamage * 100) + "%";
+                text.EnglishText += "\nResistance to physical damage: " + DataOperator.instance.RoundFloat(armourComponent.resistanceToPhysicalDamage * 100) + "%";
+            }
+            if (armourComponent.resistanceToFireDamage > 0)
+            {
+                text.RussianText += "\nСопротивление к тепловому урону: " + DataOperator.instance.RoundFloat(armourComponent.resistanceToFireDamage * 100) + "%";
+                text.EnglishText += "\nResistance to heat damage: " + DataOperator.instance.RoundFloat(armourComponent.resistanceToFireDamage * 100) + "%";
+            }
+            if (armourComponent.resistanceToEnergyDamage > 0)
+            {
+                text.RussianText += "\nСопротивление к энерго урону: " + DataOperator.instance.RoundFloat(armourComponent.resistanceToEnergyDamage * 100) + "%";
+                text.EnglishText += "\nResistance to energy damage: " + DataOperator.instance.RoundFloat(armourComponent.resistanceToEnergyDamage * 100) + "%";
+            } 
         }
         else
         {
@@ -284,36 +345,150 @@ public class ModulesMenu : MonoBehaviour
         }
         if (generatorComponent != null)
         {
-            text.RussianText += "\nГенерация энергии в секунду: " + generatorComponent.power;
-            text.EnglishText += "\nEnergy generation per second: " + generatorComponent.power;
+            text.RussianText += "\nГенерация энергии в секунду: " + DataOperator.instance.RoundFloat(generatorComponent.power);
+            text.EnglishText += "\nEnergy generation per second: " + DataOperator.instance.RoundFloat(generatorComponent.power);
         }
         if (batteryComponent != null)
         {
-            text.RussianText += "\nЗапас энергии: " + batteryComponent.maxCapacity;
-            text.EnglishText += "\nEnergy reserve: " + batteryComponent.maxCapacity;
+            text.RussianText += "\nЗапас энергии: " + DataOperator.instance.RoundFloat(batteryComponent.maxCapacity);
+            text.EnglishText += "\nEnergy reserve: " + DataOperator.instance.RoundFloat(batteryComponent.maxCapacity);
         }
         if (engineComponent != null)
         {
-            text.RussianText += "\nТяга: " + engineComponent.accelerationPower;
-            text.EnglishText += "\nThrust: " + engineComponent.accelerationPower;
+            text.RussianText += "\nТяга: " + DataOperator.instance.RoundFloat(engineComponent.accelerationPower);
+            text.EnglishText += "\nThrust: " + DataOperator.instance.RoundFloat(engineComponent.accelerationPower);
 
-            text.RussianText += "\nКрутящий момент: " + engineComponent.angularPower;
-            text.EnglishText += "\nTorque: " + engineComponent.angularPower;
+            text.RussianText += "\nКрутящий момент: " + DataOperator.instance.RoundFloat(engineComponent.angularPower);
+            text.EnglishText += "\nTorque: " + DataOperator.instance.RoundFloat(engineComponent.angularPower);
 
-            text.RussianText += "\nПотребление энергии в секунду: " + engineComponent.powerConsumption;
-            text.EnglishText += "\nPower consumption per second: " + engineComponent.powerConsumption;
+            text.RussianText += "\nПотребление энергии в секунду: " + DataOperator.instance.RoundFloat(engineComponent.powerConsumption);
+            text.EnglishText += "\nPower consumption per second: " + DataOperator.instance.RoundFloat(engineComponent.powerConsumption);
         }
 
         text.RussianText += "\n\n" + itemData.description.RussianText;
         text.EnglishText += "\n\n" + itemData.description.EnglishText;
         return text;
     }
+
+    public void RemoveAllModulesFromShip()
+    {
+        SlotsPutter slotsPutter = (SlotsPutter)FindFirstObjectByType(typeof(SlotsPutter));
+        ShipStats shipInstalledModulesData;
+        if (slotsPutter != null)
+            shipInstalledModulesData = slotsPutter.itemData.GetComponent<ShipStats>();
+        else
+            return;
+        if (shipInstalledModulesData == null)
+            return;
+
+        shipInstalledModulesData.RemoveAllModules();
+    }
+
+    public void SetShipStats()
+    {
+        TryFoundShipStats();
+
+        if (shipStats != null)
+        {
+            shipStats.CalculateShipStats();
+
+            TranslatedText shipStatsTranslatedText = new TranslatedText();
+            shipStatsTranslatedText.RussianText += "Масса: " + DataOperator.instance.RoundFloat(shipStats.totalMass);
+            shipStatsTranslatedText.EnglishText += "Mass: " + DataOperator.instance.RoundFloat(shipStats.totalMass);
+
+            shipStatsTranslatedText.RussianText += "\nЗапас энергии: " + DataOperator.instance.RoundFloat(shipStats.totalEnergyCapacity);
+            shipStatsTranslatedText.EnglishText += "\nEnergy capacity: " + DataOperator.instance.RoundFloat(shipStats.totalEnergyCapacity);
+
+            shipStatsTranslatedText.RussianText += "\nГенерация энергии: " + DataOperator.instance.RoundFloat(shipStats.totalEnergyGeneration);
+            shipStatsTranslatedText.EnglishText += "\nEnergy generation: " + DataOperator.instance.RoundFloat(shipStats.totalEnergyGeneration);
+
+            if (shipStats.totalEnginesConsumption > 0)
+            {
+                if (shipStats.totalEnginesConsumption < shipStats.totalEnergyGeneration / 2)
+                {
+                    shipStatsTranslatedText.RussianText += "\nПотребление двигателями: <color=green>" + DataOperator.instance.RoundFloat(shipStats.totalEnginesConsumption) + "</color>";
+                    shipStatsTranslatedText.EnglishText += "\nEngines сonsumption: <color=green>" + DataOperator.instance.RoundFloat(shipStats.totalEnginesConsumption) + "</color>";
+                }
+                if (shipStats.totalEnginesConsumption >= shipStats.totalEnergyGeneration / 2 && shipStats.totalEnginesConsumption < shipStats.totalEnergyGeneration)
+                {
+                    shipStatsTranslatedText.RussianText += "\nПотребление двигателями: <color=yellow>" + DataOperator.instance.RoundFloat(shipStats.totalEnginesConsumption) + "</color>";
+                    shipStatsTranslatedText.EnglishText += "\nEngines сonsumption: <color=yellow>" + DataOperator.instance.RoundFloat(shipStats.totalEnginesConsumption) + "</color>";
+                }
+                if (shipStats.totalEnginesConsumption >= shipStats.totalEnergyGeneration)
+                {
+                    shipStatsTranslatedText.RussianText += "\nПотребление двигателями: <color=red>" + DataOperator.instance.RoundFloat(shipStats.totalEnginesConsumption) + "</color>";
+                    shipStatsTranslatedText.EnglishText += "\nEngines сonsumption: <color=red>" + DataOperator.instance.RoundFloat(shipStats.totalEnginesConsumption) + "</color>";
+                }
+            }
+
+            if (shipStats.totalWeaponConsumption > 0)
+            {
+                shipStatsTranslatedText.RussianText += "\nПотребление вооружением: " + DataOperator.instance.RoundFloat(shipStats.totalWeaponConsumption);
+                shipStatsTranslatedText.EnglishText += "\nWeapons consumption: " + DataOperator.instance.RoundFloat(shipStats.totalWeaponConsumption);
+            }
+
+            if (shipStats.totalSystemsConsumption > 0)
+            {
+                shipStatsTranslatedText.RussianText += "\nПотребление системами: " + DataOperator.instance.RoundFloat(shipStats.totalSystemsConsumption);
+                shipStatsTranslatedText.EnglishText += "\nSystems consumption: " + DataOperator.instance.RoundFloat(shipStats.totalSystemsConsumption);
+            }
+
+            shipStatsTranslatedText.RussianText += "\nСкорость: " + DataOperator.instance.RoundFloat(shipStats.totalSpeed);
+            shipStatsTranslatedText.EnglishText += "\nSpeed: " + DataOperator.instance.RoundFloat(shipStats.totalSpeed);
+
+            shipStatsTranslatedText.RussianText += "\nСкорость поворота: " + DataOperator.instance.RoundFloat(shipStats.totalAngularSpeed);
+            shipStatsTranslatedText.EnglishText += "\nRotation speed: " + DataOperator.instance.RoundFloat(shipStats.totalAngularSpeed);
+
+
+            shipStatsText.text = shipStatsTranslatedText.GetTranslatedText();
+        }
+    }
+
+
+
+    public void PressShipStatsButton()
+    {
+        if (shipStatsButtonEnabled)
+        {
+            PlayerPrefs.SetInt("ShowShipStatsLastButtonState", 0);
+            DisableShipStats();
+        }
+        else
+        {
+            PlayerPrefs.SetInt("ShowShipStatsLastButtonState", 1);
+            EnableShipStats();
+        }
+    }
+    void EnableShipStats()
+    {
+        shipStatsButtonEnabled = true;
+        shipStatsText.gameObject.SetActive(true);
+        Color oldBackgroundColor = infoButton.GetComponent<Image>().color;
+        infoButton.GetComponent<Image>().color = new Color(oldBackgroundColor.r, oldBackgroundColor.g, oldBackgroundColor.b, 0.35f);
+
+        Image image = infoButton.transform.Find("Image").GetComponent<Image>();
+        image.sprite = infoButtonEnabledSprite;
+        Color oldImageColor = image.color;
+        image.color = new Color(oldImageColor.r, oldImageColor.g, oldImageColor.b, 1f);
+    }
+    void DisableShipStats()
+    {
+        shipStatsButtonEnabled = false;
+        shipStatsText.gameObject.SetActive(false);
+        Color oldColor = infoButton.GetComponent<Image>().color;
+        infoButton.GetComponent<Image>().color = new Color(oldColor.r, oldColor.g, oldColor.b, 0.15f);
+
+        Image image = infoButton.transform.Find("Image").GetComponent<Image>();
+        image.sprite = infoButtonDisabledSprite;
+        Color oldImageColor = image.color;
+        image.color = new Color(oldImageColor.r, oldImageColor.g, oldImageColor.b, 0.7f);
+    }
 }
 
 
 
 [Serializable]
-public class ModulesOnStorageData
+public class ModulesOnStorageData : ICloneable
 {
     public Module module;
     public int amount;
@@ -322,19 +497,63 @@ public class ModulesOnStorageData
         module = module_;
         amount = amount_;
     }
+
+    public object Clone()
+    {
+        return new ModulesOnStorageData((Module)module.Clone(), amount);
+    }
 }
 
 [Serializable]
-public class Module
+public class Module : ICloneable
 {
     public int moduleNum;
-    public string[] upgrades;
-    public float[] upgradesMod;
+    public ModuleUpgrade[] moduleUpgrades;
 
-    public Module(int moduleNum_, string[] upgrades_, float[] upgradesMod_)
+    public Module(int moduleNum_, ModuleUpgrade[] moduleUpgrades_)
     {
         moduleNum = moduleNum_;
-        upgrades = upgrades_;
-        upgradesMod = upgradesMod_;
+        moduleUpgrades = moduleUpgrades_;
     }
+
+    public object Clone()
+    {
+        ModuleUpgrade[] moduleUpgradesCloning = new ModuleUpgrade[moduleUpgrades.Length];
+        for (int upgradeNum = 0; upgradeNum < moduleUpgrades.Length; upgradeNum++)
+        {
+            moduleUpgradesCloning[upgradeNum] = (ModuleUpgrade)moduleUpgrades[upgradeNum].Clone();
+        }
+        return new Module(moduleNum, (ModuleUpgrade[])moduleUpgradesCloning.Clone());
+    }
+}
+
+[Serializable]
+public class ModuleUpgrade : ICloneable
+{
+    public ModuleUpgradesTypes upgradeType;
+    public float upgradeMod;
+
+    public ModuleUpgrade(ModuleUpgradesTypes upgradeType_, float upgradeMod_)
+    {
+        upgradeType = upgradeType_;
+        upgradeMod = upgradeMod_;
+    }
+
+    public object Clone()
+    {
+        return new ModuleUpgrade(upgradeType, upgradeMod);
+    }
+}
+
+public enum ModuleUpgradesTypes
+{
+    mass, //масса
+    maxHP, //прочность
+    energyGeneration, //генерация энергии
+    energyMaxCapacity, //энергоёмкость
+    damage, //урон
+    projectileTimelife, //время жизни снаряда
+    projectileMass //масса
+
+    //дописывать новые типы улучшений только СНИЗУ!
 }

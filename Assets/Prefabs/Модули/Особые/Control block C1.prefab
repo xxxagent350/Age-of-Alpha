@@ -15,8 +15,7 @@ GameObject:
   - component: {fileID: -6788804639658198636}
   - component: {fileID: -8321460500064220682}
   m_Layer: 7
-  m_Name: "\u0411\u043B\u043E\u043A \u0443\u043F\u0440\u0430\u0432\u043B\u0435\u043D\u0438\u044F
-    C1"
+  m_Name: Control block C1
   m_TagString: Module
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -73,7 +72,7 @@ MonoBehaviour:
       destroyed, you will lose control of the ship, so it should be placed in the
       most protected location
   Size: 0.08
-  Mass: 600
+  Mass: 2
   cellsOffset: {x: 0, y: 0.5}
   itemSlotsData:
   - position: {x: 0, y: -1}
@@ -94,7 +93,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   category: 6
   type: 11
-  allowedOnlyOneOnShip: 0
 --- !u!114 &4011909845827919833
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -108,6 +106,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   maxHP: 80
+  resistanceToFireDamage: 0
+  resistanceToEnergyDamage: 0
+  resistanceToPhysicalDamage: 0
   HP: 0
 --- !u!114 &-6788804639658198636
 MonoBehaviour:

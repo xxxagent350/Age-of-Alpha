@@ -287,8 +287,11 @@ MonoBehaviour:
   Name:
     RussianText: "\u041A\u043E\u043C\u0430\u0440"
     EnglishText: Mosquito
+  description:
+    RussianText: 
+    EnglishText: 
   Size: 0.6
-  Mass: 21000
+  Mass: 21
   cellsOffset: {x: 0, y: -0.3}
   itemSlotsData:
   - position: {x: 0, y: 5}
@@ -363,6 +366,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   UIModulePrefab: {fileID: 2250444107458303807, guid: cec6fecf65d672046ba6a993a9155336, type: 3}
   modulesOnShip: []
+  totalMass: 0
+  totalEnergyCapacity: 0
+  totalEnergyGeneration: 0
+  totalEnginesConsumption: 0
+  totalWeaponConsumption: 0
+  totalSystemsConsumption: 0
+  totalSpeed: 0
+  totalAngularSpeed: 0
   spawnBullet: 0
   bullet: {fileID: 2288871660798619471, guid: b2e6515e7e7ba5c4aaad7541b8331a23, type: 3}
   teamID: 196730340214338153581425135233

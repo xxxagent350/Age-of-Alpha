@@ -11,6 +11,8 @@ public class Bullet : MonoBehaviour
     public float damage;
     public float speed;
     public float lifetime;
+    public DamageTypes damageType;
+
     float lifetimer;
     Rigidbody2D body;
     float OneFramePosChange;
@@ -136,7 +138,7 @@ public class Bullet : MonoBehaviour
             Armour module = hitInfo.collider.GetComponent<Armour>();
             if (module != null)
             {
-                module.Damage(damage);
+                module.Damage(damage, damageType);
             }
         }
     }

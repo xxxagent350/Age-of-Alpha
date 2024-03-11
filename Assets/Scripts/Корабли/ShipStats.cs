@@ -8,6 +8,19 @@ public class ShipStats : MonoBehaviour
 
     [Header("Отладка")]
     public ModuleOnShipData[] modulesOnShip;
+
+    //ниже параметры корабля вместе с модулями
+    public float totalMass; //масса
+    public float totalEnergyCapacity; //макс. запас энергии
+    public float totalEnergyGeneration; //генерация энергии
+    public float totalEnginesConsumption; //потребление движками
+    public float totalWeaponConsumption; //потребление оружием
+    public float totalSystemsConsumption; //потребление системами(дроны, лазерная защита, ремонтный бот и т. д.)
+    public float totalAccelerationPower; //общая ускорительная мощь двигателей
+    public float totalAngularAccelerationPower; //общая угловая ускорительная мощь двигателей
+    public float totalSpeed; //скорость и ускорение
+    public float totalAngularSpeed; //угловая скорость и ускорение
+
     public bool spawnBullet;//
     public GameObject bullet;//
 
@@ -19,6 +32,7 @@ public class ShipStats : MonoBehaviour
     string shipName;
     GameObject[] modulesUI;
 
+    ItemData myItemData;
     float radiansAngle;
     ModulesMenu modulesMenu;
     [SerializeField] float modulesCollidersKeepActiveTime = 3;
@@ -32,6 +46,7 @@ public class ShipStats : MonoBehaviour
         modulesUI = new GameObject[0];
         teamID = UnityEngine.Random.Range(1000000000, 2000000000) + "" + UnityEngine.Random.Range(1000000000, 2000000000) + "" + UnityEngine.Random.Range(1000000000, 2000000000);
         ModulesCollidersSetActive(false);
+        myItemData = GetComponent<ItemData>();
 
         modulesOnShip = DataOperator.instance.LoadDataModulesOnShip("ModulesOnShipData(" + shipName + ")");
         if (modulesOnShip == null)
@@ -68,11 +83,11 @@ public class ShipStats : MonoBehaviour
         }
     }
 
-    public void AddModule(string moduleDataName, Vector2 position)
+    public void AddModule(Module moduleAdding, Vector2 position)
     {
         
         Array.Resize(ref modulesOnShip, modulesOnShip.Length + 1);
-        ModulesOnStorageData modulesOnStorageData = DataOperator.instance.LoadDataModulesOnStorage(moduleDataName);
+        ModulesOnStorageData modulesOnStorageData = DataOperator.instance.LoadDataModulesOnStorage(moduleAdding);
         Module module = modulesOnStorageData.module;
 
         modulesOnShip[modulesOnShip.Length - 1] = new ModuleOnShipData(module, position);
@@ -82,7 +97,7 @@ public class ShipStats : MonoBehaviour
 
     public void RenderModuleUI(Module module, Vector2 position)
     {
-        GameObject modulePrefab = modulesMenu.modulesPrefabs[module.moduleNum];
+        GameObject modulePrefab = DataOperator.instance.modulesPrefabs[module.moduleNum];
         GameObject UImoduleGO = Instantiate(UIModulePrefab, position, Quaternion.identity);
         UImoduleGO.name = modulePrefab.name + " (UI)";
         UImoduleGO.GetComponent<SpriteChanger>().sprite = modulePrefab.transform.Find("Image").GetComponent<SpriteChanger>().sprite;
@@ -90,6 +105,22 @@ public class ShipStats : MonoBehaviour
 
         Array.Resize(ref modulesUI, modulesUI.Length + 1);
         modulesUI[modulesUI.Length - 1] = UImoduleGO;
+    }
+
+    public void RemoveAllModules()
+    {
+        TryFoundModulesMenu();
+        for (int moduleNum = 0; moduleNum < modulesOnShip.Length; moduleNum++)
+        {
+            ModulesOnStorageData modulesOnStorageData = (ModulesOnStorageData)DataOperator.instance.LoadDataModulesOnStorage(modulesOnShip[moduleNum].module).Clone();
+            modulesOnStorageData.amount += 1;
+            DataOperator.instance.SaveData(modulesOnStorageData);
+            Destroy(modulesUI[moduleNum]);
+        }
+        modulesOnShip = new ModuleOnShipData[0];
+        DataOperator.instance.SaveData("ModulesOnShipData(" + shipName + ")", modulesOnShip);
+        modulesUI = new GameObject[0];
+        modulesMenu.RenderMenuSlosts();
     }
 
     public void RemoveModule(Vector2 position)
@@ -134,8 +165,6 @@ public class ShipStats : MonoBehaviour
         }
     }
 
-
-
     public void TakeDamage(float damage)
     {
         modulesCollidersKeepActiveTimer = 0;
@@ -155,6 +184,63 @@ public class ShipStats : MonoBehaviour
         }
     }
 
+    public void CalculateShipStats()
+    {
+        totalMass = 0;
+        totalEnergyCapacity = 0;
+        totalEnergyGeneration = 0;
+        totalEnginesConsumption = 0;
+        totalWeaponConsumption = 0;
+        totalSystemsConsumption = 0;
+        totalAccelerationPower = 0;
+        totalAngularAccelerationPower = 0;
+        totalSpeed = 0;
+        totalAngularSpeed = 0;
+
+        totalMass += myItemData.Mass;
+
+        for (int moduleOnShipNum = 0; moduleOnShipNum < modulesOnShip.Length; moduleOnShipNum++)
+        {
+            int modulePrefabNum = modulesOnShip[moduleOnShipNum].module.moduleNum;
+            GameObject modulePrefab = DataOperator.instance.modulesPrefabs[modulePrefabNum];
+
+            ItemData moduleItemData = modulePrefab.GetComponent<ItemData>();
+            Battery moduleBattery = modulePrefab.GetComponent<Battery>();
+            EnergyGenerator moduleEnergyGenerator = modulePrefab.GetComponent<EnergyGenerator>();
+            Engine moduleEngine = modulePrefab.GetComponent<Engine>();
+            Weapon moduleWeapon = modulePrefab.GetComponent<Weapon>();
+
+            if (moduleItemData != null)
+            {
+                float moduleMass = moduleItemData.Mass;
+                totalMass += moduleMass;
+            }
+            if (moduleBattery != null)
+            {
+                float moduleEnergyCapacity = moduleBattery.maxCapacity;
+                totalEnergyCapacity += moduleEnergyCapacity;
+            }
+            if (moduleEnergyGenerator != null)
+            {
+                float moduleEnergyGeneration = moduleEnergyGenerator.power;
+                totalEnergyGeneration += moduleEnergyGeneration;
+            }
+            if (moduleEngine != null)
+            {
+                float moduleEngineConsumption = moduleEngine.powerConsumption;
+                totalEnginesConsumption += moduleEngineConsumption;
+
+                float moduleEngineAccelerationPower = moduleEngine.accelerationPower;
+                totalAccelerationPower += moduleEngineAccelerationPower;
+
+                float moduleEngineAngularAccelerationPower = moduleEngine.angularPower;
+                totalAngularAccelerationPower += moduleEngineAngularAccelerationPower;
+            }
+        }
+
+        totalSpeed = totalAccelerationPower / totalMass * 100;
+        totalAngularSpeed = totalAngularAccelerationPower / totalMass * 100;
+    }
 }
 
 

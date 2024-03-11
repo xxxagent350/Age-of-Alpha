@@ -305,8 +305,11 @@ MonoBehaviour:
   Name:
     RussianText: "\u041C\u043E\u043B\u043B\u044E\u0441\u043A"
     EnglishText: Mollusk
+  description:
+    RussianText: 
+    EnglishText: 
   Size: 0.48
-  Mass: 45000
+  Mass: 45
   cellsOffset: {x: 0, y: 0}
   itemSlotsData:
   - position: {x: 2, y: -2}
@@ -389,6 +392,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   UIModulePrefab: {fileID: 2250444107458303807, guid: cec6fecf65d672046ba6a993a9155336, type: 3}
   modulesOnShip: []
+  totalMass: 0
+  totalEnergyCapacity: 0
+  totalEnergyGeneration: 0
+  totalEnginesConsumption: 0
+  totalWeaponConsumption: 0
+  totalSystemsConsumption: 0
+  totalSpeed: 0
+  totalAngularSpeed: 0
   spawnBullet: 0
   bullet: {fileID: 2288871660798619471, guid: b2e6515e7e7ba5c4aaad7541b8331a23, type: 3}
   teamID: 137868101418742826431557444606

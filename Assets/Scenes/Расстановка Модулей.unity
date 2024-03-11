@@ -633,6 +633,30 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 612716110}
+        m_TargetAssemblyTypeName: ModulesMenu, Assembly-CSharp
+        m_MethodName: RemoveAllModulesFromShip
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 1648634711}
+        m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+        m_MethodName: SetActive
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &171778279
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -646,7 +670,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 0.12156863}
+  m_Color: {r: 1, g: 1, b: 1, a: 0.23529412}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -1118,7 +1142,7 @@ GameObject:
   - component: {fileID: 340597355}
   - component: {fileID: 340597354}
   - component: {fileID: 340597357}
-  - component: {fileID: 340597356}
+  - component: {fileID: 340597358}
   m_Layer: 5
   m_Name: RemoveAllModulesFromTheShip?
   m_TagString: Untagged
@@ -1169,9 +1193,9 @@ MonoBehaviour:
     m_Font: {fileID: 12800000, guid: 4bbff352026c33e4abbea34f95dfd8e7, type: 3}
     m_FontSize: 35
     m_FontStyle: 0
-    m_BestFit: 0
+    m_BestFit: 1
     m_MinSize: 0
-    m_MaxSize: 50
+    m_MaxSize: 35
     m_Alignment: 7
     m_AlignByGeometry: 0
     m_RichText: 1
@@ -1188,22 +1212,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 340597352}
   m_CullTransparentMesh: 1
---- !u!114 &340597356
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 340597352}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9b0e2a052922b6b45946e4571a701de2, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  text:
-    RussianText: "\u0421\u043D\u044F\u0442\u044C \u0432\u0441\u0435 \u043C\u043E\u0434\u0443\u043B\u0438
-      \u0441 \u043A\u043E\u0440\u0430\u0431\u043B\u044F?"
-    EnglishText: Remove all modules from the ship?
 --- !u!114 &340597357
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1219,6 +1227,22 @@ MonoBehaviour:
   m_EffectColor: {r: 0, g: 0, b: 0, a: 1}
   m_EffectDistance: {x: 2, y: 2}
   m_UseGraphicAlpha: 1
+--- !u!114 &340597358
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 340597352}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9b0e2a052922b6b45946e4571a701de2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  text:
+    RussianText: "\u0421\u043D\u044F\u0442\u044C \u0432\u0441\u0435 \u043C\u043E\u0434\u0443\u043B\u0438
+      \u0441 \u043A\u043E\u0440\u0430\u0431\u043B\u044F?"
+    EnglishText: Remove all modules from the ship?
 --- !u!1 &467933822
 GameObject:
   m_ObjectHideFlags: 0
@@ -1993,13 +2017,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2c70d10ae766ee440870deb685567718, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  modulesPrefabs:
-  - {fileID: 5903462403924034992, guid: af3cabf146fcc4c44af7a8dbc0e570b1, type: 3}
-  - {fileID: 602810540236663210, guid: 43008a637ca34d146b99cea2a068aba2, type: 3}
-  - {fileID: 2901564947838014947, guid: ba33e0a11da6c934a8ac0ec22f328e55, type: 3}
-  - {fileID: 3744825288711606085, guid: 94d41157d5ce30d4385f7de342b60b77, type: 3}
-  - {fileID: 3171517011679500628, guid: 6a376f50c2640374d911d544f23431b1, type: 3}
-  - {fileID: 724571104959012899, guid: 9817d0242823e4d478b492430caea695, type: 3}
   moduleSlotPrefab: {fileID: 5661705787972915209, guid: 772ec096c53711140aa0f705878e0af4, type: 3}
   scrollingContent: {fileID: 1141162520}
   modulesList: {fileID: 500916815}
@@ -2009,6 +2026,11 @@ MonoBehaviour:
   moduleParametresName: {fileID: 1849652662}
   moduleParametresInfo: {fileID: 467933824}
   moduleInstallationErrorMessageComponent: {fileID: 1306821789}
+  noModulesOnStorageText: {fileID: 822013094}
+  shipStatsText: {fileID: 1449517286}
+  infoButton: {fileID: 1386707969}
+  infoButtonEnabledSprite: {fileID: 21300000, guid: 06c5f715a76c1b14686c51f632acdc40, type: 3}
+  infoButtonDisabledSprite: {fileID: 21300000, guid: 9398b2c71c8d4764ab9bfb40312e972c, type: 3}
   weaponSlot: {fileID: 5607240948062396438, guid: 215723c03ec2cf04883702c62eb58c5b, type: 3}
   defenseSlot: {fileID: 5661705787972915209, guid: b7b95bbc7c0bd10458ca8e340ed3214f, type: 3}
   energySlot: {fileID: 6054591358006356134, guid: 255d9680a44499b45b40e24f4f9626b5, type: 3}
@@ -2832,6 +2854,103 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 761870416}
   m_CullTransparentMesh: 1
+--- !u!1 &822013094
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 822013095}
+  - component: {fileID: 822013097}
+  - component: {fileID: 822013096}
+  - component: {fileID: 822013098}
+  m_Layer: 5
+  m_Name: NoModulesOnStorage
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &822013095
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 822013094}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1141162520}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 1}
+  m_AnchorMax: {x: 0.5, y: 1}
+  m_AnchoredPosition: {x: -2.8200378, y: -60.00004}
+  m_SizeDelta: {x: 350, y: 100}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &822013096
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 822013094}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5f7201a12d95ffc409449d95f23cf332, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_FontData:
+    m_Font: {fileID: 12800000, guid: 4bbff352026c33e4abbea34f95dfd8e7, type: 3}
+    m_FontSize: 30
+    m_FontStyle: 0
+    m_BestFit: 1
+    m_MinSize: 3
+    m_MaxSize: 30
+    m_Alignment: 1
+    m_AlignByGeometry: 0
+    m_RichText: 1
+    m_HorizontalOverflow: 0
+    m_VerticalOverflow: 0
+    m_LineSpacing: 1
+  m_Text: "\u041D\u0430 \u0441\u043A\u043B\u0430\u0434\u0435 \u043F\u043E\u043A\u0430
+    \u043D\u0435\u0442 \u043C\u043E\u0434\u0443\u043B\u0435\u0439"
+--- !u!222 &822013097
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 822013094}
+  m_CullTransparentMesh: 1
+--- !u!114 &822013098
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 822013094}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9b0e2a052922b6b45946e4571a701de2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  text:
+    RussianText: "\u041D\u0430 \u0441\u043A\u043B\u0430\u0434\u0435 \u043F\u043E\u043A\u0430
+      \u043D\u0435\u0442 \u043C\u043E\u0434\u0443\u043B\u0435\u0439"
+    EnglishText: No modules in stock yet
 --- !u!1 &828669842
 GameObject:
   m_ObjectHideFlags: 0
@@ -3158,7 +3277,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 0.2509804}
+  m_Color: {r: 1, g: 1, b: 1, a: 0.34901962}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -3643,7 +3762,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 0.2509804}
+  m_Color: {r: 1, g: 1, b: 1, a: 0.34901962}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -3695,7 +3814,8 @@ RectTransform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children: []
+  m_Children:
+  - {fileID: 822013095}
   m_Father: {fileID: 306401833}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
@@ -4746,6 +4866,7 @@ GameObject:
   - component: {fileID: 1386707973}
   - component: {fileID: 1386707972}
   - component: {fileID: 1386707971}
+  - component: {fileID: 1386707974}
   m_Layer: 5
   m_Name: Info
   m_TagString: Untagged
@@ -4770,7 +4891,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 39.4, y: -156.6}
+  m_AnchoredPosition: {x: 39.85547, y: -156.48248}
   m_SizeDelta: {x: 70, y: 70}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1386707971
@@ -4817,13 +4938,25 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: PlayUISound, Assembly-CSharp
-        m_MethodName: 
+      - m_Target: {fileID: 612716110}
+        m_TargetAssemblyTypeName: ModulesMenu, Assembly-CSharp
+        m_MethodName: PressShipStatsButton
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: 
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 1386707974}
+        m_TargetAssemblyTypeName: PlayUISound, Assembly-CSharp
+        m_MethodName: Play
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
           m_StringArgument: 
@@ -4842,7 +4975,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 0.2509804}
+  m_Color: {r: 1, g: 1, b: 1, a: 0.34901962}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -4867,6 +5000,20 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1386707969}
   m_CullTransparentMesh: 1
+--- !u!114 &1386707974
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1386707969}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3632f93e32f374a48aa2fe7acf83914a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  sound: {fileID: 8300000, guid: e0b897fc304b2e349817a3e06e099892, type: 3}
+  volume: 1
 --- !u!1 &1425908237
 GameObject:
   m_ObjectHideFlags: 0
@@ -5196,7 +5343,9 @@ MonoBehaviour:
     \u044D\u043D\u0435\u0440\u0433\u0438\u0438: 16.5\n\u041F\u043E\u0442\u0440\u0435\u0431\u043B\u0435\u043D\u0438\u0435
     \u0434\u0432\u0438\u0433\u0430\u0442\u0435\u043B\u044F\u043C\u0438: <color=green>6</color>\n\u041F\u043E\u0442\u0440\u0435\u0431\u043B\u0435\u043D\u0438\u0435
     \u0432\u043E\u043E\u0440\u0443\u0436\u0435\u043D\u0438\u0435\u043C: 24\n\u041F\u043E\u0442\u0440\u0435\u0431\u043B\u0435\u043D\u0438\u0435
-    \u0441\u0438\u0441\u0442\u0435\u043C\u0430\u043C\u0438: <color=green>0</color>"
+    \u0441\u0438\u0441\u0442\u0435\u043C\u0430\u043C\u0438: <color=green>0</color>\n\u0421\u043A\u043E\u0440\u043E\u0441\u0442\u044C:
+    6.5\n\u0421\u043A\u043E\u0440\u043E\u0441\u0442\u044C \u043F\u043E\u0432\u043E\u0440\u043E\u0442\u0430:
+    3.25"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 94e1b2c1ee38f9a42a3a31195341b90b, type: 2}
   m_sharedMaterial: {fileID: 9009497411620089474, guid: 94e1b2c1ee38f9a42a3a31195341b90b, type: 2}
@@ -5738,7 +5887,7 @@ GameObject:
   - component: {fileID: 1648634714}
   - component: {fileID: 1648634713}
   m_Layer: 5
-  m_Name: RemoveModulesScreen
+  m_Name: QuestionScreen
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -5779,7 +5928,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0, g: 0, b: 0, a: 0.5019608}
+  m_Color: {r: 0, g: 0, b: 0, a: 0.6509804}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -6718,7 +6867,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 0.12156863}
+  m_Color: {r: 1, g: 1, b: 1, a: 0.23529412}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -7300,6 +7449,9 @@ MonoBehaviour:
   image: {fileID: 0}
   name_: {fileID: 0}
   amount: {fileID: 0}
+  myModule:
+    moduleNum: 0
+    moduleUpgrades: []
   xPosChangeForSlotPutting: 0
   yPosChangeForCancellingSlotPutting: 0
 --- !u!114 &9219321145718312739

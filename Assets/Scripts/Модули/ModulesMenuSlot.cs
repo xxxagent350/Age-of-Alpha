@@ -15,15 +15,19 @@ public class ModulesMenuSlot : MonoBehaviour, IPointerDownHandler
     [SerializeField] Text name_;
     [SerializeField] Text amount;
 
-    string moduleDataName;
+    [HideInInspector] public Module myModule;
     ModulesMenu modulesMenu;
     ScrollRect scrollingMenu;
     RectTransform scrollingContent;
 
     private void Start()
     {
-        scrollingContent = transform.parent.GetComponent<RectTransform>();
-        scrollingMenu = GetComponentInParent<ScrollRect>();
+        if (behaviour == "moduleSlot")
+        {
+            scrollingContent = transform.parent.GetComponent<RectTransform>();
+            scrollingMenu = GetComponentInParent<ScrollRect>();
+            scrollingMenu.enabled = true;
+        }
         TryToFindModulesMenu();
         if (behaviour == "backFromWeaponModules" ||
             behaviour == "backFromDefenseModules" ||
@@ -65,7 +69,7 @@ public class ModulesMenuSlot : MonoBehaviour, IPointerDownHandler
         if (behaviour == "moduleSlot")
         {
             TryToFindModulesMenu();
-            modulesMenu.ShowModuleParametres(DataOperator.instance.LoadDataModulesOnStorage(moduleDataName).module);
+            modulesMenu.ShowModuleParametres(myModule);
         }
         if (behaviour == "backFromModuleParametres")
         {
@@ -74,13 +78,13 @@ public class ModulesMenuSlot : MonoBehaviour, IPointerDownHandler
         }
     }
 
-    public void SetModuleData(string moduleDataName_)
+    public void SetModuleData(Module module_)
     {
         TryToFindModulesMenu();
-        moduleDataName = moduleDataName_;
         behaviour = "moduleSlot";
-        ModulesOnStorageData modulesOnStorageData = DataOperator.instance.LoadDataModulesOnStorage(moduleDataName_);
-        GameObject modulePrefab = modulesMenu.modulesPrefabs[modulesOnStorageData.module.moduleNum];
+        myModule = module_;
+        ModulesOnStorageData modulesOnStorageData = DataOperator.instance.LoadDataModulesOnStorage(module_);
+        GameObject modulePrefab = DataOperator.instance.modulesPrefabs[modulesOnStorageData.module.moduleNum];
         image.sprite = modulePrefab.transform.Find("Image").GetComponent<SpriteRenderer>().sprite;
         name = modulePrefab.GetComponent<ItemData>().Name.EnglishText;
         name_.text = modulePrefab.GetComponent<ItemData>().Name.GetTranslatedText();
@@ -123,6 +127,14 @@ public class ModulesMenuSlot : MonoBehaviour, IPointerDownHandler
         checkingClick = false;
     }
 
+    void OnDestroy()
+    {
+        if (scrollingMenu != null)
+        {
+            scrollingMenu.enabled = true;
+        }
+    }
+
     void Update()
     {
         if (behaviour == "moduleSlot" && checkingClick)
@@ -161,14 +173,13 @@ public class ModulesMenuSlot : MonoBehaviour, IPointerDownHandler
     bool CheckIfModuleCanBeInstalled()
     {
         //проверка на наличие на складе
-        if (DataOperator.instance.LoadDataModulesOnStorage(moduleDataName).amount <= 0)
+        if (DataOperator.instance.LoadDataModulesOnStorage(myModule).amount <= 0)
         {
             return false;
         }
 
         //проверка блока управления (он может быть только один на корабле)
-        ModulesOnStorageData modulesOnStorageData = DataOperator.instance.LoadDataModulesOnStorage(moduleDataName);
-        GameObject modulePrefab = modulesMenu.modulesPrefabs[modulesOnStorageData.module.moduleNum];
+        GameObject modulePrefab = DataOperator.instance.modulesPrefabs[myModule.moduleNum];
         if (modulePrefab.GetComponent<ModuleData>().type == ModuleData.types.ControlModules)
         {
             SlotsPutter slotsPutter = (SlotsPutter)FindFirstObjectByType(typeof(SlotsPutter));
@@ -182,7 +193,7 @@ public class ModulesMenuSlot : MonoBehaviour, IPointerDownHandler
 
             foreach (ModuleOnShipData moduleOnShip in shipInstalledModulesData.modulesOnShip)
             {
-                if (modulesMenu.modulesPrefabs[moduleOnShip.module.moduleNum].GetComponent<ModuleData>().type == ModuleData.types.ControlModules)
+                if (DataOperator.instance.modulesPrefabs[moduleOnShip.module.moduleNum].GetComponent<ModuleData>().type == ModuleData.types.ControlModules)
                 {
                     TranslatedText errorMessageText = new TranslatedText();
                     errorMessageText.RussianText = "На корабле может быть установлен только 1 блок управления";
@@ -200,13 +211,13 @@ public class ModulesMenuSlot : MonoBehaviour, IPointerDownHandler
     //создание GameObject для перетаскивания из меню на корабль
     void CreateModuleDragging()
     {
-        ModulesOnStorageData modulesOnStorageData = DataOperator.instance.LoadDataModulesOnStorage(moduleDataName);
-        GameObject modulePrefab = modulesMenu.modulesPrefabs[modulesOnStorageData.module.moduleNum];
+        ModulesOnStorageData modulesOnStorageData = DataOperator.instance.LoadDataModulesOnStorage(myModule);
+        GameObject modulePrefab = DataOperator.instance.modulesPrefabs[modulesOnStorageData.module.moduleNum];
         GameObject moduleDragging_ = Instantiate(moduleDragging, new Vector3(), Quaternion.identity);
 
         moduleDragging_.name = modulePrefab.name + " (перетаскивается)";
         moduleDragging_.GetComponent<SpriteRenderer>().sprite = modulePrefab.transform.Find("Image").GetComponent<SpriteRenderer>().sprite;
         moduleDragging_.transform.localScale = modulePrefab.transform.Find("Image").localScale;
-        moduleDragging_.GetComponent<DraggingModule>().moduleDataName = moduleDataName;
+        moduleDragging_.GetComponent<DraggingModule>().myModule = myModule;
     }
 }

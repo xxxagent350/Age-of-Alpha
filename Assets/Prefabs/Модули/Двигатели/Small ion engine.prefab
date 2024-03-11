@@ -116,7 +116,7 @@ GameObject:
   - component: {fileID: -1529437743027860897}
   - component: {fileID: -6233065258573794172}
   m_Layer: 7
-  m_Name: "\u041C\u0430\u043B\u044B\u0439 \u0438\u043E\u043D\u043D\u044B\u0439 \u0434\u0432\u0438\u0433\u0430\u0442\u0435\u043B\u044C"
+  m_Name: Small ion engine
   m_TagString: Module
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -164,7 +164,7 @@ MonoBehaviour:
     EnglishText: A small ion engine. Low power consumption, good for light ships.
       Can turn the ship
   Size: 0.076
-  Mass: 280
+  Mass: 0.8
   cellsOffset: {x: 0, y: 0}
   itemSlotsData:
   - position: {x: 0, y: 0}
@@ -196,6 +196,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   maxHP: 25
+  resistanceToFireDamage: 0
+  resistanceToEnergyDamage: 0
+  resistanceToPhysicalDamage: 0
   HP: 0
 --- !u!114 &-6233065258573794172
 MonoBehaviour:

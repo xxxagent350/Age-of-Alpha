@@ -11,7 +11,8 @@ public class DraggingModule : MonoBehaviour
     [Header("Ёффект сварки")]
     [SerializeField] Effect weldingEffect; //эффекты сварки
 
-    [HideInInspector] public string moduleDataName;
+    [Header("ќтладка")]
+    public Module myModule;
     GameObject modulePrefab;
     bool playingOnPhone;
     Camera camera_;
@@ -41,8 +42,7 @@ public class DraggingModule : MonoBehaviour
         TryFoundShipData();
         camera_ = (Camera)FindFirstObjectByType(typeof(Camera));
         modulesMenu = (ModulesMenu)FindFirstObjectByType(typeof(ModulesMenu));
-        ModulesOnStorageData modulesOnStorageData = DataOperator.instance.LoadDataModulesOnStorage(moduleDataName);
-        modulePrefab = modulesMenu.modulesPrefabs[modulesOnStorageData.module.moduleNum];
+        modulePrefab = DataOperator.instance.modulesPrefabs[myModule.moduleNum];
         moduleData = modulePrefab.GetComponent<ItemData>();
         RenderAllCellsUIAndCheckIfModuleFits();
         Update();
@@ -112,11 +112,11 @@ public class DraggingModule : MonoBehaviour
                 transform.position = lastFrameRoundedMousePointInUnits;
                 //устанавливаем модуль на корабль
                 TryFoundShipData();
-                shipInstalledModulesData.AddModule(moduleDataName, transform.position);
+                shipInstalledModulesData.AddModule(myModule, transform.position);
                 //забираем одну штуку со склада
-                ModulesOnStorageData modulesOnStorageData = DataOperator.instance.LoadDataModulesOnStorage(moduleDataName);
+                ModulesOnStorageData modulesOnStorageData = (ModulesOnStorageData)DataOperator.instance.LoadDataModulesOnStorage(myModule).Clone();
                 modulesOnStorageData.amount -= 1;
-                DataOperator.instance.SaveData(moduleDataName, modulesOnStorageData);
+                DataOperator.instance.SaveData(modulesOnStorageData);
                 //обновл€ем список предметов в меню
                 modulesMenu.RenderMenuSlosts();
                 //играем случайный звук установки модул€
@@ -224,7 +224,7 @@ public class DraggingModule : MonoBehaviour
             foreach (ModuleOnShipData moduleOnShip in shipInstalledModulesData.modulesOnShip)
             {   
                 //перебираем все уже установленные модули на корабле
-                GameObject modulePrefab_ = modulesMenu.modulesPrefabs[moduleOnShip.module.moduleNum];
+                GameObject modulePrefab_ = DataOperator.instance.modulesPrefabs[moduleOnShip.module.moduleNum];
                 ItemData moduleData_ = modulePrefab_.GetComponent<ItemData>();
                 for (int moduleSlot_ = 0; moduleSlot_ < moduleData_.itemSlotsData.Length; moduleSlot_++)
                 {

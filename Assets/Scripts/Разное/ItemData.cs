@@ -7,7 +7,7 @@ public class ItemData : MonoBehaviour
     public TranslatedText Name;
     public TranslatedText description;
     public float Size = 1;
-    public int Mass;
+    public float Mass;
     public Vector2 cellsOffset;
     public slotsData[] itemSlotsData;
 

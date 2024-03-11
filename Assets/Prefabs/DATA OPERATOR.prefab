@@ -491,6 +491,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4382a3a3cdd7dc246835f96264608a61, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  modulesPrefabs:
+  - {fileID: 5903462403924034992, guid: af3cabf146fcc4c44af7a8dbc0e570b1, type: 3}
+  - {fileID: 602810540236663210, guid: 43008a637ca34d146b99cea2a068aba2, type: 3}
+  - {fileID: 2901564947838014947, guid: ba33e0a11da6c934a8ac0ec22f328e55, type: 3}
+  - {fileID: 3744825288711606085, guid: 94d41157d5ce30d4385f7de342b60b77, type: 3}
+  - {fileID: 3171517011679500628, guid: 6a376f50c2640374d911d544f23431b1, type: 3}
+  - {fileID: 724571104959012899, guid: 9817d0242823e4d478b492430caea695, type: 3}
   UIAudioSource: {fileID: 1592101764647440592}
   defaultAudioSourcePrefab: {fileID: 5498154045212141642, guid: b4a1cc3d0bcc76249bbb4287755fb175, type: 3}
   DataPathAccessErrorScreen: {fileID: 4409338878380001049}

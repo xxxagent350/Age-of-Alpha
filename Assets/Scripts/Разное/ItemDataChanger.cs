@@ -58,7 +58,7 @@ public class ItemDataChanger : MonoBehaviour
     {
         ItemData itemData = (ItemData)FindFirstObjectByType(typeof(ItemData));
         if (itemData != null && newBodyMass != "")
-            itemData.Mass = int.Parse(newBodyMass);
+            itemData.Mass = ConvertStringToFloat(newBodyMass);
     }
 
     public void ChangeSize(string newSize)
