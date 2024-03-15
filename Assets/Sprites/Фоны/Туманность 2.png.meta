@@ -1,0 +1,874 @@
+fileFormatVersion: 2
+guid: db334276b765c7e4cbc998b1db2a74b4
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: -448053906283755334
+    second: "\u2014Pngtree\u2014cosmic nebula png free material_5453502_0"
+  - first:
+      213: 613440130041284084
+    second: "\u2014Pngtree\u2014cosmic nebula png free material_5453502_1"
+  - first:
+      213: 2831048079640852066
+    second: "\u2014Pngtree\u2014cosmic nebula png free material_5453502_2"
+  - first:
+      213: 2176042051294224495
+    second: "\u2014Pngtree\u2014cosmic nebula png free material_5453502_3"
+  - first:
+      213: 567761050442975326
+    second: "\u2014Pngtree\u2014cosmic nebula png free material_5453502_4"
+  - first:
+      213: 6943061277538848300
+    second: "\u2014Pngtree\u2014cosmic nebula png free material_5453502_5"
+  - first:
+      213: -2735722638648375640
+    second: "\u2014Pngtree\u2014cosmic nebula png free material_5453502_6"
+  - first:
+      213: 5905962435214655527
+    second: "\u2014Pngtree\u2014cosmic nebula png free material_5453502_7"
+  - first:
+      213: 8420871619972068216
+    second: "\u2014Pngtree\u2014cosmic nebula png free material_5453502_8"
+  - first:
+      213: -453512811835076501
+    second: "\u2014Pngtree\u2014cosmic nebula png free material_5453502_9"
+  - first:
+      213: 6960383254652230653
+    second: "\u2014Pngtree\u2014cosmic nebula png free material_5453502_10"
+  - first:
+      213: -5633931859191272024
+    second: "\u2014Pngtree\u2014cosmic nebula png free material_5453502_11"
+  - first:
+      213: 4088632450833586569
+    second: "\u2014Pngtree\u2014cosmic nebula png free material_5453502_12"
+  - first:
+      213: -7163378939564693576
+    second: "\u2014Pngtree\u2014cosmic nebula png free material_5453502_13"
+  - first:
+      213: 7419403230368153312
+    second: "\u2014Pngtree\u2014cosmic nebula png free material_5453502_14"
+  - first:
+      213: 7709068636594080385
+    second: "\u2014Pngtree\u2014cosmic nebula png free material_5453502_15"
+  - first:
+      213: 697689458013831039
+    second: "\u2014Pngtree\u2014cosmic nebula png free material_5453502_16"
+  - first:
+      213: 165784495580789773
+    second: "\u2014Pngtree\u2014cosmic nebula png free material_5453502_17"
+  - first:
+      213: 2061075527107146469
+    second: "\u2014Pngtree\u2014cosmic nebula png free material_5453502_18"
+  - first:
+      213: 4135122563853765799
+    second: "\u2014Pngtree\u2014cosmic nebula png free material_5453502_19"
+  - first:
+      213: 960185517147252917
+    second: "\u2014Pngtree\u2014cosmic nebula png free material_5453502_20"
+  - first:
+      213: 7677318281745040522
+    second: "\u2014Pngtree\u2014cosmic nebula png free material_5453502_21"
+  - first:
+      213: 3858470068900959630
+    second: "\u2014Pngtree\u2014cosmic nebula png free material_5453502_22"
+  - first:
+      213: -8361684783078866836
+    second: "\u2014Pngtree\u2014cosmic nebula png free material_5453502_23"
+  - first:
+      213: -6787364521967604601
+    second: "\u2014Pngtree\u2014cosmic nebula png free material_5453502_24"
+  - first:
+      213: -7158499446914075244
+    second: "\u2014Pngtree\u2014cosmic nebula png free material_5453502_25"
+  - first:
+      213: 5580787928637199649
+    second: "\u2014Pngtree\u2014cosmic nebula png free material_5453502_26"
+  - first:
+      213: -2715143652637394207
+    second: "\u2014Pngtree\u2014cosmic nebula png free material_5453502_27"
+  - first:
+      213: -1554269876311648173
+    second: "\u2014Pngtree\u2014cosmic nebula png free material_5453502_28"
+  - first:
+      213: -6021937464002433214
+    second: "\u2014Pngtree\u2014cosmic nebula png free material_5453502_29"
+  externalObjects: {}
+  serializedVersion: 12
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 1
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 3
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 1024
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 3
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 3
+    buildTarget: Android
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: "\u2014Pngtree\u2014cosmic nebula png free material_5453502_0"
+      rect:
+        serializedVersion: 2
+        x: 1488
+        y: 1984
+        width: 13
+        height: 13
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ab80bbb985138c9f0800000000000000
+      internalID: -448053906283755334
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: "\u2014Pngtree\u2014cosmic nebula png free material_5453502_1"
+      rect:
+        serializedVersion: 2
+        x: 1529
+        y: 1973
+        width: 14
+        height: 13
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4f584125c80638800800000000000000
+      internalID: 613440130041284084
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: "\u2014Pngtree\u2014cosmic nebula png free material_5453502_2"
+      rect:
+        serializedVersion: 2
+        x: 1480
+        y: 1972
+        width: 9
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2667b099a37e94720800000000000000
+      internalID: 2831048079640852066
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: "\u2014Pngtree\u2014cosmic nebula png free material_5453502_3"
+      rect:
+        serializedVersion: 2
+        x: 1418
+        y: 1923
+        width: 12
+        height: 13
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f6064bb67bad23e10800000000000000
+      internalID: 2176042051294224495
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: "\u2014Pngtree\u2014cosmic nebula png free material_5453502_4"
+      rect:
+        serializedVersion: 2
+        x: 1407
+        y: 1903
+        width: 13
+        height: 12
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e58c4f0daa711e700800000000000000
+      internalID: 567761050442975326
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: "\u2014Pngtree\u2014cosmic nebula png free material_5453502_5"
+      rect:
+        serializedVersion: 2
+        x: 1448
+        y: 1890
+        width: 9
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c2e097d2275ba5060800000000000000
+      internalID: 6943061277538848300
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: "\u2014Pngtree\u2014cosmic nebula png free material_5453502_6"
+      rect:
+        serializedVersion: 2
+        x: 1607
+        y: 1882
+        width: 17
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8a68e5f21c2c80ad0800000000000000
+      internalID: -2735722638648375640
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: "\u2014Pngtree\u2014cosmic nebula png free material_5453502_7"
+      rect:
+        serializedVersion: 2
+        x: 53
+        y: 210
+        width: 1894
+        height: 1670
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 72045cf2b8136f150800000000000000
+      internalID: 5905962435214655527
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: "\u2014Pngtree\u2014cosmic nebula png free material_5453502_8"
+      rect:
+        serializedVersion: 2
+        x: 1564
+        y: 1871
+        width: 13
+        height: 14
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8737a976f12fcd470800000000000000
+      internalID: 8420871619972068216
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: "\u2014Pngtree\u2014cosmic nebula png free material_5453502_9"
+      rect:
+        serializedVersion: 2
+        x: 1616
+        y: 1877
+        width: 9
+        height: 9
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b605b7d108cc4b9f0800000000000000
+      internalID: -453512811835076501
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: "\u2014Pngtree\u2014cosmic nebula png free material_5453502_10"
+      rect:
+        serializedVersion: 2
+        x: 792
+        y: 201
+        width: 8
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: dfb9f1241bf389060800000000000000
+      internalID: 6960383254652230653
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: "\u2014Pngtree\u2014cosmic nebula png free material_5453502_11"
+      rect:
+        serializedVersion: 2
+        x: 1254
+        y: 206
+        width: 12
+        height: 12
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8ade52ce2d040d1b0800000000000000
+      internalID: -5633931859191272024
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: "\u2014Pngtree\u2014cosmic nebula png free material_5453502_12"
+      rect:
+        serializedVersion: 2
+        x: 451
+        y: 189
+        width: 14
+        height: 13
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 98912113d8dbdb830800000000000000
+      internalID: 4088632450833586569
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: "\u2014Pngtree\u2014cosmic nebula png free material_5453502_13"
+      rect:
+        serializedVersion: 2
+        x: 508
+        y: 187
+        width: 9
+        height: 9
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8b76bb3cec0969c90800000000000000
+      internalID: -7163378939564693576
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: "\u2014Pngtree\u2014cosmic nebula png free material_5453502_14"
+      rect:
+        serializedVersion: 2
+        x: 1298
+        y: 194
+        width: 8
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0eeba77ade307f660800000000000000
+      internalID: 7419403230368153312
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: "\u2014Pngtree\u2014cosmic nebula png free material_5453502_15"
+      rect:
+        serializedVersion: 2
+        x: 1392
+        y: 193
+        width: 11
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 18a8b41a41d1cfa60800000000000000
+      internalID: 7709068636594080385
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: "\u2014Pngtree\u2014cosmic nebula png free material_5453502_16"
+      rect:
+        serializedVersion: 2
+        x: 701
+        y: 170
+        width: 13
+        height: 13
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f7ff2749dd0bea900800000000000000
+      internalID: 697689458013831039
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: "\u2014Pngtree\u2014cosmic nebula png free material_5453502_17"
+      rect:
+        serializedVersion: 2
+        x: 653
+        y: 137
+        width: 13
+        height: 13
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d0c3c50de1cfc4200800000000000000
+      internalID: 165784495580789773
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: "\u2014Pngtree\u2014cosmic nebula png free material_5453502_18"
+      rect:
+        serializedVersion: 2
+        x: 603
+        y: 123
+        width: 9
+        height: 9
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5e2f87895496a9c10800000000000000
+      internalID: 2061075527107146469
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: "\u2014Pngtree\u2014cosmic nebula png free material_5453502_19"
+      rect:
+        serializedVersion: 2
+        x: 309
+        y: 102
+        width: 12
+        height: 13
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7acc4312018e26930800000000000000
+      internalID: 4135122563853765799
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: "\u2014Pngtree\u2014cosmic nebula png free material_5453502_20"
+      rect:
+        serializedVersion: 2
+        x: 1597
+        y: 106
+        width: 11
+        height: 11
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5b8690cf3a3435d00800000000000000
+      internalID: 960185517147252917
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: "\u2014Pngtree\u2014cosmic nebula png free material_5453502_21"
+      rect:
+        serializedVersion: 2
+        x: 351
+        y: 81
+        width: 9
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a8486031d405b8a60800000000000000
+      internalID: 7677318281745040522
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: "\u2014Pngtree\u2014cosmic nebula png free material_5453502_22"
+      rect:
+        serializedVersion: 2
+        x: 449
+        y: 69
+        width: 9
+        height: 9
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e859159a51a0c8530800000000000000
+      internalID: 3858470068900959630
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: "\u2014Pngtree\u2014cosmic nebula png free material_5453502_23"
+      rect:
+        serializedVersion: 2
+        x: 494
+        y: 0
+        width: 46
+        height: 94
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c608bccedf355fb80800000000000000
+      internalID: -8361684783078866836
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: "\u2014Pngtree\u2014cosmic nebula png free material_5453502_24"
+      rect:
+        serializedVersion: 2
+        x: 1408
+        y: 19
+        width: 14
+        height: 13
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 78c2803adef6ec1a0800000000000000
+      internalID: -6787364521967604601
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: "\u2014Pngtree\u2014cosmic nebula png free material_5453502_25"
+      rect:
+        serializedVersion: 2
+        x: 1434
+        y: 67
+        width: 8
+        height: 9
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4953bdd2ea6e7ac90800000000000000
+      internalID: -7158499446914075244
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: "\u2014Pngtree\u2014cosmic nebula png free material_5453502_26"
+      rect:
+        serializedVersion: 2
+        x: 1495
+        y: 57
+        width: 7
+        height: 6
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 12555358d01f27d40800000000000000
+      internalID: 5580787928637199649
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: "\u2014Pngtree\u2014cosmic nebula png free material_5453502_27"
+      rect:
+        serializedVersion: 2
+        x: 1524
+        y: 39
+        width: 10
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1ea346ebb3fd15ad0800000000000000
+      internalID: -2715143652637394207
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: "\u2014Pngtree\u2014cosmic nebula png free material_5453502_28"
+      rect:
+        serializedVersion: 2
+        x: 1588
+        y: 0
+        width: 13
+        height: 13
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3589a5948cf1e6ae0800000000000000
+      internalID: -1554269876311648173
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: "\u2014Pngtree\u2014cosmic nebula png free material_5453502_29"
+      rect:
+        serializedVersion: 2
+        x: 1591
+        y: 71
+        width: 7
+        height: 7
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 24fa48638c7cd6ca0800000000000000
+      internalID: -6021937464002433214
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    physicsShape: []
+    bones: []
+    spriteID: 5e97eb03825dee720800000000000000
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    nameFileIdTable:
+      "\u2014Pngtree\u2014cosmic nebula png free material_5453502_0": -448053906283755334
+      "\u2014Pngtree\u2014cosmic nebula png free material_5453502_1": 613440130041284084
+      "\u2014Pngtree\u2014cosmic nebula png free material_5453502_10": 6960383254652230653
+      "\u2014Pngtree\u2014cosmic nebula png free material_5453502_11": -5633931859191272024
+      "\u2014Pngtree\u2014cosmic nebula png free material_5453502_12": 4088632450833586569
+      "\u2014Pngtree\u2014cosmic nebula png free material_5453502_13": -7163378939564693576
+      "\u2014Pngtree\u2014cosmic nebula png free material_5453502_14": 7419403230368153312
+      "\u2014Pngtree\u2014cosmic nebula png free material_5453502_15": 7709068636594080385
+      "\u2014Pngtree\u2014cosmic nebula png free material_5453502_16": 697689458013831039
+      "\u2014Pngtree\u2014cosmic nebula png free material_5453502_17": 165784495580789773
+      "\u2014Pngtree\u2014cosmic nebula png free material_5453502_18": 2061075527107146469
+      "\u2014Pngtree\u2014cosmic nebula png free material_5453502_19": 4135122563853765799
+      "\u2014Pngtree\u2014cosmic nebula png free material_5453502_2": 2831048079640852066
+      "\u2014Pngtree\u2014cosmic nebula png free material_5453502_20": 960185517147252917
+      "\u2014Pngtree\u2014cosmic nebula png free material_5453502_21": 7677318281745040522
+      "\u2014Pngtree\u2014cosmic nebula png free material_5453502_22": 3858470068900959630
+      "\u2014Pngtree\u2014cosmic nebula png free material_5453502_23": -8361684783078866836
+      "\u2014Pngtree\u2014cosmic nebula png free material_5453502_24": -6787364521967604601
+      "\u2014Pngtree\u2014cosmic nebula png free material_5453502_25": -7158499446914075244
+      "\u2014Pngtree\u2014cosmic nebula png free material_5453502_26": 5580787928637199649
+      "\u2014Pngtree\u2014cosmic nebula png free material_5453502_27": -2715143652637394207
+      "\u2014Pngtree\u2014cosmic nebula png free material_5453502_28": -1554269876311648173
+      "\u2014Pngtree\u2014cosmic nebula png free material_5453502_29": -6021937464002433214
+      "\u2014Pngtree\u2014cosmic nebula png free material_5453502_3": 2176042051294224495
+      "\u2014Pngtree\u2014cosmic nebula png free material_5453502_4": 567761050442975326
+      "\u2014Pngtree\u2014cosmic nebula png free material_5453502_5": 6943061277538848300
+      "\u2014Pngtree\u2014cosmic nebula png free material_5453502_6": -2735722638648375640
+      "\u2014Pngtree\u2014cosmic nebula png free material_5453502_7": 5905962435214655527
+      "\u2014Pngtree\u2014cosmic nebula png free material_5453502_8": 8420871619972068216
+      "\u2014Pngtree\u2014cosmic nebula png free material_5453502_9": -453512811835076501
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

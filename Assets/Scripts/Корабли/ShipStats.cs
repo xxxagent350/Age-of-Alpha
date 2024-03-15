@@ -9,6 +9,9 @@ public class ShipStats : MonoBehaviour
     [Header("Отладка")]
     public ModuleOnShipData[] modulesOnShip;
 
+    public ModulesInstallingHistory[] pastHistory;
+    public ModulesInstallingHistory[] futureHistory;
+
     //ниже параметры корабля вместе с модулями
     public float totalMass; //масса
     public float totalEnergyCapacity; //макс. запас энергии
@@ -31,16 +34,19 @@ public class ShipStats : MonoBehaviour
     float maxAngularRotation; //максимальное УГЛОВОЕ ускорение со всех двигателей
     string shipName;
     GameObject[] modulesUI;
-
     ItemData myItemData;
-    float radiansAngle;
     ModulesMenu modulesMenu;
+
+    float radiansAngle;
     [SerializeField] float modulesCollidersKeepActiveTime = 3;
     float modulesCollidersKeepActiveTimer;
     bool modulesCollidersActive = true;
 
     private void Start()
     {
+        pastHistory = new ModulesInstallingHistory[0];
+        futureHistory = new ModulesInstallingHistory[0];
+
         TryFoundModulesMenu();
         shipName = GetComponent<ItemData>().Name.EnglishText;
         modulesUI = new GameObject[0];
@@ -83,14 +89,30 @@ public class ShipStats : MonoBehaviour
         }
     }
 
-    public void AddModule(Module moduleAdding, Vector2 position)
+    public void AddModule(Module moduleAdding, Vector2 position, Times time)
     {
-        
         Array.Resize(ref modulesOnShip, modulesOnShip.Length + 1);
         ModulesOnStorageData modulesOnStorageData = DataOperator.instance.LoadDataModulesOnStorage(moduleAdding);
         Module module = modulesOnStorageData.module;
-
         modulesOnShip[modulesOnShip.Length - 1] = new ModuleOnShipData(module, position);
+        if (time == Times.Past)
+        {
+            Array.Resize(ref pastHistory, pastHistory.Length - 1);
+            Array.Resize(ref futureHistory, futureHistory.Length + 1);
+            futureHistory[futureHistory.Length - 1] = new ModulesInstallingHistory((Module)module.Clone(), position, true);
+        }
+        if (time == Times.Present)
+        {
+            futureHistory = new ModulesInstallingHistory[0];
+            Array.Resize(ref pastHistory, pastHistory.Length + 1);
+            pastHistory[pastHistory.Length - 1] = new ModulesInstallingHistory((Module)module.Clone(), position, true);
+        }
+        if (time == Times.Future)
+        {
+            Array.Resize(ref pastHistory, pastHistory.Length + 1);
+            Array.Resize(ref futureHistory, futureHistory.Length - 1);
+            pastHistory[pastHistory.Length - 1] = new ModulesInstallingHistory((Module)module.Clone(), position, true);
+        }
         RenderModuleUI(module, position);
         DataOperator.instance.SaveData("ModulesOnShipData(" + shipName + ")", modulesOnShip);
     }
@@ -118,17 +140,38 @@ public class ShipStats : MonoBehaviour
             Destroy(modulesUI[moduleNum]);
         }
         modulesOnShip = new ModuleOnShipData[0];
+        pastHistory = new ModulesInstallingHistory[0];
+        futureHistory = new ModulesInstallingHistory[0];
         DataOperator.instance.SaveData("ModulesOnShipData(" + shipName + ")", modulesOnShip);
         modulesUI = new GameObject[0];
         modulesMenu.RenderMenuSlosts();
     }
 
-    public void RemoveModule(Vector2 position)
+    public void RemoveModule(Vector2 position, Times time)
     {
         for (int moduleNum = 0; moduleNum < modulesOnShip.Length; moduleNum++)
         {
             if (Vector2.Distance(position, modulesOnShip[moduleNum].position.GetVector2()) < 0.01f)
             {
+                if (time == Times.Past)
+                {
+                    Array.Resize(ref pastHistory, pastHistory.Length - 1);
+                    Array.Resize(ref futureHistory, futureHistory.Length + 1);
+                    futureHistory[futureHistory.Length - 1] = new ModulesInstallingHistory((Module)modulesOnShip[moduleNum].module.Clone(), position, false);
+                }
+                if (time == Times.Present)
+                {
+                    futureHistory = new ModulesInstallingHistory[0];
+                    Array.Resize(ref pastHistory, pastHistory.Length + 1);
+                    pastHistory[pastHistory.Length - 1] = new ModulesInstallingHistory((Module)modulesOnShip[moduleNum].module.Clone(), position, false);
+                }
+                if (time == Times.Future)
+                {
+                    Array.Resize(ref pastHistory, pastHistory.Length + 1);
+                    Array.Resize(ref futureHistory, futureHistory.Length - 1);
+                    pastHistory[pastHistory.Length - 1] = new ModulesInstallingHistory((Module)modulesOnShip[moduleNum].module.Clone(), position, false);
+                }
+
                 if (moduleNum != modulesOnShip.Length - 1)
                 {
                     for (int movingModule = moduleNum; movingModule < modulesOnShip.Length - 1; movingModule++)
@@ -136,6 +179,7 @@ public class ShipStats : MonoBehaviour
                         modulesOnShip[movingModule] = modulesOnShip[movingModule + 1];
                     }
                 }
+
                 Array.Resize(ref modulesOnShip, modulesOnShip.Length - 1);
                 RemoveModuleUI(moduleNum);
                 break;
@@ -241,6 +285,72 @@ public class ShipStats : MonoBehaviour
         totalSpeed = totalAccelerationPower / totalMass * 100;
         totalAngularSpeed = totalAngularAccelerationPower / totalMass * 100;
     }
+
+
+
+    public void BackInTime()
+    {
+        if (pastHistory.Length > 0)
+        {
+            ModulesInstallingHistory targetModuleInstallingHistory = pastHistory[pastHistory.Length - 1];
+            if (targetModuleInstallingHistory.moduleInstalled == true) //модуль был установлен, снимаем
+            {
+                //добавляем одну штуку на склад
+                ModulesOnStorageData modulesOnStorageData = (ModulesOnStorageData)DataOperator.instance.LoadDataModulesOnStorage(targetModuleInstallingHistory.module).Clone();
+                modulesOnStorageData.amount += 1;
+                DataOperator.instance.SaveData(modulesOnStorageData);
+
+                //снимаем с корабля
+                RemoveModule(targetModuleInstallingHistory.position, Times.Past);
+            }
+            else //модуль был снят, ставим обратно
+            {
+                ModulesOnStorageData modulesOnStorageData = (ModulesOnStorageData)DataOperator.instance.LoadDataModulesOnStorage(targetModuleInstallingHistory.module).Clone();
+
+                if (modulesOnStorageData.amount > 0)
+                {
+                    //ставим модуль на корабль
+                    AddModule(targetModuleInstallingHistory.module, targetModuleInstallingHistory.position, Times.Past);
+
+                    //забираем одну штуку со склада
+                    modulesOnStorageData.amount -= 1;
+                    DataOperator.instance.SaveData(modulesOnStorageData);
+                }
+            }
+        }
+    }
+
+    public void ForwardInTime()
+    {
+        if (futureHistory.Length > 0)
+        {
+            ModulesInstallingHistory targetModuleInstallingHistory = futureHistory[futureHistory.Length - 1];
+            if (targetModuleInstallingHistory.moduleInstalled == true) //модуль был установлен, снимаем
+            {
+                //добавляем одну штуку на склад
+                ModulesOnStorageData modulesOnStorageData = (ModulesOnStorageData)DataOperator.instance.LoadDataModulesOnStorage(targetModuleInstallingHistory.module).Clone();
+                modulesOnStorageData.amount += 1;
+                DataOperator.instance.SaveData(modulesOnStorageData);
+
+                //снимаем с корабля
+                RemoveModule(targetModuleInstallingHistory.position, Times.Future);
+            }
+            else //модуль был снят, ставим обратно
+            {
+                ModulesOnStorageData modulesOnStorageData = (ModulesOnStorageData)DataOperator.instance.LoadDataModulesOnStorage(targetModuleInstallingHistory.module).Clone();
+
+                if (modulesOnStorageData.amount > 0)
+                {
+                    //ставим модуль на корабль
+                    AddModule(targetModuleInstallingHistory.module, targetModuleInstallingHistory.position, Times.Future);
+
+                    //забираем одну штуку со склада
+                    modulesOnStorageData.amount -= 1;
+                    DataOperator.instance.SaveData(modulesOnStorageData);
+                }
+            }
+        }
+    }
 }
 
 
@@ -255,4 +365,26 @@ public class ModuleOnShipData
         module = module_;
         position = new Vector2Serializable(position_);
     }
+}
+
+[Serializable]
+public class ModulesInstallingHistory
+{
+    public Vector2 position;
+    public Module module;
+    public bool moduleInstalled; //true - модуль был установлен, false - модуль был снят
+
+    public ModulesInstallingHistory(Module module_, Vector2 position_, bool moduleInstalled_)
+    {
+        position = position_;
+        module = module_;
+        moduleInstalled = moduleInstalled_;
+    }
+}
+
+public enum Times
+{
+    Past,
+    Present,
+    Future
 }

@@ -173,7 +173,10 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7245338886272897888}
+  - component: {fileID: -7107750003779600805}
+  - component: {fileID: -4051637560694288015}
   - component: {fileID: 2445250389859809514}
+  - component: {fileID: -1081149917338180442}
   - component: {fileID: 3070582810831889708}
   - component: {fileID: 7388306636123328622}
   - component: {fileID: 6065767183525779441}
@@ -202,6 +205,58 @@ Transform:
   - {fileID: 7950634053900604809}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &-7107750003779600805
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7076352098320370933}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  GlobalObjectIdHash: 3208438380
+  InScenePlacedSourceGlobalObjectIdHash: 0
+  AlwaysReplicateAsRoot: 0
+  SynchronizeTransform: 1
+  ActiveSceneSynchronization: 0
+  SceneMigrationSynchronization: 1
+  SpawnWithObservers: 1
+  DontDestroyWithOwner: 0
+  AutoObjectParentSync: 1
+--- !u!114 &-4051637560694288015
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7076352098320370933}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e96cb6065543e43c4a752faaa1468eb1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  UseUnreliableDeltas: 0
+  SyncPositionX: 1
+  SyncPositionY: 1
+  SyncPositionZ: 0
+  SyncRotAngleX: 0
+  SyncRotAngleY: 0
+  SyncRotAngleZ: 1
+  SyncScaleX: 0
+  SyncScaleY: 0
+  SyncScaleZ: 0
+  PositionThreshold: 0.001
+  RotAngleThreshold: 0.01
+  ScaleThreshold: 0.01
+  UseQuaternionSynchronization: 0
+  UseQuaternionCompression: 0
+  UseHalfFloatPrecision: 0
+  InLocalSpace: 0
+  Interpolate: 0
+  SlerpPosition: 0
 --- !u!50 &2445250389859809514
 Rigidbody2D:
   serializedVersion: 4
@@ -229,6 +284,18 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 0
+--- !u!114 &-1081149917338180442
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7076352098320370933}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 80d7c879794dfda4687da0e400131852, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!60 &3070582810831889708
 PolygonCollider2D:
   m_ObjectHideFlags: 0
@@ -399,19 +466,23 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7076352098320370933}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fba7b76ceaaebb8419b62cfff1982716, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   UIModulePrefab: {fileID: 2250444107458303807, guid: cec6fecf65d672046ba6a993a9155336, type: 3}
   modulesOnShip: []
+  pastHistory: []
+  futureHistory: []
   totalMass: 0
   totalEnergyCapacity: 0
   totalEnergyGeneration: 0
   totalEnginesConsumption: 0
   totalWeaponConsumption: 0
   totalSystemsConsumption: 0
+  totalAccelerationPower: 0
+  totalAngularAccelerationPower: 0
   totalSpeed: 0
   totalAngularSpeed: 0
   spawnBullet: 0

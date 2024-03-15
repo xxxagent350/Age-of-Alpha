@@ -61,7 +61,7 @@ public class UImodulesOperator : MonoBehaviour
 
                         //удаляем модуль с корабля и возвращаем на склад
                         TryFoundShipData();
-                        shipInstalledModulesData.RemoveModule(clickedModuleOnShipPos);
+                        shipInstalledModulesData.RemoveModule(clickedModuleOnShipPos, Times.Present);
                         ModulesOnStorageData modulesOnStorageData = (ModulesOnStorageData)DataOperator.instance.LoadDataModulesOnStorage(moduleData).Clone();
                         modulesOnStorageData.amount += 1;
                         DataOperator.instance.SaveData(modulesOnStorageData);

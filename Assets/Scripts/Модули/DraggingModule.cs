@@ -112,7 +112,7 @@ public class DraggingModule : MonoBehaviour
                 transform.position = lastFrameRoundedMousePointInUnits;
                 //устанавливаем модуль на корабль
                 TryFoundShipData();
-                shipInstalledModulesData.AddModule(myModule, transform.position);
+                shipInstalledModulesData.AddModule(myModule, transform.position, Times.Present);
                 //забираем одну штуку со склада
                 ModulesOnStorageData modulesOnStorageData = (ModulesOnStorageData)DataOperator.instance.LoadDataModulesOnStorage(myModule).Clone();
                 modulesOnStorageData.amount -= 1;

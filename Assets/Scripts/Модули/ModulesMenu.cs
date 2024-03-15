@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 using System;
 using TMPro;
 
@@ -20,9 +21,18 @@ public class ModulesMenu : MonoBehaviour
     [SerializeField] GameObject noModulesOnStorageText;
     [SerializeField] TextMeshProUGUI shipStatsText;
 
+    [SerializeField] Image revertButton;
+    [SerializeField] Image repeatButton;
+
     [SerializeField] GameObject infoButton;
     [SerializeField] Sprite infoButtonEnabledSprite;
     [SerializeField] Sprite infoButtonDisabledSprite;
+
+    [SerializeField] GameObject applyingWarningPanel;
+    [SerializeField] UnityEngine.Object OKScene;
+
+    [SerializeField] AudioClip clickSound;
+    [SerializeField] float clickSoundVolume = 1;
 
     //слоты категорий модулей
     [SerializeField] GameObject weaponSlot;
@@ -120,6 +130,7 @@ public class ModulesMenu : MonoBehaviour
         CalculateModulesCategoriesAndTypes();
         RemoveAllMenuSlots();
         BackFromModuleParametres();
+        ChangeTimeButtonsVisualState();
 
         if (categoryFilter == ModuleData.categories.None) //сортировка по категориям
         {
@@ -242,7 +253,6 @@ public class ModulesMenu : MonoBehaviour
         RenderMenuSlosts();
         Debug.Log("Gived 999 modules!");
     }
-
 
     public void ShowAllSlots()
     {
@@ -409,12 +419,12 @@ public class ModulesMenu : MonoBehaviour
                     shipStatsTranslatedText.RussianText += "\nПотребление двигателями: <color=green>" + DataOperator.instance.RoundFloat(shipStats.totalEnginesConsumption) + "</color>";
                     shipStatsTranslatedText.EnglishText += "\nEngines сonsumption: <color=green>" + DataOperator.instance.RoundFloat(shipStats.totalEnginesConsumption) + "</color>";
                 }
-                if (shipStats.totalEnginesConsumption >= shipStats.totalEnergyGeneration / 2 && shipStats.totalEnginesConsumption < shipStats.totalEnergyGeneration)
+                if (shipStats.totalEnginesConsumption >= shipStats.totalEnergyGeneration / 2 && shipStats.totalEnginesConsumption <= shipStats.totalEnergyGeneration)
                 {
                     shipStatsTranslatedText.RussianText += "\nПотребление двигателями: <color=yellow>" + DataOperator.instance.RoundFloat(shipStats.totalEnginesConsumption) + "</color>";
                     shipStatsTranslatedText.EnglishText += "\nEngines сonsumption: <color=yellow>" + DataOperator.instance.RoundFloat(shipStats.totalEnginesConsumption) + "</color>";
                 }
-                if (shipStats.totalEnginesConsumption >= shipStats.totalEnergyGeneration)
+                if (shipStats.totalEnginesConsumption > shipStats.totalEnergyGeneration)
                 {
                     shipStatsTranslatedText.RussianText += "\nПотребление двигателями: <color=red>" + DataOperator.instance.RoundFloat(shipStats.totalEnginesConsumption) + "</color>";
                     shipStatsTranslatedText.EnglishText += "\nEngines сonsumption: <color=red>" + DataOperator.instance.RoundFloat(shipStats.totalEnginesConsumption) + "</color>";
@@ -482,6 +492,149 @@ public class ModulesMenu : MonoBehaviour
         image.sprite = infoButtonDisabledSprite;
         Color oldImageColor = image.color;
         image.color = new Color(oldImageColor.r, oldImageColor.g, oldImageColor.b, 0.7f);
+    }
+
+
+    public void ClickRevertButton()
+    {
+        TryFoundShipStats();
+        if (shipStats != null)
+        {
+            if (shipStats.pastHistory.Length > 0)
+            {
+                DataOperator.instance.PlayUISound(clickSound, clickSoundVolume);
+                shipStats.BackInTime();
+            } 
+        }
+    }
+
+    public void ClickRepeatButton()
+    {
+        TryFoundShipStats();
+        if (shipStats != null)
+        {
+            if (shipStats.futureHistory.Length > 0)
+            {
+                DataOperator.instance.PlayUISound(clickSound, clickSoundVolume);
+                shipStats.ForwardInTime();
+            } 
+        }
+    }
+
+    void ChangeTimeButtonsVisualState()
+    {
+        TryFoundShipStats();
+        if (shipStats != null)
+        {
+            if (shipStats.pastHistory.Length > 0)
+            {
+                Color oldBackgroundColor = revertButton.color;
+                revertButton.color = new Color(oldBackgroundColor.r, oldBackgroundColor.g, oldBackgroundColor.b, 0.35f);
+
+                Color oldImageColor = revertButton.transform.Find("Image").GetComponent<Image>().color;
+                revertButton.transform.Find("Image").GetComponent<Image>().color = new Color(oldImageColor.r, oldImageColor.g, oldImageColor.b, 0.6f);
+            }
+            else
+            {
+                Color oldBackgroundColor = revertButton.color;
+                revertButton.color = new Color(oldBackgroundColor.r, oldBackgroundColor.g, oldBackgroundColor.b, 0.15f);
+
+                Color oldImageColor = revertButton.transform.Find("Image").GetComponent<Image>().color;
+                revertButton.transform.Find("Image").GetComponent<Image>().color = new Color(oldImageColor.r, oldImageColor.g, oldImageColor.b, 0.3f);
+            }
+
+            if (shipStats.futureHistory.Length > 0)
+            {
+                Color oldBackgroundColor = repeatButton.color;
+                repeatButton.color = new Color(oldBackgroundColor.r, oldBackgroundColor.g, oldBackgroundColor.b, 0.35f);
+
+                Color oldImageColor = repeatButton.transform.Find("Image").GetComponent<Image>().color;
+                repeatButton.transform.Find("Image").GetComponent<Image>().color = new Color(oldImageColor.r, oldImageColor.g, oldImageColor.b, 0.6f);
+            }
+            else
+            {
+                Color oldBackgroundColor = repeatButton.color;
+                repeatButton.color = new Color(oldBackgroundColor.r, oldBackgroundColor.g, oldBackgroundColor.b, 0.15f);
+
+                Color oldImageColor = repeatButton.transform.Find("Image").GetComponent<Image>().color;
+                repeatButton.transform.Find("Image").GetComponent<Image>().color = new Color(oldImageColor.r, oldImageColor.g, oldImageColor.b, 0.3f);
+            }
+        }
+    }
+
+    public void ClickOKButton()
+    {
+        TryFoundShipStats();
+        shipStats.CalculateShipStats();
+
+        //проверка есть ли на корабле блок управления, двигатели, оружие
+        bool controlBlockExists = false;
+        bool engineExists = false;
+        bool weaponExists = false;
+        foreach (ModuleOnShipData moduleOnShip in shipStats.modulesOnShip)
+        {
+            //блок управления
+            if (DataOperator.instance.modulesPrefabs[moduleOnShip.module.moduleNum].GetComponent<ModuleData>().type == ModuleData.types.ControlModules)
+                controlBlockExists = true;
+
+            //двигатели
+            if (DataOperator.instance.modulesPrefabs[moduleOnShip.module.moduleNum].GetComponent<ModuleData>().category == ModuleData.categories.Engines)
+                engineExists = true;
+
+            //оружие
+            if (DataOperator.instance.modulesPrefabs[moduleOnShip.module.moduleNum].GetComponent<ModuleData>().category == ModuleData.categories.Weapons)
+                weaponExists = true;
+        }
+        if (!controlBlockExists)
+        {
+            TranslatedText warningMessageText = new TranslatedText();
+            warningMessageText.RussianText = "Не установлен блок управления - вы не сможете управлять кораблём, всё равно продолжить?";
+            warningMessageText.EnglishText = "No control block installed - you won't be able to control the ship, still continue?";
+            applyingWarningPanel.transform.Find("Text").GetComponent<Text>().text = warningMessageText.GetTranslatedText();
+            applyingWarningPanel.SetActive(true);
+            return;
+        }
+        if (!engineExists)
+        {
+            TranslatedText warningMessageText = new TranslatedText();
+            warningMessageText.RussianText = "Не установлено ни одного двигателя, всё равно продолжить?";
+            warningMessageText.EnglishText = "No engine installed, still continue?";
+            applyingWarningPanel.transform.Find("Text").GetComponent<Text>().text = warningMessageText.GetTranslatedText();
+            applyingWarningPanel.SetActive(true);
+            return;
+        }
+        if (!weaponExists)
+        {
+            TranslatedText warningMessageText = new TranslatedText();
+            warningMessageText.RussianText = "На корабле нет оружия - вы сможете нанести урон только тараном, всё равно продолжить?";
+            warningMessageText.EnglishText = "There are no weapons on the ship - you can only do damage with a battering ram, still continue?";
+            applyingWarningPanel.transform.Find("Text").GetComponent<Text>().text = warningMessageText.GetTranslatedText();
+            applyingWarningPanel.SetActive(true);
+            return;
+        }
+
+        //проверка хватает ли энергии на двигатели
+        if (shipStats.totalEnginesConsumption > shipStats.totalEnergyGeneration)
+        {
+            TranslatedText warningMessageText = new TranslatedText();
+            warningMessageText.RussianText = "Недостаточно генераторов энергии для непрерывной работы двигателей, всё равно продолжить?";
+            warningMessageText.EnglishText = "Not enough power generators to keep the engines running continuously, still continue?";
+            applyingWarningPanel.transform.Find("Text").GetComponent<Text>().text = warningMessageText.GetTranslatedText();
+            applyingWarningPanel.SetActive(true);
+            return;
+        }
+
+        LoadOKScene();
+    }
+
+    public void LoadOKScene()
+    {
+        LoadScene(OKScene);
+    }
+
+    void LoadScene(UnityEngine.Object scene)
+    {
+        SceneManager.LoadScene(scene.name);
     }
 }
 
