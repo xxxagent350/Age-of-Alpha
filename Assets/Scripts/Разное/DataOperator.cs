@@ -3,6 +3,7 @@ using System;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.IO;
 using Random = UnityEngine.Random;
+using Unity.Netcode;
 
 public class DataOperator : MonoBehaviour
 {
@@ -495,7 +496,7 @@ public class Limits
 
 
 [Serializable]
-public class Vector2Serializable
+public struct Vector2Serializable
 {
     public float x;
     public float y;

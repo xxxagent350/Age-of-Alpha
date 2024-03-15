@@ -1,7 +1,8 @@
 using System;
 using UnityEngine;
+using Unity.Netcode;
 
-public class ShipStats : MonoBehaviour
+public class ShipStats : NetworkBehaviour
 {
     [Header("Настройка")]
     [SerializeField] GameObject UIModulePrefab;
@@ -44,22 +45,24 @@ public class ShipStats : MonoBehaviour
 
     private void Start()
     {
-        pastHistory = new ModulesInstallingHistory[0];
-        futureHistory = new ModulesInstallingHistory[0];
-
-        TryFoundModulesMenu();
+        //teamID = UnityEngine.Random.Range(1000000000, 2000000000) + "" + UnityEngine.Random.Range(1000000000, 2000000000) + "" + UnityEngine.Random.Range(1000000000, 2000000000);
+        //ModulesCollidersSetActive(false);
         shipName = GetComponent<ItemData>().Name.EnglishText;
-        modulesUI = new GameObject[0];
-        teamID = UnityEngine.Random.Range(1000000000, 2000000000) + "" + UnityEngine.Random.Range(1000000000, 2000000000) + "" + UnityEngine.Random.Range(1000000000, 2000000000);
-        ModulesCollidersSetActive(false);
-        myItemData = GetComponent<ItemData>();
-
         modulesOnShip = DataOperator.instance.LoadDataModulesOnShip("ModulesOnShipData(" + shipName + ")");
+        //Debug.Log("1: " + modulesOnShip.Length);
         if (modulesOnShip == null)
         {
             modulesOnShip = new ModuleOnShipData[0];
         }
-        RenderAllModulesOnShip();
+        if (GameObject.Find("ModulesMenu") != null)
+        {
+            pastHistory = new ModulesInstallingHistory[0];
+            futureHistory = new ModulesInstallingHistory[0];
+            TryFoundModulesMenu();
+            modulesUI = new GameObject[0];
+            myItemData = GetComponent<ItemData>();
+            RenderAllModulesOnShip();
+        }
     }
 
     private void FixedUpdate()
@@ -355,7 +358,7 @@ public class ShipStats : MonoBehaviour
 
 
 [Serializable]
-public class ModuleOnShipData
+public struct ModuleOnShipData
 {
     public Module module;
     public Vector2Serializable position;

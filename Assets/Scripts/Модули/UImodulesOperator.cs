@@ -53,16 +53,16 @@ public class UImodulesOperator : MonoBehaviour
                 if (timerToDragModule >= maxTimerToDragModule)
                 {
                     //пытаемся начать перетаскивать если есть что
-                    Module moduleData = TryFoundModuleAtPos(shipMousePoint);
-                    if (moduleData != null)
+                    NullableModule moduleData = TryFoundModuleAtPos(shipMousePoint);
+                    if (!moduleData.noModule)
                     {
                         dragging = true;
-                        CreateModuleDragging(moduleData);
+                        CreateModuleDragging(moduleData.module);
 
                         //удаляем модуль с корабля и возвращаем на склад
                         TryFoundShipData();
                         shipInstalledModulesData.RemoveModule(clickedModuleOnShipPos, Times.Present);
-                        ModulesOnStorageData modulesOnStorageData = (ModulesOnStorageData)DataOperator.instance.LoadDataModulesOnStorage(moduleData).Clone();
+                        ModulesOnStorageData modulesOnStorageData = (ModulesOnStorageData)DataOperator.instance.LoadDataModulesOnStorage(moduleData.module).Clone();
                         modulesOnStorageData.amount += 1;
                         DataOperator.instance.SaveData(modulesOnStorageData);
 
@@ -84,11 +84,11 @@ public class UImodulesOperator : MonoBehaviour
                 if (nowPressed && !notDraggingAtThisPress && !dragging)
                 {
                     //показываем параметры модуля если на него кликнули
-                    Module moduleData = TryFoundModuleAtPos(shipMousePoint);
-                    if (moduleData != null)
+                    NullableModule moduleData = TryFoundModuleAtPos(shipMousePoint);
+                    if (!moduleData.noModule)
                     {
                         DataOperator.instance.PlayUISound(moduleTakeSound, moduleTakeSoundVolume);
-                        modulesMenu.ShowModuleParametres(DataOperator.instance.LoadDataModulesOnStorage(moduleData).module);
+                        modulesMenu.ShowModuleParametres(DataOperator.instance.LoadDataModulesOnStorage(moduleData.module).module);
                     }
                     else
                     {
@@ -127,9 +127,11 @@ public class UImodulesOperator : MonoBehaviour
         DataOperator.instance.PlayUISound(moduleTakeSound, moduleTakeSoundVolume);
     }
 
-    Module TryFoundModuleAtPos(Vector2 position)
+    NullableModule TryFoundModuleAtPos(Vector2 position)
     {
         TryFoundShipData();
+        NullableModule moduleFounded = new NullableModule();
+        moduleFounded.noModule = true;
         foreach (ModuleOnShipData moduleOnShip in shipInstalledModulesData.modulesOnShip)
         {
             //перебираем все установленные модули на корабле
@@ -144,11 +146,13 @@ public class UImodulesOperator : MonoBehaviour
                     //Debug.Log("На складе: " + DataOperator.instance.LoadDataModulesOnStorage(moduleOnShip.module).amount);
                     //Debug.Log("Num: " + moduleOnShip.module.moduleNum);
                     //Debug.Log("Upgrades: " + moduleOnShip.module.upgrades.Length);
-                    return moduleOnShip.module;
+                    moduleFounded.module = moduleOnShip.module;
+                    moduleFounded.noModule = false;
+                    break;
                 }
             }
         }
-        return null; //ничего не нашли
+        return moduleFounded; //ничего не нашли
     }
 
     Vector2 GetWorldMousePosInUnits(Vector2 mousePos)
@@ -179,5 +183,18 @@ public class UImodulesOperator : MonoBehaviour
         {
             shipInstalledModulesData = shipData.GetComponent<ShipStats>();
         }
+    }
+}
+
+
+struct NullableModule
+{
+    public bool noModule;
+    public Module module;
+
+    public NullableModule(bool noModule_, Module module_)
+    {
+        noModule = noModule_;
+        module = module_;
     }
 }

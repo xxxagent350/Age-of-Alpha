@@ -3,6 +3,7 @@ using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using System;
 using TMPro;
+using Unity.Netcode;
 
 public class ModulesMenu : MonoBehaviour
 {
@@ -658,7 +659,7 @@ public class ModulesOnStorageData : ICloneable
 }
 
 [Serializable]
-public class Module : ICloneable
+public struct Module : ICloneable
 {
     public int moduleNum;
     public ModuleUpgrade[] moduleUpgrades;
@@ -681,7 +682,7 @@ public class Module : ICloneable
 }
 
 [Serializable]
-public class ModuleUpgrade : ICloneable
+public struct ModuleUpgrade : ICloneable
 {
     public ModuleUpgradesTypes upgradeType;
     public float upgradeMod;
