@@ -1,41 +1,147 @@
+using System;
 using Unity.Netcode;
 using UnityEngine;
+using UnityEngine.UI;
+using Random = UnityEngine.Random;
 
 public class Player : NetworkBehaviour
 {
     [Header("Ќастройка")]
-    [SerializeField] GameObject playerShip;
+    [SerializeField] uint playerShipNum;
 
     [Header("ќтладка")]
-    [SerializeField] ModuleOnShipData[] modulesOnPlayerShipData;
+    [SerializeField] Ship playerShip;
     [SerializeField] ulong ownerClientID;
-    [SerializeField] NetworkVariable<float> teamID = new NetworkVariable<float>();
+    [SerializeField] NetworkVariable<NetworkString> teamID = new NetworkVariable<NetworkString>();
 
+    GameObject playerShipGO;
     NetworkObject myNetworkObject;
-
+    bool readyToSpawn; //true когда данные о корабле игрока получены и можно его спавнить
+    
     private void Start()
     {
         myNetworkObject = GetComponent<NetworkObject>();
         ownerClientID = myNetworkObject.OwnerClientId;
-        if (IsServer)
+        if (NetworkManager.Singleton.IsServer)
         {
-            teamID.Value = Mathf.Round(Random.Range(Mathf.Pow(10, 30), Mathf.Pow(10, 30) * 2));
+            WaitingToSpawnPlayerShip();
+            teamID.Value = new NetworkString(Random.Range(1000000000, 2000000000) + "" + Random.Range(1000000000, 2000000000) + "" + Random.Range(1000000000, 2000000000));
         }
         if (IsOwner)
         {
-
+            string playerShipName = DataOperator.instance.shipsPrefabs[playerShipNum].GetComponent<ItemData>().Name.EnglishText;
+            ModuleOnShipData[] modulesOnPlayerShip = DataOperator.instance.LoadDataModulesOnShip("ModulesOnShipData(" + playerShipName + ")");
+            Ship newPlayerShip = new Ship(playerShipNum, modulesOnPlayerShip);
+            SendPlayerShipDataToServerRpc(newPlayerShip);
         }
     }
 
-    public void SpawnPlayerShip()
+
+    void WaitingToSpawnPlayerShip()
     {
-        GameObject playerShipSpawning = Instantiate(playerShip, new Vector3(0, 0, 0), Quaternion.identity);
-        playerShipSpawning.GetComponent<NetworkObject>().SpawnWithOwnership(ownerClientID);
+        if (readyToSpawn)
+        {
+            SpawnPlayerShip();
+        }
+        else
+        {
+            Invoke(nameof(WaitingToSpawnPlayerShip), 0.1f);
+        }
+    }
+
+    void SpawnPlayerShip()
+    {
+        if (playerShipGO != null)
+        {
+            Debug.LogWarning("ѕопытка заспавнить корабль игроку, у которого сейчас и так есть заспавненный корабль; откат");
+            return;
+        }
+        if (playerShipNum < DataOperator.instance.shipsPrefabs.Length)
+        {
+            GameObject playerShipPrefab = DataOperator.instance.shipsPrefabs[playerShip.shipPrefabNum];
+            GameObject playerShipSpawned = Instantiate(playerShipPrefab, new Vector3(1, 1, 0), Quaternion.identity);
+
+            ModuleOnShipData[] modulesOnPlayerShipData = playerShip.modulesOnShipData;
+            if (modulesOnPlayerShipData == null)
+            {
+                modulesOnPlayerShipData = new ModuleOnShipData[0];
+            }
+            ShipGameModulesCreator shipGameModulesCreator = playerShipSpawned.GetComponent<ShipGameModulesCreator>();
+            shipGameModulesCreator.modulesOnShip = modulesOnPlayerShipData;
+            shipGameModulesCreator.CreateShipModules();
+
+            ShipStats playerShipStats = playerShipSpawned.GetComponent<ShipStats>();
+            playerShipStats.Initialize();
+            playerShipStats.modulesOnShip = modulesOnPlayerShipData;
+            playerShipStats.CalculateShipStats();
+
+            playerShipGO = playerShipSpawned;
+            playerShipSpawned.GetComponent<NetworkObject>().SpawnWithOwnership(ownerClientID);
+            playerShipSpawned.GetComponent<ShipGameStats>().Initialize();
+        }
     }
 
     [Rpc(SendTo.Server)]
-    void SendPlayerShipDataToServerRpc(int shipNum)
+    void SendPlayerShipDataToServerRpc(Ship newPlayerShip)
     {
-
+        playerShip = newPlayerShip;
+        readyToSpawn = true;
     }
 }
+
+[Serializable]
+public struct Ship : INetworkSerializeByMemcpy
+{
+    public uint shipPrefabNum;
+    public ModuleOnShipData[] modulesOnShipData;
+
+    public Ship(uint newShipPrefabNum, ModuleOnShipData[] newModulesOnShipData)
+    {
+        shipPrefabNum = newShipPrefabNum;
+        modulesOnShipData = newModulesOnShipData;
+    }
+}
+
+[Serializable]
+public struct NetworkString : INetworkSerializeByMemcpy
+{
+    public string String;
+
+    public NetworkString(string inputString)
+    {
+        String = inputString;
+    }
+
+    public string GetString()
+    {
+        return String;
+    }
+}
+
+
+/*
+[Serializable]
+public struct NetworkString : INetworkSerializeByMemcpy
+{
+    char[] symbols;
+
+    public NetworkString(string inputString)
+    {
+        symbols = new char[inputString.Length];
+        for (int symbolNum = 0; symbolNum < inputString.Length; symbolNum++)
+        {
+            symbols[symbolNum] = inputString[symbolNum];
+        }
+    }
+
+    public string GetString()
+    {
+        string outoutString = "";
+        for (int symbolNum = 0; symbolNum < symbols.Length; symbolNum++)
+        {
+            outoutString += symbols[symbolNum];
+        }
+        return outoutString;
+    }
+}
+*/

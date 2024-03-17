@@ -642,7 +642,7 @@ public class ModulesMenu : MonoBehaviour
 
 
 [Serializable]
-public class ModulesOnStorageData : ICloneable
+public struct ModulesOnStorageData
 {
     public Module module;
     public int amount;
@@ -651,15 +651,10 @@ public class ModulesOnStorageData : ICloneable
         module = module_;
         amount = amount_;
     }
-
-    public object Clone()
-    {
-        return new ModulesOnStorageData((Module)module.Clone(), amount);
-    }
 }
 
 [Serializable]
-public struct Module : ICloneable
+public struct Module
 {
     public int moduleNum;
     public ModuleUpgrade[] moduleUpgrades;
@@ -669,20 +664,10 @@ public struct Module : ICloneable
         moduleNum = moduleNum_;
         moduleUpgrades = moduleUpgrades_;
     }
-
-    public object Clone()
-    {
-        ModuleUpgrade[] moduleUpgradesCloning = new ModuleUpgrade[moduleUpgrades.Length];
-        for (int upgradeNum = 0; upgradeNum < moduleUpgrades.Length; upgradeNum++)
-        {
-            moduleUpgradesCloning[upgradeNum] = (ModuleUpgrade)moduleUpgrades[upgradeNum].Clone();
-        }
-        return new Module(moduleNum, (ModuleUpgrade[])moduleUpgradesCloning.Clone());
-    }
 }
 
 [Serializable]
-public struct ModuleUpgrade : ICloneable
+public struct ModuleUpgrade
 {
     public ModuleUpgradesTypes upgradeType;
     public float upgradeMod;
@@ -691,11 +676,6 @@ public struct ModuleUpgrade : ICloneable
     {
         upgradeType = upgradeType_;
         upgradeMod = upgradeMod_;
-    }
-
-    public object Clone()
-    {
-        return new ModuleUpgrade(upgradeType, upgradeMod);
     }
 }
 

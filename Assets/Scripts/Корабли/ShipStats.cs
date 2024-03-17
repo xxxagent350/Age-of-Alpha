@@ -2,17 +2,12 @@ using System;
 using UnityEngine;
 using Unity.Netcode;
 
-public class ShipStats : NetworkBehaviour
+public class ShipStats : MonoBehaviour
 {
     [Header("Ќастройка")]
     [SerializeField] GameObject UIModulePrefab;
 
     [Header("ќтладка")]
-    public ModuleOnShipData[] modulesOnShip;
-
-    public ModulesInstallingHistory[] pastHistory;
-    public ModulesInstallingHistory[] futureHistory;
-
     //ниже параметры корабл€ вместе с модул€ми
     public float totalMass; //масса
     public float totalEnergyCapacity; //макс. запас энергии
@@ -24,6 +19,12 @@ public class ShipStats : NetworkBehaviour
     public float totalAngularAccelerationPower; //обща€ углова€ ускорительна€ мощь двигателей
     public float totalSpeed; //скорость и ускорение
     public float totalAngularSpeed; //углова€ скорость и ускорение
+
+    public ModuleOnShipData[] modulesOnShip;
+
+    //истори€ расстановки модулей дл€ стрелочек вперЄд и назад
+    public ModulesInstallingHistory[] pastHistory;
+    public ModulesInstallingHistory[] futureHistory;
 
     public bool spawnBullet;//
     public GameObject bullet;//
@@ -45,24 +46,32 @@ public class ShipStats : NetworkBehaviour
 
     private void Start()
     {
-        //teamID = UnityEngine.Random.Range(1000000000, 2000000000) + "" + UnityEngine.Random.Range(1000000000, 2000000000) + "" + UnityEngine.Random.Range(1000000000, 2000000000);
-        //ModulesCollidersSetActive(false);
+        Initialize();
+        if (GameObject.Find("ModulesMenu") != null)
+        {
+            InitializeForShipBuildingScene();
+        }
+    }
+
+    public void Initialize()
+    {
         shipName = GetComponent<ItemData>().Name.EnglishText;
+        myItemData = GetComponent<ItemData>();
+    }
+
+    void InitializeForShipBuildingScene()
+    {
         modulesOnShip = DataOperator.instance.LoadDataModulesOnShip("ModulesOnShipData(" + shipName + ")");
         //Debug.Log("1: " + modulesOnShip.Length);
         if (modulesOnShip == null)
         {
             modulesOnShip = new ModuleOnShipData[0];
         }
-        if (GameObject.Find("ModulesMenu") != null)
-        {
-            pastHistory = new ModulesInstallingHistory[0];
-            futureHistory = new ModulesInstallingHistory[0];
-            TryFoundModulesMenu();
-            modulesUI = new GameObject[0];
-            myItemData = GetComponent<ItemData>();
-            RenderAllModulesOnShip();
-        }
+        pastHistory = new ModulesInstallingHistory[0];
+        futureHistory = new ModulesInstallingHistory[0];
+        TryFoundModulesMenu();
+        modulesUI = new GameObject[0];
+        RenderAllModulesOnShip();
     }
 
     private void FixedUpdate()
@@ -102,19 +111,19 @@ public class ShipStats : NetworkBehaviour
         {
             Array.Resize(ref pastHistory, pastHistory.Length - 1);
             Array.Resize(ref futureHistory, futureHistory.Length + 1);
-            futureHistory[futureHistory.Length - 1] = new ModulesInstallingHistory((Module)module.Clone(), position, true);
+            futureHistory[futureHistory.Length - 1] = new ModulesInstallingHistory(module, position, true);
         }
         if (time == Times.Present)
         {
             futureHistory = new ModulesInstallingHistory[0];
             Array.Resize(ref pastHistory, pastHistory.Length + 1);
-            pastHistory[pastHistory.Length - 1] = new ModulesInstallingHistory((Module)module.Clone(), position, true);
+            pastHistory[pastHistory.Length - 1] = new ModulesInstallingHistory(module, position, true);
         }
         if (time == Times.Future)
         {
             Array.Resize(ref pastHistory, pastHistory.Length + 1);
             Array.Resize(ref futureHistory, futureHistory.Length - 1);
-            pastHistory[pastHistory.Length - 1] = new ModulesInstallingHistory((Module)module.Clone(), position, true);
+            pastHistory[pastHistory.Length - 1] = new ModulesInstallingHistory(module, position, true);
         }
         RenderModuleUI(module, position);
         DataOperator.instance.SaveData("ModulesOnShipData(" + shipName + ")", modulesOnShip);
@@ -137,7 +146,7 @@ public class ShipStats : NetworkBehaviour
         TryFoundModulesMenu();
         for (int moduleNum = 0; moduleNum < modulesOnShip.Length; moduleNum++)
         {
-            ModulesOnStorageData modulesOnStorageData = (ModulesOnStorageData)DataOperator.instance.LoadDataModulesOnStorage(modulesOnShip[moduleNum].module).Clone();
+            ModulesOnStorageData modulesOnStorageData = DataOperator.instance.LoadDataModulesOnStorage(modulesOnShip[moduleNum].module);
             modulesOnStorageData.amount += 1;
             DataOperator.instance.SaveData(modulesOnStorageData);
             Destroy(modulesUI[moduleNum]);
@@ -160,19 +169,19 @@ public class ShipStats : NetworkBehaviour
                 {
                     Array.Resize(ref pastHistory, pastHistory.Length - 1);
                     Array.Resize(ref futureHistory, futureHistory.Length + 1);
-                    futureHistory[futureHistory.Length - 1] = new ModulesInstallingHistory((Module)modulesOnShip[moduleNum].module.Clone(), position, false);
+                    futureHistory[futureHistory.Length - 1] = new ModulesInstallingHistory(modulesOnShip[moduleNum].module, position, false);
                 }
                 if (time == Times.Present)
                 {
                     futureHistory = new ModulesInstallingHistory[0];
                     Array.Resize(ref pastHistory, pastHistory.Length + 1);
-                    pastHistory[pastHistory.Length - 1] = new ModulesInstallingHistory((Module)modulesOnShip[moduleNum].module.Clone(), position, false);
+                    pastHistory[pastHistory.Length - 1] = new ModulesInstallingHistory(modulesOnShip[moduleNum].module, position, false);
                 }
                 if (time == Times.Future)
                 {
                     Array.Resize(ref pastHistory, pastHistory.Length + 1);
                     Array.Resize(ref futureHistory, futureHistory.Length - 1);
-                    pastHistory[pastHistory.Length - 1] = new ModulesInstallingHistory((Module)modulesOnShip[moduleNum].module.Clone(), position, false);
+                    pastHistory[pastHistory.Length - 1] = new ModulesInstallingHistory(modulesOnShip[moduleNum].module, position, false);
                 }
 
                 if (moduleNum != modulesOnShip.Length - 1)
@@ -290,7 +299,6 @@ public class ShipStats : NetworkBehaviour
     }
 
 
-
     public void BackInTime()
     {
         if (pastHistory.Length > 0)
@@ -299,7 +307,7 @@ public class ShipStats : NetworkBehaviour
             if (targetModuleInstallingHistory.moduleInstalled == true) //модуль был установлен, снимаем
             {
                 //добавл€ем одну штуку на склад
-                ModulesOnStorageData modulesOnStorageData = (ModulesOnStorageData)DataOperator.instance.LoadDataModulesOnStorage(targetModuleInstallingHistory.module).Clone();
+                ModulesOnStorageData modulesOnStorageData = DataOperator.instance.LoadDataModulesOnStorage(targetModuleInstallingHistory.module);
                 modulesOnStorageData.amount += 1;
                 DataOperator.instance.SaveData(modulesOnStorageData);
 
@@ -308,7 +316,7 @@ public class ShipStats : NetworkBehaviour
             }
             else //модуль был сн€т, ставим обратно
             {
-                ModulesOnStorageData modulesOnStorageData = (ModulesOnStorageData)DataOperator.instance.LoadDataModulesOnStorage(targetModuleInstallingHistory.module).Clone();
+                ModulesOnStorageData modulesOnStorageData = DataOperator.instance.LoadDataModulesOnStorage(targetModuleInstallingHistory.module);
 
                 if (modulesOnStorageData.amount > 0)
                 {
@@ -331,7 +339,7 @@ public class ShipStats : NetworkBehaviour
             if (targetModuleInstallingHistory.moduleInstalled == true) //модуль был установлен, снимаем
             {
                 //добавл€ем одну штуку на склад
-                ModulesOnStorageData modulesOnStorageData = (ModulesOnStorageData)DataOperator.instance.LoadDataModulesOnStorage(targetModuleInstallingHistory.module).Clone();
+                ModulesOnStorageData modulesOnStorageData = DataOperator.instance.LoadDataModulesOnStorage(targetModuleInstallingHistory.module);
                 modulesOnStorageData.amount += 1;
                 DataOperator.instance.SaveData(modulesOnStorageData);
 
@@ -340,7 +348,7 @@ public class ShipStats : NetworkBehaviour
             }
             else //модуль был сн€т, ставим обратно
             {
-                ModulesOnStorageData modulesOnStorageData = (ModulesOnStorageData)DataOperator.instance.LoadDataModulesOnStorage(targetModuleInstallingHistory.module).Clone();
+                ModulesOnStorageData modulesOnStorageData = DataOperator.instance.LoadDataModulesOnStorage(targetModuleInstallingHistory.module);
 
                 if (modulesOnStorageData.amount > 0)
                 {

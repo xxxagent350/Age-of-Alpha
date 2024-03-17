@@ -146,10 +146,12 @@ GameObject:
   - component: {fileID: 349636465118420678}
   - component: {fileID: 8133938780511652221}
   - component: {fileID: -8450963205839976919}
+  - component: {fileID: 2961463086686531005}
   - component: {fileID: -4813806967964926194}
   - component: {fileID: 8279197813468607650}
   - component: {fileID: 2634739659617025036}
   - component: {fileID: 1284918572055793054}
+  - component: {fileID: 7818155106030032460}
   m_Layer: 6
   m_Name: Mosquito
   m_TagString: Ship
@@ -265,6 +267,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 80d7c879794dfda4687da0e400131852, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &2961463086686531005
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9199775940064552590}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 44122159b45ccfd40bf9edda36674210, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  modulesOnShip: []
 --- !u!114 &-4813806967964926194
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -297,10 +312,10 @@ PolygonCollider2D:
   m_LayerOverridePriority: 0
   m_ForceSendLayers:
     serializedVersion: 2
-    m_Bits: 192
+    m_Bits: 64
   m_ForceReceiveLayers:
     serializedVersion: 2
-    m_Bits: 192
+    m_Bits: 64
   m_ContactCaptureLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -445,9 +460,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   UIModulePrefab: {fileID: 2250444107458303807, guid: cec6fecf65d672046ba6a993a9155336, type: 3}
-  modulesOnShip: []
-  pastHistory: []
-  futureHistory: []
   totalMass: 0
   totalEnergyCapacity: 0
   totalEnergyGeneration: 0
@@ -458,7 +470,22 @@ MonoBehaviour:
   totalAngularAccelerationPower: 0
   totalSpeed: 0
   totalAngularSpeed: 0
+  modulesOnShip: []
+  pastHistory: []
+  futureHistory: []
   spawnBullet: 0
   bullet: {fileID: 2288871660798619471, guid: b2e6515e7e7ba5c4aaad7541b8331a23, type: 3}
   teamID: 196730340214338153581425135233
   modulesCollidersKeepActiveTime: 3
+--- !u!114 &7818155106030032460
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9199775940064552590}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ff78f7028abc2e946ba31867f08e0a99, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

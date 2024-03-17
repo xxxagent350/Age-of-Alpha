@@ -3,11 +3,11 @@ using System;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.IO;
 using Random = UnityEngine.Random;
-using Unity.Netcode;
 
 public class DataOperator : MonoBehaviour
 {
     [Header("Настройка")]
+    public GameObject[] shipsPrefabs;
     public GameObject[] modulesPrefabs;
     [SerializeField] AudioSource UIAudioSource;
     [SerializeField] GameObject defaultAudioSourcePrefab;
@@ -286,7 +286,7 @@ public class DataOperator : MonoBehaviour
 
     public ModulesOnStorageData LoadDataModulesOnStorage(Module module_)
     {
-        ModulesOnStorageData data = null;
+        ModulesOnStorageData data = new ModulesOnStorageData();
         string dataName = GetDataNameForModule(module_);
 
         foreach (Data searchingData in gameData)
@@ -297,7 +297,7 @@ public class DataOperator : MonoBehaviour
                 break;
             }
         }
-        if (data == null)
+        if (data.amount == 0)
         {
             data = new ModulesOnStorageData(module_, 0);
         }
@@ -306,7 +306,7 @@ public class DataOperator : MonoBehaviour
 
     public ModuleOnShipData[] LoadDataModulesOnShip(string name_)
     {
-        ModuleOnShipData[] data = null;
+        ModuleOnShipData[] data = new ModuleOnShipData[0];
         foreach (Data searchingData in gameData)
         {
             if (searchingData.dataName == name_)
@@ -314,6 +314,10 @@ public class DataOperator : MonoBehaviour
                 data = searchingData.dataModulesOnShip;
                 break;
             }
+        }
+        if (data == null)
+        {
+            data = new ModuleOnShipData[0];
         }
         return data;
     }
@@ -387,10 +391,10 @@ public class DataOperator : MonoBehaviour
         ModulesOnStorageData[] modulesOnStorageDataCloning = new ModulesOnStorageData[0];
         for (int dataNum = 0; dataNum < gameData.Length; dataNum++)
         {
-            if (gameData[dataNum].dataModulesOnStorage != null && gameData[dataNum].dataModulesOnStorage.amount > 0)
+            if (gameData[dataNum].dataModulesOnStorage.amount > 0)
             {
                 Array.Resize(ref modulesOnStorageDataCloning, modulesOnStorageDataCloning.Length + 1);
-                modulesOnStorageDataCloning[modulesOnStorageDataCloning.Length - 1] = (ModulesOnStorageData)gameData[dataNum].dataModulesOnStorage.Clone();
+                modulesOnStorageDataCloning[modulesOnStorageDataCloning.Length - 1] = gameData[dataNum].dataModulesOnStorage;
             }
         }
         return modulesOnStorageDataCloning;
@@ -427,7 +431,7 @@ public class Data
         dataString = "";
         dataInt = 0;
         dataFloat = 0;
-        dataModulesOnStorage = null;
+        dataModulesOnStorage = new ModulesOnStorageData();
         dataModulesOnShip = null;
     }
 

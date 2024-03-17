@@ -114,7 +114,7 @@ public class DraggingModule : MonoBehaviour
                 TryFoundShipData();
                 shipInstalledModulesData.AddModule(myModule, transform.position, Times.Present);
                 //забираем одну штуку со склада
-                ModulesOnStorageData modulesOnStorageData = (ModulesOnStorageData)DataOperator.instance.LoadDataModulesOnStorage(myModule).Clone();
+                ModulesOnStorageData modulesOnStorageData = DataOperator.instance.LoadDataModulesOnStorage(myModule);
                 modulesOnStorageData.amount -= 1;
                 DataOperator.instance.SaveData(modulesOnStorageData);
                 //обновляем список предметов в меню
