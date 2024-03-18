@@ -30,7 +30,7 @@ public class ModulesMenu : MonoBehaviour
     [SerializeField] Sprite infoButtonDisabledSprite;
 
     [SerializeField] GameObject applyingWarningPanel;
-    [SerializeField] UnityEngine.Object OKScene;
+    [SerializeField] string OKSceneName;
 
     [SerializeField] AudioClip clickSound;
     [SerializeField] float clickSoundVolume = 1;
@@ -630,12 +630,7 @@ public class ModulesMenu : MonoBehaviour
 
     public void LoadOKScene()
     {
-        LoadScene(OKScene);
-    }
-
-    void LoadScene(UnityEngine.Object scene)
-    {
-        SceneManager.LoadScene(scene.name);
+        SceneManager.LoadScene(OKSceneName);
     }
 }
 
@@ -654,7 +649,7 @@ public struct ModulesOnStorageData
 }
 
 [Serializable]
-public struct Module
+public struct Module : INetworkSerializeByMemcpy
 {
     public int moduleNum;
     public ModuleUpgrade[] moduleUpgrades;
@@ -667,7 +662,7 @@ public struct Module
 }
 
 [Serializable]
-public struct ModuleUpgrade
+public struct ModuleUpgrade : INetworkSerializeByMemcpy
 {
     public ModuleUpgradesTypes upgradeType;
     public float upgradeMod;

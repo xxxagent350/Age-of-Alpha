@@ -102,6 +102,7 @@ public struct Ship : INetworkSerializeByMemcpy
     }
 }
 
+/*
 [Serializable]
 public struct NetworkString : INetworkSerializeByMemcpy
 {
@@ -117,9 +118,9 @@ public struct NetworkString : INetworkSerializeByMemcpy
         return String;
     }
 }
+*/
 
 
-/*
 [Serializable]
 public struct NetworkString : INetworkSerializeByMemcpy
 {
@@ -144,4 +145,3 @@ public struct NetworkString : INetworkSerializeByMemcpy
         return outoutString;
     }
 }
-*/

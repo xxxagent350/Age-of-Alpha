@@ -484,8 +484,18 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 9199775940064552590}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ff78f7028abc2e946ba31867f08e0a99, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  mass: 0
+  energyGeneration: 0
+  energyMaxCapacity:
+    m_InternalValue: 0
+  energy:
+    m_InternalValue: 0
+  accelerationPower: 0
+  angularAccelerationPower: 0
+  speed: 0
+  angularSpeed: 0

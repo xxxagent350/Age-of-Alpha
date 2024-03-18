@@ -2191,7 +2191,7 @@ MonoBehaviour:
   infoButtonEnabledSprite: {fileID: 21300000, guid: 06c5f715a76c1b14686c51f632acdc40, type: 3}
   infoButtonDisabledSprite: {fileID: 21300000, guid: 9398b2c71c8d4764ab9bfb40312e972c, type: 3}
   applyingWarningPanel: {fileID: 1080172906}
-  OKScene: {fileID: 102900000, guid: b6fe0f600f431d5449c66228d97108bf, type: 3}
+  OKSceneName: Game
   clickSound: {fileID: 8300000, guid: e0b897fc304b2e349817a3e06e099892, type: 3}
   clickSoundVolume: 1
   weaponSlot: {fileID: 5607240948062396438, guid: 215723c03ec2cf04883702c62eb58c5b, type: 3}
@@ -3739,7 +3739,7 @@ MonoBehaviour:
   m_Colors:
     m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
     m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
-    m_PressedColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 1}
+    m_PressedColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
     m_SelectedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
     m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
     m_ColorMultiplier: 1

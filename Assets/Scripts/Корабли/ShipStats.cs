@@ -56,7 +56,15 @@ public class ShipStats : MonoBehaviour
     public void Initialize()
     {
         shipName = GetComponent<ItemData>().Name.EnglishText;
-        myItemData = GetComponent<ItemData>();
+        TryFoundItemData();
+    }
+
+    void TryFoundItemData()
+    {
+        if (myItemData == null)
+        {
+            myItemData = GetComponent<ItemData>();
+        }
     }
 
     void InitializeForShipBuildingScene()
@@ -242,6 +250,7 @@ public class ShipStats : MonoBehaviour
 
     public void CalculateShipStats()
     {
+        TryFoundItemData();
         totalMass = 0;
         totalEnergyCapacity = 0;
         totalEnergyGeneration = 0;
@@ -366,7 +375,7 @@ public class ShipStats : MonoBehaviour
 
 
 [Serializable]
-public struct ModuleOnShipData
+public struct ModuleOnShipData : INetworkSerializeByMemcpy
 {
     public Module module;
     public Vector2Serializable position;

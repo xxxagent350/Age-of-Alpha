@@ -35,6 +35,7 @@ public class ShipGameStats : NetworkBehaviour
 
     public void Initialize()
     {
+        enabled = true;
         if (NetworkManager.Singleton.IsServer)
         {
             myShipStats = GetComponent<ShipStats>();

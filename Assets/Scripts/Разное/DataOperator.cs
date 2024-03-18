@@ -3,6 +3,7 @@ using System;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.IO;
 using Random = UnityEngine.Random;
+using Unity.Netcode;
 
 public class DataOperator : MonoBehaviour
 {
@@ -39,6 +40,7 @@ public class DataOperator : MonoBehaviour
         else
         {
             Destroy(gameObject);
+            return;
         }
         
         
@@ -91,6 +93,7 @@ public class DataOperator : MonoBehaviour
             {
                 FileStream file = File.Open(dataFilePath, FileMode.Open);
                 Data data = (Data)binaryFormatter.Deserialize(file);
+                file.Close();
 
                 Array.Resize(ref gameData, gameData.Length + 1);
                 gameData[gameData.Length - 1] = data;
@@ -500,7 +503,7 @@ public class Limits
 
 
 [Serializable]
-public struct Vector2Serializable
+public struct Vector2Serializable : INetworkSerializeByMemcpy
 {
     public float x;
     public float y;
