@@ -1,4 +1,5 @@
 using System;
+using Unity.Collections;
 using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.UI;
@@ -35,7 +36,6 @@ public class Player : NetworkBehaviour
             SendPlayerShipDataToServerRpc(newPlayerShip);
         }
     }
-
 
     void WaitingToSpawnPlayerShip()
     {
@@ -77,7 +77,7 @@ public class Player : NetworkBehaviour
 
             playerShipGO = playerShipSpawned;
             playerShipSpawned.GetComponent<NetworkObject>().SpawnWithOwnership(ownerClientID);
-            playerShipSpawned.GetComponent<ShipGameStats>().Initialize();
+            playerShipSpawned.GetComponent<ShipGameStats>().InitializeRpc();
         }
     }
 
@@ -90,7 +90,7 @@ public class Player : NetworkBehaviour
 }
 
 [Serializable]
-public struct Ship : INetworkSerializeByMemcpy
+public struct Ship : INetworkSerializable
 {
     public uint shipPrefabNum;
     public ModuleOnShipData[] modulesOnShipData;
@@ -99,6 +99,31 @@ public struct Ship : INetworkSerializeByMemcpy
     {
         shipPrefabNum = newShipPrefabNum;
         modulesOnShipData = newModulesOnShipData;
+    }
+
+    public void NetworkSerialize<T>(BufferSerializer<T> serializer) where T : IReaderWriter
+    {
+        serializer.SerializeValue(ref shipPrefabNum);
+
+        // Length
+        int length = 0;
+        if (!serializer.IsReader)
+        {
+            length = modulesOnShipData.Length;
+        }
+
+        serializer.SerializeValue(ref length);
+
+        // Array
+        if (serializer.IsReader)
+        {
+            modulesOnShipData = new ModuleOnShipData[length];
+        }
+
+        for (int n = 0; n < length; ++n)
+        {
+            serializer.SerializeValue(ref modulesOnShipData[n]);
+        }
     }
 }
 

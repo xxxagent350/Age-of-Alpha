@@ -227,7 +227,7 @@ MonoBehaviour:
   UseHalfFloatPrecision: 0
   InLocalSpace: 0
   Interpolate: 1
-  SlerpPosition: 0
+  SlerpPosition: 1
 --- !u!50 &8133938780511652221
 Rigidbody2D:
   serializedVersion: 4

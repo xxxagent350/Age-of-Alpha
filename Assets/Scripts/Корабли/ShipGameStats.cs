@@ -22,6 +22,7 @@ public class ShipGameStats : NetworkBehaviour
         {
             energyBar = PlayerInterface.instance.energyBar;
             PlayerInterface.instance.playerInterfaceEnabled = true;
+            FindFirstObjectByType<CameraMover>().playerTransform = transform;
         }
     }
 
@@ -33,7 +34,8 @@ public class ShipGameStats : NetworkBehaviour
         }
     }
 
-    public void Initialize()
+    [Rpc(SendTo.Everyone)]
+    public void InitializeRpc()
     {
         enabled = true;
         if (NetworkManager.Singleton.IsServer)
@@ -58,7 +60,14 @@ public class ShipGameStats : NetworkBehaviour
         }
         if (IsOwner)
         {
-            energyBar.fillingValue = energy.Value / energyMaxCapacity.Value;
+            if (energyMaxCapacity.Value > 0.001f)
+            {
+                energyBar.fillingValue = energy.Value / energyMaxCapacity.Value;
+            }
+            else
+            {
+                energyBar.fillingValue = 0;
+            }
         }
     }
 
@@ -71,6 +80,10 @@ public class ShipGameStats : NetworkBehaviour
         if (energy.Value > energyMaxCapacity.Value)
         {
             energy.Value = energyMaxCapacity.Value;
+        }
+        if (energy.Value < 0)
+        {
+            energy.Value = 0;
         }
     }
 }

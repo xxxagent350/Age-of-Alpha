@@ -503,7 +503,7 @@ public class Limits
 
 
 [Serializable]
-public struct Vector2Serializable : INetworkSerializeByMemcpy
+public struct Vector2Serializable : INetworkSerializable
 {
     public float x;
     public float y;
@@ -516,6 +516,12 @@ public struct Vector2Serializable : INetworkSerializeByMemcpy
     public Vector2 GetVector2()
     {
         return new Vector2(x, y);
+    }
+
+    public void NetworkSerialize<T>(BufferSerializer<T> serializer) where T : IReaderWriter
+    {
+        serializer.SerializeValue(ref x);
+        serializer.SerializeValue(ref y);
     }
 }
 

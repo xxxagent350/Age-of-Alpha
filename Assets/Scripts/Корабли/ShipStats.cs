@@ -375,7 +375,7 @@ public class ShipStats : MonoBehaviour
 
 
 [Serializable]
-public struct ModuleOnShipData : INetworkSerializeByMemcpy
+public struct ModuleOnShipData : INetworkSerializable
 {
     public Module module;
     public Vector2Serializable position;
@@ -384,6 +384,12 @@ public struct ModuleOnShipData : INetworkSerializeByMemcpy
     {
         module = module_;
         position = new Vector2Serializable(position_);
+    }
+
+    public void NetworkSerialize<T>(BufferSerializer<T> serializer) where T : IReaderWriter
+    {
+        module.NetworkSerialize(serializer);
+        position.NetworkSerialize(serializer);
     }
 }
 

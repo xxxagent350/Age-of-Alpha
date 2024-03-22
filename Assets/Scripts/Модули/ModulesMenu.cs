@@ -649,7 +649,7 @@ public struct ModulesOnStorageData
 }
 
 [Serializable]
-public struct Module : INetworkSerializeByMemcpy
+public struct Module : INetworkSerializable
 {
     public int moduleNum;
     public ModuleUpgrade[] moduleUpgrades;
@@ -659,10 +659,35 @@ public struct Module : INetworkSerializeByMemcpy
         moduleNum = moduleNum_;
         moduleUpgrades = moduleUpgrades_;
     }
+
+    public void NetworkSerialize<T>(BufferSerializer<T> serializer) where T : IReaderWriter
+    {
+        serializer.SerializeValue(ref moduleNum);
+
+        // Length
+        int length = 0;
+        if (!serializer.IsReader)
+        {
+            length = moduleUpgrades.Length;
+        }
+
+        serializer.SerializeValue(ref length);
+
+        // Array
+        if (serializer.IsReader)
+        {
+            moduleUpgrades = new ModuleUpgrade[length];
+        }
+
+        for (int n = 0; n < length; ++n)
+        {
+            serializer.SerializeValue(ref moduleUpgrades[n]);
+        }
+    }
 }
 
 [Serializable]
-public struct ModuleUpgrade : INetworkSerializeByMemcpy
+public struct ModuleUpgrade : INetworkSerializable
 {
     public ModuleUpgradesTypes upgradeType;
     public float upgradeMod;
@@ -671,6 +696,12 @@ public struct ModuleUpgrade : INetworkSerializeByMemcpy
     {
         upgradeType = upgradeType_;
         upgradeMod = upgradeMod_;
+    }
+
+    public void NetworkSerialize<T>(BufferSerializer<T> serializer) where T : IReaderWriter
+    {
+        serializer.SerializeValue(ref upgradeType);
+        serializer.SerializeValue(ref upgradeMod);
     }
 }
 

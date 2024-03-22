@@ -129,6 +129,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 57428355}
+  - component: {fileID: 57428356}
   - component: {fileID: 57428354}
   - component: {fileID: 57428353}
   - component: {fileID: 57428352}
@@ -601,6 +602,31 @@ Transform:
   - {fileID: 343760376}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &57428356
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 57428347}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9a142acd3c2fbc341aa326ef62fa4973, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  accelerationMod: 10
+  accelerationOverflightMod: 20
+  maxAcceleration: 100
+  maxDeceleration: 200
+  maxSpeed: 50
+  ignoredDistance: 0.1
+  ignoredSpeed: 0.3
+  playerTransform: {fileID: 0}
+  speed: {x: 0, y: 0}
+  acceleration: {x: 0, y: 0}
+  distance: {x: 0, y: 0}
+  fullDistance: {x: 0, y: 0}
+  physicalDistance: {x: 0, y: 0}
 --- !u!1 &153779441
 GameObject:
   m_ObjectHideFlags: 0
@@ -1013,7 +1039,7 @@ MonoBehaviour:
     Prefabs:
       NetworkPrefabsLists:
       - {fileID: 11400000, guid: 6a763b286e1595d4fafc7d37345554c6, type: 2}
-    TickRate: 60
+    TickRate: 30
     ClientConnectionBufferTimeout: 10
     ConnectionApproval: 0
     ConnectionData: 

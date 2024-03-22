@@ -226,8 +226,8 @@ MonoBehaviour:
   UseQuaternionCompression: 0
   UseHalfFloatPrecision: 0
   InLocalSpace: 0
-  Interpolate: 0
-  SlerpPosition: 0
+  Interpolate: 1
+  SlerpPosition: 1
 --- !u!50 &2445250389859809514
 Rigidbody2D:
   serializedVersion: 4

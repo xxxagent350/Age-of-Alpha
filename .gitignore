@@ -1,7 +1,8 @@
 # Modified from:
 #     https://github.com/github/gitignore/blob/master/Unity.gitignore
 
-/PC build
+/PC build/
+/Old assets/
 /[Ll]ibrary/
 /[Uu]serSettings/
 [Tt]emp/
