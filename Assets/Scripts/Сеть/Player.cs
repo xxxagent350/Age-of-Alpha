@@ -1,8 +1,6 @@
 using System;
-using Unity.Collections;
 using Unity.Netcode;
 using UnityEngine;
-using UnityEngine.UI;
 using Random = UnityEngine.Random;
 
 public class Player : NetworkBehaviour
@@ -15,7 +13,13 @@ public class Player : NetworkBehaviour
     [SerializeField] ulong ownerClientID;
     [SerializeField] NetworkVariable<NetworkString> teamID = new NetworkVariable<NetworkString>();
 
+    [Header("ќтображаетс€ на сервере")]
+    [SerializeField] bool movementJoystickPressed;
+    [SerializeField] float movementJoystickDirInDegrees;
+    [SerializeField] float movementJoystickMagnitude;
+
     GameObject playerShipGO;
+    ShipGameStats playerShipGameStats;
     NetworkObject myNetworkObject;
     bool readyToSpawn; //true когда данные о корабле игрока получены и можно его спавнить
     
@@ -30,6 +34,7 @@ public class Player : NetworkBehaviour
         }
         if (IsOwner)
         {
+            PlayerInterface.instance.localPlayer = this;
             string playerShipName = DataOperator.instance.shipsPrefabs[playerShipNum].GetComponent<ItemData>().Name.EnglishText;
             ModuleOnShipData[] modulesOnPlayerShip = DataOperator.instance.LoadDataModulesOnShip("ModulesOnShipData(" + playerShipName + ")");
             Ship newPlayerShip = new Ship(playerShipNum, modulesOnPlayerShip);
@@ -59,7 +64,8 @@ public class Player : NetworkBehaviour
         if (playerShipNum < DataOperator.instance.shipsPrefabs.Length)
         {
             GameObject playerShipPrefab = DataOperator.instance.shipsPrefabs[playerShip.shipPrefabNum];
-            GameObject playerShipSpawned = Instantiate(playerShipPrefab, new Vector3(1, 1, 0), Quaternion.identity);
+            GameObject playerShipSpawned = Instantiate(playerShipPrefab, new Vector3(Random.Range(-20, 20), Random.Range(-20, 20), 0), Quaternion.identity);
+            playerShipGameStats = playerShipSpawned.GetComponent<ShipGameStats>();
 
             ModuleOnShipData[] modulesOnPlayerShipData = playerShip.modulesOnShipData;
             if (modulesOnPlayerShipData == null)
@@ -77,7 +83,7 @@ public class Player : NetworkBehaviour
 
             playerShipGO = playerShipSpawned;
             playerShipSpawned.GetComponent<NetworkObject>().SpawnWithOwnership(ownerClientID);
-            playerShipSpawned.GetComponent<ShipGameStats>().InitializeRpc();
+            playerShipSpawned.GetComponent<ShipGameStats>().ServerInitialize();
         }
     }
 
@@ -86,6 +92,29 @@ public class Player : NetworkBehaviour
     {
         playerShip = newPlayerShip;
         readyToSpawn = true;
+    }
+
+    [Rpc(SendTo.Server)]
+    public void SendMovementJoystickInputsDataToServerRpc(bool pressed_, float direction_, float magnitude_)
+    {
+        movementJoystickPressed = pressed_;
+        if (pressed_)
+        {
+            movementJoystickDirInDegrees = direction_;
+
+            if (magnitude_ > 1)
+                magnitude_ = 1;
+            if (magnitude_ < 0)
+                magnitude_ = 0;
+            movementJoystickMagnitude = magnitude_;
+        }
+        
+        if (playerShipGameStats != null)
+        {
+            playerShipGameStats.movementJoystickPressed.Value = movementJoystickPressed;
+            playerShipGameStats.movementJoystickDirInDegrees.Value = movementJoystickDirInDegrees;
+            playerShipGameStats.movementJoystickMagnitude.Value = movementJoystickMagnitude;
+        }
     }
 }
 
@@ -127,32 +156,20 @@ public struct Ship : INetworkSerializable
     }
 }
 
-/*
-[Serializable]
-public struct NetworkString : INetworkSerializeByMemcpy
-{
-    public string String;
-
-    public NetworkString(string inputString)
-    {
-        String = inputString;
-    }
-
-    public string GetString()
-    {
-        return String;
-    }
-}
-*/
-
 
 [Serializable]
-public struct NetworkString : INetworkSerializeByMemcpy
+public struct NetworkString : INetworkSerializable
 {
     char[] symbols;
 
     public NetworkString(string inputString)
     {
+        if (inputString == null)
+        {
+            Debug.LogWarning("Ќе задана inputString дл€ NetworkString");
+            symbols = new char[0];
+            return;
+        }    
         symbols = new char[inputString.Length];
         for (int symbolNum = 0; symbolNum < inputString.Length; symbolNum++)
         {
@@ -163,10 +180,40 @@ public struct NetworkString : INetworkSerializeByMemcpy
     public string GetString()
     {
         string outoutString = "";
+        if (symbols == null)
+        {
+            Debug.LogWarning("ѕопытка получить не заданную string из NetworkString");
+        }
         for (int symbolNum = 0; symbolNum < symbols.Length; symbolNum++)
         {
             outoutString += symbols[symbolNum];
         }
         return outoutString;
+    }
+
+    public void NetworkSerialize<T>(BufferSerializer<T> serializer) where T : IReaderWriter
+    {
+        // Length
+        int length = 0;
+        if (symbols != null && !serializer.IsReader)
+        {
+            length = symbols.Length;
+        }
+
+        serializer.SerializeValue(ref length);
+
+        // Array
+        if (serializer.IsReader)
+        {
+            symbols = new char[length];
+        }
+
+        if (symbols != null)
+        {
+            for (int n = 0; n < length; ++n)
+            {
+                serializer.SerializeValue(ref symbols[n]);
+            }
+        }
     }
 }

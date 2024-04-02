@@ -2,9 +2,8 @@ using UnityEngine;
 
 public class CameraScaler : MonoBehaviour
 {
-    [Header("Настройки")]
+    [Header("Настройка")]
     [SerializeField] UIPressedInfo touchesDetector;
-    bool includeAllTouchesWhileScaling;
     public float maxZoom;
     public float minZoom;
     float sensitivity;
@@ -32,7 +31,6 @@ public class CameraScaler : MonoBehaviour
 
     private void Awake()
     {
-        Application.targetFrameRate = 120;
         camera_ = GetComponent<Camera>();
         transformZ = transform.position.z;
         startCameraSize = camera_.orthographicSize;

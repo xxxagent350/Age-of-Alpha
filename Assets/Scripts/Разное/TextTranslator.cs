@@ -2,8 +2,9 @@ using UnityEngine;
 using UnityEngine.UI;
 using System;
 using TMPro;
+using Unity.Netcode;
 
-public class TextTranslator : MonoBehaviour
+public class TextTranslator : NetworkBehaviour
 {
     [SerializeField] TranslatedText text;
 
@@ -39,26 +40,26 @@ public class TextTranslator : MonoBehaviour
         //передаём компонентам текста перевод если они есть
         if (textUI != null)
         {
-            textUI.text = text.GetTranslatedText();
+            textUI.text = text.GetTranslatedString();
         }
         if (textMeshProUI != null)
         {
-            textMeshProUI.text = text.GetTranslatedText();
+            textMeshProUI.text = text.GetTranslatedString();
         }
         if (textMeshPro != null)
         {
-            textMeshPro.text = text.GetTranslatedText();
+            textMeshPro.text = text.GetTranslatedString();
         }
     }
 }
 
 [Serializable]
-public class TranslatedText
+public struct TranslatedText
 {
     public string RussianText;
     public string EnglishText;
 
-    public string GetTranslatedText()
+    public string GetTranslatedString()
     {
         SupportedLanguages userLanguage = DataOperator.instance.userLanguage;
 
@@ -68,6 +69,33 @@ public class TranslatedText
             return EnglishText;
 
         return "Error";
+    }
+}
+
+[Serializable]
+public struct TranslatedNetworkText : INetworkSerializable
+{
+    NetworkString RussianText;
+    NetworkString EnglishText;
+
+    public TranslatedNetworkText(TranslatedText translatedText)
+    {
+        RussianText = new NetworkString(translatedText.RussianText);
+        EnglishText = new NetworkString(translatedText.EnglishText);
+    }
+
+    public TranslatedText GetTranslatedText()
+    {
+        TranslatedText translatedText = new TranslatedText();
+        translatedText.RussianText = RussianText.GetString();
+        translatedText.EnglishText = EnglishText.GetString();
+        return translatedText;
+    }
+
+    public void NetworkSerialize<T>(BufferSerializer<T> serializer) where T : IReaderWriter
+    {
+        RussianText.NetworkSerialize(serializer);
+        EnglishText.NetworkSerialize(serializer);
     }
 }
 

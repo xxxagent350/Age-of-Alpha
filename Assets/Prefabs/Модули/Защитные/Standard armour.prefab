@@ -11,7 +11,6 @@ GameObject:
   - component: {fileID: 8326230022468291267}
   - component: {fileID: 9077278155855402111}
   - component: {fileID: 3725768527837253337}
-  - component: {fileID: 7438806263653372052}
   - component: {fileID: -2054027158965403924}
   m_Layer: 7
   m_Name: Standard armour
@@ -99,6 +98,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a625874215b417d4aa8bb7410ce650d3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  category: 2
+  type: 5
   Name:
     RussianText: "\u0411\u0440\u043E\u043D\u044F \u0441\u0442\u0430\u043D\u0434\u0430\u0440\u0442"
     EnglishText: Standard armour
@@ -127,20 +128,6 @@ MonoBehaviour:
   itemSlotsData:
   - position: {x: 0, y: 0}
     type: 1
---- !u!114 &7438806263653372052
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 602810540236663210}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0eb517a3fc55f384fa3070469e8136b8, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  category: 2
-  type: 5
 --- !u!114 &-2054027158965403924
 MonoBehaviour:
   m_ObjectHideFlags: 0

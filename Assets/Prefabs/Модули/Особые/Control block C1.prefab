@@ -11,7 +11,6 @@ GameObject:
   - component: {fileID: 7997544255636513898}
   - component: {fileID: -4040473215935896564}
   - component: {fileID: 4715768984142745003}
-  - component: {fileID: 8013857172749943899}
   - component: {fileID: 4011909845827919833}
   - component: {fileID: -6788804639658198636}
   - component: {fileID: -8321460500064220682}
@@ -101,6 +100,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a625874215b417d4aa8bb7410ce650d3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  category: 6
+  type: 11
   Name:
     RussianText: "\u0411\u043B\u043E\u043A \u0443\u043F\u0440\u0430\u0432\u043B\u0435\u043D\u0438\u044F
       C1"
@@ -131,20 +132,6 @@ MonoBehaviour:
     type: 1
   - position: {x: 0, y: 0}
     type: 1
---- !u!114 &8013857172749943899
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3744825288711606085}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0eb517a3fc55f384fa3070469e8136b8, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  category: 6
-  type: 11
 --- !u!114 &4011909845827919833
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -2,22 +2,11 @@ using UnityEngine;
 
 public class CameraMover : MonoBehaviour
 {
-    [Header("Настройка")]
-    [SerializeField] float accelerationMod;
-    [SerializeField] float accelerationOverflightMod;
-    [SerializeField] float maxAcceleration;
-    [SerializeField] float maxDeceleration;
-    [SerializeField] float maxSpeed;
-    [SerializeField] float ignoredDistance = 0.1f;
-    [SerializeField] float ignoredSpeed = 0.3f;
+    //[Header("Настройка")]
+    
 
     [Header("Отладка")]
     public Transform playerTransform;
-    [SerializeField] Vector2 speed;
-    [SerializeField] Vector2 acceleration;
-    [SerializeField] Vector2 distance;
-    [SerializeField] Vector2 fullDistance;
-    [SerializeField] Vector2 physicalDistance;
 
     bool playerNotSpawned = true;
 

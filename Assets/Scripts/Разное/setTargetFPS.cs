@@ -4,18 +4,5 @@ using UnityEngine;
 
 public class setTargetFPS : MonoBehaviour
 {
-
-    [SerializeField] int targetFPS = 60;
-
-    private void Start()
-    {
-        SlowUpdate();
-    }
-
-    void SlowUpdate()
-    {
-        Application.targetFrameRate = targetFPS;
-        Invoke(nameof(SlowUpdate), 3);
-    }
-
+    //этот скрипт нужно удалить
 }

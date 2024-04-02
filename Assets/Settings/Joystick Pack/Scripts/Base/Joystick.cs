@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.EventSystems;
 
 public class Joystick : MonoBehaviour, IPointerDownHandler, IDragHandler, IPointerUpHandler
@@ -32,29 +30,50 @@ public class Joystick : MonoBehaviour, IPointerDownHandler, IDragHandler, IPoint
     [SerializeField] private bool snapY = false;
 
     [SerializeField] protected RectTransform background = null;
-    [SerializeField] private RectTransform handle = null;
-    private RectTransform baseRect = null;
 
+    [SerializeField] private RectTransform handle = null;
+    [SerializeField] HandleReturnTypes handleVisualReturnType;
+    [SerializeField] float handleReturnSpeed = 15f;
+
+    [HideInInspector] public bool pressedOnJoystick;
+
+    private RectTransform baseRect = null;
     private Canvas canvas;
     private Camera cam;
-
     private Vector2 input = Vector2.zero;
-
+    
     protected virtual void Start()
     {
+        pressedOnJoystick = false;
         HandleRange = handleRange;
         DeadZone = deadZone;
         baseRect = GetComponent<RectTransform>();
         canvas = GetComponentInParent<Canvas>();
         if (canvas == null)
             Debug.LogError("The Joystick is not placed inside a canvas");
-
+        if (handleReturnSpeed <= 0)
+        {
+            handleVisualReturnType = HandleReturnTypes.TeleportToCenter;
+            Debug.LogError("Handle Return Speed для " + gameObject.name + " не может быть <= 0. Чтобы отключить плавное возвращение джойстика к центру измените параметр Handle Return Type");
+        }
+            
         Vector2 center = new Vector2(0.5f, 0.5f);
         background.pivot = center;
         handle.anchorMin = center;
         handle.anchorMax = center;
         handle.pivot = center;
         handle.anchoredPosition = Vector2.zero;
+    }
+
+    void Update()
+    {
+        if (handleVisualReturnType == HandleReturnTypes.SmoothReturnToCenter)
+        {
+            if (!pressedOnJoystick)
+            {
+                handle.anchoredPosition /= 1 + (handleReturnSpeed * Time.deltaTime);
+            }
+        }
     }
 
     public virtual void OnPointerDown(PointerEventData eventData)
@@ -64,6 +83,7 @@ public class Joystick : MonoBehaviour, IPointerDownHandler, IDragHandler, IPoint
 
     public void OnDrag(PointerEventData eventData)
     {
+        pressedOnJoystick = true;
         cam = null;
         if (canvas.renderMode == RenderMode.ScreenSpaceCamera)
             cam = canvas.worldCamera;
@@ -131,8 +151,11 @@ public class Joystick : MonoBehaviour, IPointerDownHandler, IDragHandler, IPoint
 
     public virtual void OnPointerUp(PointerEventData eventData)
     {
+        pressedOnJoystick = false;
         input = Vector2.zero;
-        handle.anchoredPosition = Vector2.zero;
+
+        if (handleVisualReturnType == HandleReturnTypes.TeleportToCenter)
+            handle.anchoredPosition = Vector2.zero;
     }
 
     protected Vector2 ScreenPointToAnchoredPosition(Vector2 screenPosition)
@@ -148,3 +171,10 @@ public class Joystick : MonoBehaviour, IPointerDownHandler, IDragHandler, IPoint
 }
 
 public enum AxisOptions { Both, Horizontal, Vertical }
+
+public enum HandleReturnTypes
+{
+    TeleportToCenter,
+    SmoothReturnToCenter,
+    DontReturnToCenter
+}

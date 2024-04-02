@@ -66,6 +66,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 53c4a854b2c3cc745b2140583204fe0e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playerShip: {fileID: 7076352098320370933, guid: fc285a486a8769b46b1fe4d835d05938, type: 3}
-  teamID: 
+  playerShipNum: 2
+  playerShip:
+    shipPrefabNum: 0
+    modulesOnShipData: []
   ownerClientID: 0
+  teamID: {}

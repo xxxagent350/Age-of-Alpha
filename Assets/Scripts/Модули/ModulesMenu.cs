@@ -47,8 +47,8 @@ public class ModulesMenu : MonoBehaviour
     [SerializeField] bool give999Modules;
     [SerializeField] GameObject[] menuSlots;
 
-    ModuleData[] modulesComponents;
-    ModuleData.categories categoryFilter = ModuleData.categories.None;
+    ItemData[] modulesComponents;
+    modulesCategories categoryFilter = modulesCategories.None;
     float moduleInfoContentStartYPos;
     //ModuleData.types typeFilter = ModuleData.types.None;
 
@@ -80,10 +80,10 @@ public class ModulesMenu : MonoBehaviour
         TryFoundShipStats();
         moduleInfoContentStartYPos = moduleInfoContent.position.y;
         menuSlots = new GameObject[0];
-        modulesComponents = new ModuleData[DataOperator.instance.modulesPrefabs.Length];
+        modulesComponents = new ItemData[DataOperator.instance.modulesPrefabs.Length];
         for (int i = 0; i < DataOperator.instance.modulesPrefabs.Length; i++)
         {
-            modulesComponents[i] = DataOperator.instance.modulesPrefabs[i].GetComponent<ModuleData>();
+            modulesComponents[i] = DataOperator.instance.modulesPrefabs[i].GetComponent<ItemData>();
         }
         RenderMenuSlosts();
         BackFromModuleParametres();
@@ -109,18 +109,18 @@ public class ModulesMenu : MonoBehaviour
         ModulesOnStorageData[] modulesOnStorageData = DataOperator.instance.GetModulesOnStorageDataClonedArray();
         foreach (ModulesOnStorageData moduleOnStorageData in modulesOnStorageData)
         {
-            ModuleData.categories category = modulesComponents[moduleOnStorageData.module.moduleNum].category;
-            if (category == ModuleData.categories.Weapons)
+            modulesCategories category = modulesComponents[moduleOnStorageData.module.moduleNum].category;
+            if (category == modulesCategories.Weapon)
                 weaponCategoryExists = true;
-            if (category == ModuleData.categories.DefenceModules)
+            if (category == modulesCategories.DefenceModules)
                 defenseCategoryExists = true;
-            if (category == ModuleData.categories.EnergyBlocks)
+            if (category == modulesCategories.EnergyBlocks)
                 energyCategoryExists = true;
-            if (category == ModuleData.categories.Engines)
+            if (category == modulesCategories.Engines)
                 enginesCategoryExists = true;
-            if (category == ModuleData.categories.Drones)
+            if (category == modulesCategories.Drones)
                 dronesCategoryExists = true;
-            if (category == ModuleData.categories.SpecialModules)
+            if (category == modulesCategories.SpecialModules)
                 specialCategoryExists = true;
         }
     }
@@ -133,7 +133,7 @@ public class ModulesMenu : MonoBehaviour
         BackFromModuleParametres();
         ChangeTimeButtonsVisualState();
 
-        if (categoryFilter == ModuleData.categories.None) //сортировка по категори€м
+        if (categoryFilter == modulesCategories.None) //сортировка по категори€м
         {
             if (!weaponCategoryExists &&
                 !defenseCategoryExists &&
@@ -162,41 +162,41 @@ public class ModulesMenu : MonoBehaviour
                     AddSlot(specialSlot);
             }
         }
-        if (categoryFilter == ModuleData.categories.Weapons)
+        if (categoryFilter == modulesCategories.Weapon)
         {
             GameObject slot_ = AddSlot(weaponSlot);
             slot_.GetComponent<ModulesMenuSlot>().behaviour = "backFromWeaponModules";
-            AddSlotsOfCategory(ModuleData.categories.Weapons);
+            AddSlotsOfCategory(modulesCategories.Weapon);
         }
-        if (categoryFilter == ModuleData.categories.DefenceModules)
+        if (categoryFilter == modulesCategories.DefenceModules)
         {
             GameObject slot_ = AddSlot(defenseSlot);
             slot_.GetComponent<ModulesMenuSlot>().behaviour = "backFromDefenseModules";
-            AddSlotsOfCategory(ModuleData.categories.DefenceModules);
+            AddSlotsOfCategory(modulesCategories.DefenceModules);
         }
-        if (categoryFilter == ModuleData.categories.EnergyBlocks)
+        if (categoryFilter == modulesCategories.EnergyBlocks)
         {
             GameObject slot_ = AddSlot(energySlot);
             slot_.GetComponent<ModulesMenuSlot>().behaviour = "backFromEnergyModules";
-            AddSlotsOfCategory(ModuleData.categories.EnergyBlocks);
+            AddSlotsOfCategory(modulesCategories.EnergyBlocks);
         }
-        if (categoryFilter == ModuleData.categories.Engines)
+        if (categoryFilter == modulesCategories.Engines)
         {
             GameObject slot_ = AddSlot(enginesSlot);
             slot_.GetComponent<ModulesMenuSlot>().behaviour = "backFromEngineModules";
-            AddSlotsOfCategory(ModuleData.categories.Engines);
+            AddSlotsOfCategory(modulesCategories.Engines);
         }
-        if (categoryFilter == ModuleData.categories.Drones)
+        if (categoryFilter == modulesCategories.Drones)
         {
             GameObject slot_ = AddSlot(dronesSlot);
             slot_.GetComponent<ModulesMenuSlot>().behaviour = "backFromDroneModules";
-            AddSlotsOfCategory(ModuleData.categories.Drones);
+            AddSlotsOfCategory(modulesCategories.Drones);
         }
-        if (categoryFilter == ModuleData.categories.SpecialModules)
+        if (categoryFilter == modulesCategories.SpecialModules)
         {
             GameObject slot_ = AddSlot(specialSlot);
             slot_.GetComponent<ModulesMenuSlot>().behaviour = "backFromSpecialModules";
-            AddSlotsOfCategory(ModuleData.categories.SpecialModules);
+            AddSlotsOfCategory(modulesCategories.SpecialModules);
         }
 
         scrollingContent.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, (menuSlots.Length * 80) + ((menuSlots.Length + 1) * 5));
@@ -212,13 +212,13 @@ public class ModulesMenu : MonoBehaviour
         menuSlots = new GameObject[0];
     }
 
-    void AddSlotsOfCategory(ModuleData.categories category)
+    void AddSlotsOfCategory(modulesCategories category)
     {
         ModulesOnStorageData[] modulesOnStorageData = DataOperator.instance.GetModulesOnStorageDataClonedArray();
         foreach (ModulesOnStorageData moduleOnStorageData in modulesOnStorageData)
         {
             GameObject modulePrefab = DataOperator.instance.modulesPrefabs[moduleOnStorageData.module.moduleNum];
-            if (modulePrefab.GetComponent<ModuleData>().category == category)
+            if (modulePrefab.GetComponent<ItemData>().category == category)
             {
                 GameObject slot = AddSlot(moduleSlotPrefab);
                 slot.GetComponent<ModulesMenuSlot>().SetModuleData(moduleOnStorageData.module);
@@ -257,38 +257,38 @@ public class ModulesMenu : MonoBehaviour
 
     public void ShowAllSlots()
     {
-        categoryFilter = ModuleData.categories.None;
+        categoryFilter = modulesCategories.None;
         RenderMenuSlosts();
     }
 
     public void ShowWeaponModules()
     {
-        categoryFilter = ModuleData.categories.Weapons;
+        categoryFilter = modulesCategories.Weapon;
         RenderMenuSlosts();
     }
     public void ShowDefenseModules()
     {
-        categoryFilter = ModuleData.categories.DefenceModules;
+        categoryFilter = modulesCategories.DefenceModules;
         RenderMenuSlosts();
     }
     public void ShowEnergyModules()
     {
-        categoryFilter = ModuleData.categories.EnergyBlocks;
+        categoryFilter = modulesCategories.EnergyBlocks;
         RenderMenuSlosts();
     }
     public void ShowEngineModules()
     {
-        categoryFilter = ModuleData.categories.Engines;
+        categoryFilter = modulesCategories.Engines;
         RenderMenuSlosts();
     }
     public void ShowDroneModules()
     {
-        categoryFilter = ModuleData.categories.Drones;
+        categoryFilter = modulesCategories.Drones;
         RenderMenuSlosts();
     }
     public void ShowSpecialModules()
     {
-        categoryFilter = ModuleData.categories.SpecialModules;
+        categoryFilter = modulesCategories.SpecialModules;
         RenderMenuSlosts();
     }
 
@@ -297,8 +297,8 @@ public class ModulesMenu : MonoBehaviour
         GameObject modulePrefab = DataOperator.instance.modulesPrefabs[module.moduleNum];
 
         moduleParametresImage.sprite = modulePrefab.transform.Find("Image").GetComponent<SpriteRenderer>().sprite;
-        moduleParametresName.text = modulePrefab.GetComponent<ItemData>().Name.GetTranslatedText();
-        moduleParametresInfo.text = GetModuleParametresInfo(module).GetTranslatedText();
+        moduleParametresName.text = modulePrefab.GetComponent<ItemData>().Name.GetTranslatedString();
+        moduleParametresInfo.text = GetModuleParametresInfo(module).GetTranslatedString();
 
         moduleInfoContent.position = new Vector2(moduleInfoContent.position.x, moduleInfoContentStartYPos);
         moduleParametres.SetActive(true);
@@ -351,7 +351,7 @@ public class ModulesMenu : MonoBehaviour
             TranslatedText debugText = new TranslatedText();
             debugText.RussianText = "Ќа префабе модул€ " + modulePrefab.name + " отсутствует компонент Armour, который должен быть на всех модул€х (он отвечает за прочность модул€)";
             debugText.EnglishText = "On the module's prefab " + modulePrefab.name + " is missing armour component, which should be on all modules (it is responsible for the maxHP of the module)";
-            Debug.LogError(debugText.GetTranslatedText());
+            Debug.LogError(debugText.GetTranslatedString());
             return debugText;
         }
         if (generatorComponent != null)
@@ -451,7 +451,7 @@ public class ModulesMenu : MonoBehaviour
             shipStatsTranslatedText.EnglishText += "\nRotation speed: " + DataOperator.instance.RoundFloat(shipStats.totalAngularSpeed);
 
 
-            shipStatsText.text = shipStatsTranslatedText.GetTranslatedText();
+            shipStatsText.text = shipStatsTranslatedText.GetTranslatedString();
         }
     }
 
@@ -575,15 +575,15 @@ public class ModulesMenu : MonoBehaviour
         foreach (ModuleOnShipData moduleOnShip in shipStats.modulesOnShip)
         {
             //блок управлени€
-            if (DataOperator.instance.modulesPrefabs[moduleOnShip.module.moduleNum].GetComponent<ModuleData>().type == ModuleData.types.ControlModules)
+            if (DataOperator.instance.modulesPrefabs[moduleOnShip.module.moduleNum].GetComponent<ItemData>().type == modulesTypes.ControlModules)
                 controlBlockExists = true;
 
             //двигатели
-            if (DataOperator.instance.modulesPrefabs[moduleOnShip.module.moduleNum].GetComponent<ModuleData>().category == ModuleData.categories.Engines)
+            if (DataOperator.instance.modulesPrefabs[moduleOnShip.module.moduleNum].GetComponent<ItemData>().category == modulesCategories.Engines)
                 engineExists = true;
 
             //оружие
-            if (DataOperator.instance.modulesPrefabs[moduleOnShip.module.moduleNum].GetComponent<ModuleData>().category == ModuleData.categories.Weapons)
+            if (DataOperator.instance.modulesPrefabs[moduleOnShip.module.moduleNum].GetComponent<ItemData>().category == modulesCategories.Weapon)
                 weaponExists = true;
         }
         if (!controlBlockExists)
@@ -591,7 +591,7 @@ public class ModulesMenu : MonoBehaviour
             TranslatedText warningMessageText = new TranslatedText();
             warningMessageText.RussianText = "Ќе установлен блок управлени€ - вы не сможете управл€ть кораблЄм, всЄ равно продолжить?";
             warningMessageText.EnglishText = "No control block installed - you won't be able to control the ship, still continue?";
-            applyingWarningPanel.transform.Find("Text").GetComponent<Text>().text = warningMessageText.GetTranslatedText();
+            applyingWarningPanel.transform.Find("Text").GetComponent<Text>().text = warningMessageText.GetTranslatedString();
             applyingWarningPanel.SetActive(true);
             return;
         }
@@ -600,7 +600,7 @@ public class ModulesMenu : MonoBehaviour
             TranslatedText warningMessageText = new TranslatedText();
             warningMessageText.RussianText = "Ќе установлено ни одного двигател€, всЄ равно продолжить?";
             warningMessageText.EnglishText = "No engine installed, still continue?";
-            applyingWarningPanel.transform.Find("Text").GetComponent<Text>().text = warningMessageText.GetTranslatedText();
+            applyingWarningPanel.transform.Find("Text").GetComponent<Text>().text = warningMessageText.GetTranslatedString();
             applyingWarningPanel.SetActive(true);
             return;
         }
@@ -609,7 +609,7 @@ public class ModulesMenu : MonoBehaviour
             TranslatedText warningMessageText = new TranslatedText();
             warningMessageText.RussianText = "Ќа корабле нет оружи€ - вы сможете нанести урон только тараном, всЄ равно продолжить?";
             warningMessageText.EnglishText = "There are no weapons on the ship - you can only do damage with a battering ram, still continue?";
-            applyingWarningPanel.transform.Find("Text").GetComponent<Text>().text = warningMessageText.GetTranslatedText();
+            applyingWarningPanel.transform.Find("Text").GetComponent<Text>().text = warningMessageText.GetTranslatedString();
             applyingWarningPanel.SetActive(true);
             return;
         }
@@ -620,7 +620,7 @@ public class ModulesMenu : MonoBehaviour
             TranslatedText warningMessageText = new TranslatedText();
             warningMessageText.RussianText = "Ќедостаточно генераторов энергии дл€ непрерывной работы двигателей, всЄ равно продолжить?";
             warningMessageText.EnglishText = "Not enough power generators to keep the engines running continuously, still continue?";
-            applyingWarningPanel.transform.Find("Text").GetComponent<Text>().text = warningMessageText.GetTranslatedText();
+            applyingWarningPanel.transform.Find("Text").GetComponent<Text>().text = warningMessageText.GetTranslatedString();
             applyingWarningPanel.SetActive(true);
             return;
         }

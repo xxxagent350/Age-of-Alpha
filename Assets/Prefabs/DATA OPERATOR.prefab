@@ -494,7 +494,7 @@ MonoBehaviour:
   shipsPrefabs:
   - {fileID: 7076352098320370933, guid: fc285a486a8769b46b1fe4d835d05938, type: 3}
   - {fileID: 6162979187479137575, guid: 48a3cc2654b13664d85d93cc41aff89a, type: 3}
-  - {fileID: 9199775940064552590, guid: 27bcfb9a9b929854ca91eb3967c9badf, type: 3}
+  - {fileID: 2754688915147245918, guid: 27bcfb9a9b929854ca91eb3967c9badf, type: 3}
   modulesPrefabs:
   - {fileID: 5903462403924034992, guid: af3cabf146fcc4c44af7a8dbc0e570b1, type: 3}
   - {fileID: 602810540236663210, guid: 43008a637ca34d146b99cea2a068aba2, type: 3}

@@ -30,10 +30,6 @@ public class ShipStats : MonoBehaviour
     public GameObject bullet;//
 
     [HideInInspector] public string teamID; //ID команды. Одинаковый - союзники, разный - враги
-    float energyGeneration; //суммарная генерация энергии со всех модулей
-    float energyCapacity; //максимальное количество запасаемой энергии во всех модулях
-    float maxAcceleration; //максимальное ускорение со всех двигателей
-    float maxAngularRotation; //максимальное УГЛОВОЕ ускорение со всех двигателей
     string shipName;
     GameObject[] modulesUI;
     ItemData myItemData;
@@ -305,6 +301,22 @@ public class ShipStats : MonoBehaviour
 
         totalSpeed = totalAccelerationPower / totalMass * 100;
         totalAngularSpeed = totalAngularAccelerationPower / totalMass * 100;
+    }
+
+    public bool ControlBlockExists()
+    {
+        for (int moduleOnShipNum = 0; moduleOnShipNum < modulesOnShip.Length; moduleOnShipNum++)
+        {
+            int modulePrefabNum = modulesOnShip[moduleOnShipNum].module.moduleNum;
+            GameObject modulePrefab = DataOperator.instance.modulesPrefabs[modulePrefabNum];
+            ItemData moduleItemData = modulePrefab.GetComponent<ItemData>();
+            if (moduleItemData.type == modulesTypes.ControlModules)
+            {
+                return true;
+            }
+        }
+
+        return false;
     }
 
 

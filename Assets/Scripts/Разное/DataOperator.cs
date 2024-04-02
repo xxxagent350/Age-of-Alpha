@@ -4,10 +4,12 @@ using System.Runtime.Serialization.Formatters.Binary;
 using System.IO;
 using Random = UnityEngine.Random;
 using Unity.Netcode;
+using UnityEngine.SceneManagement;
 
 public class DataOperator : MonoBehaviour
 {
     [Header("Настройка")]
+    [SerializeField] int targetFrameRate_ = 90;
     public GameObject[] shipsPrefabs;
     public GameObject[] modulesPrefabs;
     [SerializeField] AudioSource UIAudioSource;
@@ -18,6 +20,7 @@ public class DataOperator : MonoBehaviour
     [SerializeField] Data[] gameData;
     public SupportedLanguages userLanguage;
     public GraphicsPresets userGraphics = GraphicsPresets.high;
+    public static bool gameScene;
 
     Camera camera_;
     [HideInInspector] public static DataOperator instance = null;
@@ -28,8 +31,9 @@ public class DataOperator : MonoBehaviour
 
     private void Awake()
     {
-        Application.targetFrameRate = 90;
-
+        Application.targetFrameRate = targetFrameRate_;
+        SceneManager.activeSceneChanged += ChangedActiveScene;
+        ChangedActiveScene(new Scene(), new Scene());
 
         if (instance == null)
         {
@@ -72,17 +76,21 @@ public class DataOperator : MonoBehaviour
         }
         if (deviceType == "android")
         {
-            dataPath = "/data/data/com.AlphaGames.TheEraofAlpha/gameData";
-            try
-            {
-                Directory.CreateDirectory("/data/data/com.AlphaGames.TheEraofAlpha/testFolder");
-                Directory.Delete("/data/data/com.AlphaGames.TheEraofAlpha/testFolder");
-            }
-            catch
-            {
-                DataPathAccessErrorScreen.SetActive(true);
-            }
+            //dataPath = "/data/data/com.AlphaGames.TheEraofAlpha/gameData";
         }
+
+        try
+        {
+            Directory.CreateDirectory(dataPath + "/testFolder");
+            Directory.Delete(dataPath + "/testFolder");
+        }
+        catch
+        {
+            DataPathAccessErrorScreen.SetActive(true);
+        }
+
+
+
         if (!Directory.Exists(dataPath))
         {
             Directory.CreateDirectory(dataPath);
@@ -106,6 +114,18 @@ public class DataOperator : MonoBehaviour
         if (TryFoundCamera())
         {
             cameraSize = camera_.orthographicSize;
+        }
+    }
+
+    private void ChangedActiveScene(Scene current, Scene next)
+    {
+        if (PlayerInterface.instance != null)
+        {
+            gameScene = true;
+        }
+        else
+        {
+            gameScene = false;
         }
     }
 
@@ -252,6 +272,10 @@ public class DataOperator : MonoBehaviour
         {
             if (searchingData.dataName == name_)
             {
+                if (searchingData.deviceUniqueIdentifier != SystemInfo.deviceUniqueIdentifier)
+                {
+                    return "";
+                }
                 data = searchingData.dataString;
                 break;
             }
@@ -266,6 +290,10 @@ public class DataOperator : MonoBehaviour
         {
             if (searchingData.dataName == name_)
             {
+                if (searchingData.deviceUniqueIdentifier != SystemInfo.deviceUniqueIdentifier)
+                {
+                    return 0;
+                }
                 data = searchingData.dataInt;
                 break;
             }
@@ -280,6 +308,10 @@ public class DataOperator : MonoBehaviour
         {
             if (searchingData.dataName == name_)
             {
+                if (searchingData.deviceUniqueIdentifier != SystemInfo.deviceUniqueIdentifier)
+                {
+                    return 0;
+                }
                 data = searchingData.dataFloat;
                 break;
             }
@@ -296,6 +328,10 @@ public class DataOperator : MonoBehaviour
         {
             if (searchingData.dataName == dataName)
             {
+                if (searchingData.deviceUniqueIdentifier != SystemInfo.deviceUniqueIdentifier)
+                {
+                    return new ModulesOnStorageData();
+                }
                 data = searchingData.dataModulesOnStorage;
                 break;
             }
@@ -314,6 +350,10 @@ public class DataOperator : MonoBehaviour
         {
             if (searchingData.dataName == name_)
             {
+                if (searchingData.deviceUniqueIdentifier != SystemInfo.deviceUniqueIdentifier)
+                {
+                    return new ModuleOnShipData[0];
+                }
                 data = searchingData.dataModulesOnShip;
                 break;
             }
@@ -414,6 +454,64 @@ public class DataOperator : MonoBehaviour
         operatingValue = Mathf.RoundToInt(operatingValue);
         operatingValue /= Mathf.Pow(10, decimalPoints);
         return operatingValue;
+    }
+
+    public static float GetVector2DirInDegrees(Vector2 vector)
+    {
+        if (vector == null)
+        {
+            return 0;
+        }
+        float x = vector.x;
+        float y = vector.y;
+        float Rad2Deg = Mathf.Rad2Deg;
+
+        if (x > 0 && y > 0)
+        {
+            return -(MathF.Atan(x / y) * Rad2Deg);
+        }
+        if (x < 0 && y > 0)
+        {
+            return -(MathF.Atan(x / y) * Rad2Deg);
+        }
+        if (x < 0 && y < 0)
+        {
+            return -(MathF.Atan(x / y) * Rad2Deg - 180);
+        }
+        if (x > 0 && y < 0)
+        {
+            return -(MathF.Atan(x / y) * Rad2Deg + 180);
+        }
+        if (x == 0 && y >= 0)
+        {
+            return 0;
+        }
+        if (x == 0 && y < 0)
+        {
+            return -180;
+        }
+        if (x > 0 && y == 0)
+        {
+            return -90;
+        }
+        if (x < 0 && y == 0)
+        {
+            return 90;
+        }
+
+        return 0;
+    }
+
+    public static Vector2 RotateVector2(Vector2 vectorInput, float dirInDegrees)
+    {
+        Vector3 oldVector = new Vector3(vectorInput.x, vectorInput.y, 0);
+        float magnitude = oldVector.magnitude;
+        float dirInRadians = (dirInDegrees + 90) * Mathf.Deg2Rad;
+        float oldVectorDirRadians = GetVector2DirInDegrees(vectorInput) * Mathf.Deg2Rad;
+
+        Vector2 newVector = new Vector2(magnitude * Mathf.Cos(dirInRadians + oldVectorDirRadians), magnitude * Mathf.Sin(dirInRadians + oldVectorDirRadians));
+        //Debug.Log($"dirInRadians: {dirInRadians} Sin: {Mathf.Sin(dirInRadians + oldVectorDirRadians)} Cos: {Mathf.Cos(dirInRadians + oldVectorDirRadians)}");
+        return newVector;
     }
 }
 

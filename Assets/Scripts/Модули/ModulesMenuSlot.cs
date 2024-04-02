@@ -87,7 +87,7 @@ public class ModulesMenuSlot : MonoBehaviour, IPointerDownHandler
         GameObject modulePrefab = DataOperator.instance.modulesPrefabs[modulesOnStorageData.module.moduleNum];
         image.sprite = modulePrefab.transform.Find("Image").GetComponent<SpriteRenderer>().sprite;
         name = modulePrefab.GetComponent<ItemData>().Name.EnglishText;
-        name_.text = modulePrefab.GetComponent<ItemData>().Name.GetTranslatedText();
+        name_.text = modulePrefab.GetComponent<ItemData>().Name.GetTranslatedString();
         amount.text = modulesOnStorageData.amount + "";
     }
 
@@ -180,7 +180,7 @@ public class ModulesMenuSlot : MonoBehaviour, IPointerDownHandler
 
         //проверка блока управления (он может быть только один на корабле)
         GameObject modulePrefab = DataOperator.instance.modulesPrefabs[myModule.moduleNum];
-        if (modulePrefab.GetComponent<ModuleData>().type == ModuleData.types.ControlModules)
+        if (modulePrefab.GetComponent<ItemData>().type == modulesTypes.ControlModules)
         {
             SlotsPutter slotsPutter = (SlotsPutter)FindFirstObjectByType(typeof(SlotsPutter));
             ShipStats shipInstalledModulesData;
@@ -193,12 +193,12 @@ public class ModulesMenuSlot : MonoBehaviour, IPointerDownHandler
 
             foreach (ModuleOnShipData moduleOnShip in shipInstalledModulesData.modulesOnShip)
             {
-                if (DataOperator.instance.modulesPrefabs[moduleOnShip.module.moduleNum].GetComponent<ModuleData>().type == ModuleData.types.ControlModules)
+                if (DataOperator.instance.modulesPrefabs[moduleOnShip.module.moduleNum].GetComponent<ItemData>().type == modulesTypes.ControlModules)
                 {
                     TranslatedText errorMessageText = new TranslatedText();
                     errorMessageText.RussianText = "На корабле может быть установлен только 1 блок управления";
                     errorMessageText.EnglishText = "Only 1 control block can be installed on a ship";
-                    modulesMenu.moduleInstallationErrorMessageComponent.ShowErrorMessage(errorMessageText.GetTranslatedText());
+                    modulesMenu.moduleInstallationErrorMessageComponent.ShowErrorMessage(errorMessageText.GetTranslatedString());
                     return false;
                 }
             }

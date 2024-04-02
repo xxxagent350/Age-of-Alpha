@@ -1,12 +1,15 @@
 using Unity.Multiplayer.Tools.NetStatsMonitor;
 using Unity.Netcode;
 using UnityEngine;
+using UnityEngine.UI;
+using Unity.Netcode.Transports.UTP;
 
 public class NetworkManagerController : MonoBehaviour
 {
     [Header("Настройка")]
     [SerializeField] GameObject[] initializeNetworkButtons;
     [SerializeField] GameObject stopNetworkButton;
+    [SerializeField] InputField ipEnterField;
 
     [Header("Отладка")]
     [SerializeField] RuntimeNetStatsMonitor networkStatsMonitor;
@@ -16,6 +19,9 @@ public class NetworkManagerController : MonoBehaviour
     private void Awake()
     {
         networkStatsMonitor = GameObject.Find("NETWORK MANAGER").GetComponent<RuntimeNetStatsMonitor>();
+        if (!PlayerPrefs.HasKey("LastTimeConnectingIP"))
+            SetIP("10.144.14.197");
+        ipEnterField.text = PlayerPrefs.GetString("LastTimeConnectingIP");
     }
 
     public void StartHost()
@@ -33,6 +39,12 @@ public class NetworkManagerController : MonoBehaviour
     public void Stop()
     {
         NetworkManager.Singleton.Shutdown();
+    }
+
+    public void SetIP(string IP)
+    {
+        PlayerPrefs.SetString("LastTimeConnectingIP", IP);
+        NetworkManager.Singleton.GetComponent<UnityTransport>().ConnectionData.Address = IP;
     }
 
     private void Update()
