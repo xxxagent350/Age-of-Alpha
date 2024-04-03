@@ -1,6 +1,6 @@
 using UnityEngine;
-using UnityEngine.UI;
 using UnityEngine.EventSystems;
+using UnityEngine.UI;
 
 public class ModulesMenuSlot : MonoBehaviour, IPointerDownHandler
 {
@@ -35,10 +35,12 @@ public class ModulesMenuSlot : MonoBehaviour, IPointerDownHandler
             behaviour == "backFromEngineModules" ||
             behaviour == "backFromDroneModules" ||
             behaviour == "backFromSpecialModules")
+        {
             foreach (GameObject arrow in arrows)
             {
                 arrow.transform.localScale = new Vector3(-1, 1, 1);
-            } 
+            }
+        }
     }
 
     public void Click()
@@ -46,17 +48,34 @@ public class ModulesMenuSlot : MonoBehaviour, IPointerDownHandler
         DataOperator.instance.PlayUISound(clickSound, clickSoundVolume);
         
         if (behaviour == "weaponModulesSorting")
+        {
             modulesMenu.ShowWeaponModules();
+        }
+
         if (behaviour == "defenseModulesSorting")
+        {
             modulesMenu.ShowDefenseModules();
+        }
+
         if (behaviour == "energyModulesSorting")
+        {
             modulesMenu.ShowEnergyModules();
+        }
+
         if (behaviour == "engineModulesSorting")
+        {
             modulesMenu.ShowEngineModules();
+        }
+
         if (behaviour == "droneModulesSorting")
+        {
             modulesMenu.ShowDroneModules();
+        }
+
         if (behaviour == "specialModulesSorting")
+        {
             modulesMenu.ShowSpecialModules();
+        }
 
         if (behaviour == "backFromWeaponModules" ||
             behaviour == "backFromDefenseModules" ||
@@ -64,7 +83,9 @@ public class ModulesMenuSlot : MonoBehaviour, IPointerDownHandler
             behaviour == "backFromEngineModules" ||
             behaviour == "backFromDroneModules" ||
             behaviour == "backFromSpecialModules")
+        {
             modulesMenu.ShowAllSlots();
+        }
 
         if (behaviour == "moduleSlot")
         {
@@ -105,7 +126,7 @@ public class ModulesMenuSlot : MonoBehaviour, IPointerDownHandler
     [SerializeField] float xPosChangeForSlotPutting;
     [SerializeField] float yPosChangeForCancellingSlotPutting;
     Vector2 startTouchPoint;
-    float maxTimer = 1f;
+    readonly float maxTimer = 1f;
     float timer;
     float menuYPosWhenClicked;
 
@@ -185,19 +206,28 @@ public class ModulesMenuSlot : MonoBehaviour, IPointerDownHandler
             SlotsPutter slotsPutter = (SlotsPutter)FindFirstObjectByType(typeof(SlotsPutter));
             ShipStats shipInstalledModulesData;
             if (slotsPutter != null)
+            {
                 shipInstalledModulesData = slotsPutter.itemData.GetComponent<ShipStats>();
+            }
             else
+            {
                 return false;
+            }
+
             if (shipInstalledModulesData == null)
+            {
                 return false;
+            }
 
             foreach (ModuleOnShipData moduleOnShip in shipInstalledModulesData.modulesOnShip)
             {
                 if (DataOperator.instance.modulesPrefabs[moduleOnShip.module.moduleNum].GetComponent<ItemData>().type == modulesTypes.ControlModules)
                 {
-                    TranslatedText errorMessageText = new TranslatedText();
-                    errorMessageText.RussianText = "На корабле может быть установлен только 1 блок управления";
-                    errorMessageText.EnglishText = "Only 1 control block can be installed on a ship";
+                    TranslatedText errorMessageText = new TranslatedText
+                    {
+                        RussianText = "На корабле может быть установлен только 1 блок управления",
+                        EnglishText = "Only 1 control block can be installed on a ship"
+                    };
                     modulesMenu.moduleInstallationErrorMessageComponent.ShowErrorMessage(errorMessageText.GetTranslatedString());
                     return false;
                 }

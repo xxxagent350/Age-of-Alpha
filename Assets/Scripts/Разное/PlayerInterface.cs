@@ -1,12 +1,14 @@
+using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
-using TMPro;
-using System.Collections.Generic;
 
 public class PlayerInterface : MonoBehaviour
 {
     [Header("Настройка")]
     public EnergyBar energyBar;
+
+    [SerializeField] AttackButton[] attackButtons;
 
     [SerializeField] TextMeshProUGUI warningText;
     [SerializeField] AudioClip warningSound;
@@ -54,7 +56,26 @@ public class PlayerInterface : MonoBehaviour
 
     private void Awake()
     {
-        instance = this;
+        if (instance != null)
+        {
+            Debug.LogWarning("На сцене несколько PlayerInterface, чего быть не должно");
+        }
+        else
+        {
+            instance = this;
+        }
+        foreach (AttackButton attackButton in attackButtons)
+        {
+            attackButton.pointerStateChangedMessage += SendAttackButtonStateChangedMessage;
+        }
+    }
+
+    private void OnDestroy()
+    {
+        foreach (AttackButton attackButton in attackButtons)
+        {
+            attackButton.pointerStateChangedMessage -= SendAttackButtonStateChangedMessage;
+        }
     }
 
     private void Start()
@@ -296,6 +317,20 @@ public class PlayerInterface : MonoBehaviour
             lastFrameMovementJoystickDirInDegrees = direction_;
             lastFrameMovementJoystickMagnitude = magnitude_;
         }
+    }
+
+
+    public delegate void AttackButtonStateChangedMessage(uint index, bool pressed);
+    public event AttackButtonStateChangedMessage attackButtonStateChangedMessage;
+    void SendAttackButtonStateChangedMessage(uint index, bool pressed)
+    {
+        /*
+        if (attackButtonStateChangedMessage != null)
+        {
+            attackButtonStateChangedMessage(index, pressed);
+        }
+        */
+        attackButtonStateChangedMessage?.Invoke(index, pressed);
     }
 
 

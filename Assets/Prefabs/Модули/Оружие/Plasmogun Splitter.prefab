@@ -114,7 +114,7 @@ GameObject:
   - component: {fileID: 7573113351939474916}
   - component: {fileID: 7755495142518832679}
   - component: {fileID: -4660713206179284107}
-  - component: {fileID: -1869552462642006438}
+  - component: {fileID: 8037975564134485726}
   m_Layer: 7
   m_Name: Plasmogun Splitter
   m_TagString: Module
@@ -232,7 +232,7 @@ MonoBehaviour:
   resistanceToEnergyDamage: 0
   resistanceToPhysicalDamage: 0
   HP: 0
---- !u!114 &-1869552462642006438
+--- !u!114 &8037975564134485726
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -241,6 +241,15 @@ MonoBehaviour:
   m_GameObject: {fileID: 2901564947838014947}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d532639bca2502343ad290112f5352d3, type: 3}
+  m_Script: {fileID: 11500000, guid: efd26ec3dd673d64aa8884efc9659a02, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  FIRE: 0
+  isWorking: 1
+  weaponNum: 0
+  projectilePrefab: {fileID: 2288871660798619471, guid: b2e6515e7e7ba5c4aaad7541b8331a23, type: 3}
+  barrelsPositions:
+  - {x: 0, y: 0.43}
+  reloadTime: 0
+  projectilesPerSalvo: 1
+  scatterAngle: 5

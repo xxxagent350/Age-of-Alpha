@@ -35,11 +35,20 @@ public class Player : NetworkBehaviour
         if (IsOwner)
         {
             PlayerInterface.instance.localPlayer = this;
+            PlayerInterface.instance.attackButtonStateChangedMessage += ReceiveAttackButtonStateChangedRpc;
             string playerShipName = DataOperator.instance.shipsPrefabs[playerShipNum].GetComponent<ItemData>().Name.EnglishText;
             ModuleOnShipData[] modulesOnPlayerShip = DataOperator.instance.LoadDataModulesOnShip("ModulesOnShipData(" + playerShipName + ")");
             Ship newPlayerShip = new Ship(playerShipNum, modulesOnPlayerShip);
             SendPlayerShipDataToServerRpc(newPlayerShip);
         }
+    }
+
+    public override void OnDestroy()
+    {
+        if (IsOwner)
+        {
+            PlayerInterface.instance.attackButtonStateChangedMessage -= ReceiveAttackButtonStateChangedRpc;
+        }   
     }
 
     void WaitingToSpawnPlayerShip()
@@ -103,9 +112,15 @@ public class Player : NetworkBehaviour
             movementJoystickDirInDegrees = direction_;
 
             if (magnitude_ > 1)
+            {
                 magnitude_ = 1;
+            }
+
             if (magnitude_ < 0)
+            {
                 magnitude_ = 0;
+            }
+
             movementJoystickMagnitude = magnitude_;
         }
         
@@ -115,6 +130,12 @@ public class Player : NetworkBehaviour
             playerShipGameStats.movementJoystickDirInDegrees.Value = movementJoystickDirInDegrees;
             playerShipGameStats.movementJoystickMagnitude.Value = movementJoystickMagnitude;
         }
+    }
+
+    [Rpc(SendTo.Server)]
+    void ReceiveAttackButtonStateChangedRpc(uint index, bool pressed)
+    {
+        playerShipGameStats.SendFireStateChange(index, pressed);
     }
 }
 

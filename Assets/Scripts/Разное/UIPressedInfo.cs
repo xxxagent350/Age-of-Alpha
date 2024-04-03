@@ -43,8 +43,13 @@ public class UIPressedInfo : MonoBehaviour, IPointerDownHandler, IDragHandler, I
         touchesPositions[touchesPositions.Length - 1] = eventData.position;
     }
 
+
+    public delegate void PointerStateChanged(bool pressed);
+    public event PointerStateChanged pointerStateChangedMessage;
     public void OnPointerDown(PointerEventData eventData)
     {
+        pointerStateChangedMessage?.Invoke(true);
+
         bool founded = false;
         for (int idNum = 0; idNum < touchIDs.Length; idNum++)
         {
@@ -75,6 +80,8 @@ public class UIPressedInfo : MonoBehaviour, IPointerDownHandler, IDragHandler, I
 
     public void OnPointerUp(PointerEventData eventData)
     {
+        pointerStateChangedMessage?.Invoke(false);
+
         for (int idNum = 0; idNum < touchIDs.Length; idNum++)
         {
             if (touchIDs[idNum] == eventData.pointerId)

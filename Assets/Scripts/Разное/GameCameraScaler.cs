@@ -19,7 +19,14 @@ public class GameCameraScaler : MonoBehaviour
 
     private void Awake()
     {
-        instance = this;
+        if (instance != null)
+        {
+            Debug.LogWarning("На сцене несколько GameCameraScaler, чего быть не должно");
+        }
+        else
+        {
+            instance = this;
+        }
         zoom = -transform.position.z;
     }
 

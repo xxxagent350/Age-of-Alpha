@@ -49,7 +49,7 @@ public class ShipGameStats : NetworkBehaviour
         if (IsOwner)
         {
             energyBar = PlayerInterface.instance.energyBar;
-            FindFirstObjectByType<CameraMover>().playerTransform = transform;
+            CameraMover.instance.SetPlayerShip(transform);
         }
         if (NetworkManager.Singleton.IsServer)
         {
@@ -62,7 +62,7 @@ public class ShipGameStats : NetworkBehaviour
         }
     }
 
-    override public void OnDestroy()
+    public override void OnDestroy()
     {
         if (DataOperator.gameScene && IsOwner)
         {
@@ -376,10 +376,21 @@ public class ShipGameStats : NetworkBehaviour
         }
         else
         {
-            TranslatedText warningMessage = new TranslatedText();
-            warningMessage.RussianText = "Нет связи с кораблём: не установлен блок управления";
-            warningMessage.EnglishText = "No communication with the ship: no control block installed";
+            TranslatedText warningMessage = new TranslatedText
+            {
+                RussianText = "Нет связи с кораблём: не установлен блок управления",
+                EnglishText = "No communication with the ship: no control block installed"
+            };
             PlayerInterface.instance.ShowWarningText(warningMessage);
         }
+    }
+
+
+    public delegate void AttackButtonStateChangedMessage(uint index, bool pressed);
+    public event AttackButtonStateChangedMessage attackButtonStateChangedMessage;
+
+    public void SendFireStateChange(uint index, bool fire)
+    {
+        attackButtonStateChangedMessage?.Invoke(index, fire);
     }
 }

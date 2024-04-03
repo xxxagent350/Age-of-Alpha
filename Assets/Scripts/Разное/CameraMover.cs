@@ -6,13 +6,32 @@ public class CameraMover : MonoBehaviour
     
 
     [Header("Отладка")]
-    public Transform playerTransform;
+    [SerializeField] Transform playerShipTransform;
 
+    public static CameraMover instance;
     bool playerNotSpawned = true;
+
+    private void Awake()
+    {
+        if (instance != null)
+        {
+            Debug.LogWarning("На сцене несколько CameraMover, чего быть не должно");
+        }
+        else
+        {
+            instance = this;
+        }
+    }
+
+    public void SetPlayerShip(Transform playerShipTransform_)
+    {
+        playerShipTransform = playerShipTransform_;
+        LateUpdate();
+    }
 
     private void LateUpdate()
     {
-        if (playerTransform == null)
+        if (playerShipTransform == null)
         {
             playerNotSpawned = true;
         }
@@ -29,11 +48,11 @@ public class CameraMover : MonoBehaviour
 
     public void MoveCamera()
     {
-        transform.position = new Vector3(playerTransform.position.x, playerTransform.position.y, transform.position.z);
+        transform.position = new Vector3(playerShipTransform.position.x, playerShipTransform.position.y, transform.position.z);
     }
 
     void TeleportToPlayer()
     {
-        transform.position = new Vector3(playerTransform.position.x, playerTransform.position.y, transform.position.z);
+        transform.position = new Vector3(playerShipTransform.position.x, playerShipTransform.position.y, transform.position.z);
     }
 }
