@@ -273,9 +273,8 @@ GameObject:
   m_Component:
   - component: {fileID: 5674795721380025807}
   - component: {fileID: 2016701519165959488}
-  - component: {fileID: 724195897613913591}
+  - component: {fileID: 8718349088648857919}
   - component: {fileID: 326923900850356466}
-  - component: {fileID: 3370903101276391320}
   - component: {fileID: 877548179166838476}
   - component: {fileID: 7689750848961759715}
   - component: {fileID: 7211468409232662279}
@@ -328,7 +327,7 @@ MonoBehaviour:
   SpawnWithObservers: 1
   DontDestroyWithOwner: 0
   AutoObjectParentSync: 1
---- !u!114 &724195897613913591
+--- !u!114 &8718349088648857919
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -337,28 +336,16 @@ MonoBehaviour:
   m_GameObject: {fileID: 2754688915147245918}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e96cb6065543e43c4a752faaa1468eb1, type: 3}
+  m_Script: {fileID: 11500000, guid: 972cb3968ee123342bbf8fe267569130, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  UseUnreliableDeltas: 0
-  SyncPositionX: 1
-  SyncPositionY: 1
-  SyncPositionZ: 0
-  SyncRotAngleX: 0
-  SyncRotAngleY: 0
-  SyncRotAngleZ: 1
-  SyncScaleX: 0
-  SyncScaleY: 0
-  SyncScaleZ: 0
-  PositionThreshold: 0.001
-  RotAngleThreshold: 0.01
-  ScaleThreshold: 0.01
-  UseQuaternionSynchronization: 0
-  UseQuaternionCompression: 0
-  UseHalfFloatPrecision: 0
-  InLocalSpace: 0
-  Interpolate: 1
-  SlerpPosition: 0
+  syncType:
+    m_InternalValue: 2
+  framesBuffering: 20
+  interpolatingTimeScaleMod: 1.5
+  framesMaxBuffer: 50
+  transformsInterpolating: []
+  clientsCount: 0
 --- !u!50 &326923900850356466
 Rigidbody2D:
   serializedVersion: 4
@@ -386,18 +373,6 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 0
---- !u!114 &3370903101276391320
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2754688915147245918}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 80d7c879794dfda4687da0e400131852, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &877548179166838476
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -610,7 +585,6 @@ MonoBehaviour:
   spawnBullet: 0
   bullet: {fileID: 2288871660798619471, guid: b2e6515e7e7ba5c4aaad7541b8331a23, type: 3}
   teamID: 196730340214338153581425135233
-  modulesCollidersKeepActiveTime: 3
 --- !u!114 &3708104295153655803
 MonoBehaviour:
   m_ObjectHideFlags: 0

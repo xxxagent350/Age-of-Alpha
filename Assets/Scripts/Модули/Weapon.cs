@@ -11,7 +11,8 @@ public class Weapon : MonoBehaviour
     [Tooltip("Номер орудия (например если игрок хочет выстрелить из орудий обозначенных номером 2, то стреляют орудия у которых этот параметр равен 2), выставляется автоматически")]
     public uint weaponNum;
 
-    ShipGameStats myShipGameStats;
+    [HideInInspector] public ShipGameStats myShipGameStats;
+    const float serverUpdateDeltaTime = 0.02f;
 
     public void Start()
     {
@@ -21,6 +22,7 @@ public class Weapon : MonoBehaviour
             myShipGameStats.attackButtonStateChangedMessage += ChangeFiringState;
         }
         Initialize();
+        RandomUpdate();
     }
 
     public void OnDestroy()
@@ -39,12 +41,13 @@ public class Weapon : MonoBehaviour
         }
     }
 
-    public void FixedUpdate()
+    public void RandomUpdate()
     {
         if (NetworkManager.Singleton.IsServer)
         {
             ServerUpdate();
-        } 
+        }
+        Invoke(nameof(RandomUpdate), Random.Range(serverUpdateDeltaTime * 0.5f, serverUpdateDeltaTime * 1.5f));
     }
 
     public virtual void Initialize()

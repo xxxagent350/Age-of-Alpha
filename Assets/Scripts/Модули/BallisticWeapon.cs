@@ -1,15 +1,17 @@
 using System.Collections.Generic;
-using UnityEngine;
 using Unity.Netcode;
+using UnityEngine;
 
 public class BallisticWeapon : Weapon
 {
     [Header("Настройка")]
     [Tooltip("Префаб пули")]
     [SerializeField] GameObject projectilePrefab;
+    [Tooltip("Энергопотребление на 1 залп")]
+    [SerializeField] float energyConsumption = 1;
     [Tooltip("Позиции из которых по очереди будут вылетать пули(обозначены значком прицела в редакторе)")]
     [SerializeField] List<Vector2> barrelsPositions;
-    [Tooltip("Время между выстрелами в секундах (проверка на возможность стрельбы проверяется каждый интервал обновления FixedUpdate, поэтому очень малые величины ставить не имеет смысла)")]
+    [Tooltip("Время между выстрелами в секундах")]
     [SerializeField] float reloadTime = 0.5f;
     [Tooltip("Количество снарядов выпускаемых за 1 залп")]
     [SerializeField] int projectilesPerSalvo = 1;
@@ -18,6 +20,7 @@ public class BallisticWeapon : Weapon
 
     float reloadTimer;
     int currentBarrelNum;
+    Rigidbody2D myShipRigidbody2D;
 
     public override void Initialize()
     {
@@ -28,6 +31,10 @@ public class BallisticWeapon : Weapon
             isWorking = false;
         }
 #endif
+        if (NetworkManager.Singleton.IsServer)
+        {
+            myShipRigidbody2D = myShipGameStats.GetComponent<Rigidbody2D>();
+        }
     }
 
     public override void ServerUpdate()
@@ -57,7 +64,10 @@ public class BallisticWeapon : Weapon
         if (reloadTimer >= reloadTime)
         {
             reloadTimer = 0;
-            Salvo();
+            if (myShipGameStats.TakeEnergy(energyConsumption))
+            {
+                Salvo();
+            }
         }
     }
 
@@ -81,7 +91,9 @@ public class BallisticWeapon : Weapon
 
     void SpawnProjectile(Vector2 position)
     {
-        GameObject projectile = Instantiate(projectilePrefab, position, transform.rotation);
+        Quaternion rotation = transform.rotation * Quaternion.Euler(0, 0, Random.Range(-scatterAngle, scatterAngle));
+        GameObject projectile = Instantiate(projectilePrefab, position, rotation);
+        projectile.GetComponent<Rigidbody2D>().velocity = myShipRigidbody2D.velocity;
         projectile.GetComponent<NetworkObject>().Spawn();
     }
 

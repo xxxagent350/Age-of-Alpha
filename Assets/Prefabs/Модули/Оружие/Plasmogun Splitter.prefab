@@ -247,9 +247,11 @@ MonoBehaviour:
   FIRE: 0
   isWorking: 1
   weaponNum: 0
+  myShipGameStats: {fileID: 0}
   projectilePrefab: {fileID: 2288871660798619471, guid: b2e6515e7e7ba5c4aaad7541b8331a23, type: 3}
+  energyConsumption: 1.5
   barrelsPositions:
   - {x: 0, y: 0.43}
-  reloadTime: 0
+  reloadTime: 0.3
   projectilesPerSalvo: 1
   scatterAngle: 5

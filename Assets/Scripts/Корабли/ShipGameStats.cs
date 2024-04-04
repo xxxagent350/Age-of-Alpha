@@ -1,13 +1,13 @@
 using System.Collections.Generic;
 using Unity.Netcode;
 using UnityEngine;
+using System.Linq;
 
 public class ShipGameStats : NetworkBehaviour
 {
     [Header("Настройка")]
     [SerializeField] float enginesLightsAlphaChangingSpeed = 2;
     [SerializeField] List<SpriteRenderer> enginesLights;
-
     [SerializeField] List<TrailRenderer> trails;
 
     [Header("Отладка")]
@@ -37,7 +37,7 @@ public class ShipGameStats : NetworkBehaviour
     const float maxSpeedMod = 150;
     const float linearDragMod = 0.01f;
     const float accelerationPowerMod = 500;
-
+    
     bool noControl; //true когда нету блока управления
 
     private void Start()
@@ -89,6 +89,7 @@ public class ShipGameStats : NetworkBehaviour
         enginesConsumption.Value = myShipStats.totalEnginesConsumption;
         accelerationPower = myShipStats.totalAccelerationPower;
         angularAccelerationPower = myShipStats.totalAngularAccelerationPower;
+
         Invoke(nameof(WaitingToBeSpawned), 0.1f);
     }
 
@@ -111,7 +112,6 @@ public class ShipGameStats : NetworkBehaviour
             Invoke(nameof(WaitingToBeSpawned), 0.1f);
         }
     }
-
 
     private void FixedUpdate()
     {
@@ -249,7 +249,7 @@ public class ShipGameStats : NetworkBehaviour
         }
     }
 
-    bool TakeEnergy(float energyAmount)
+    public bool TakeEnergy(float energyAmount)
     {
         if (energy.Value < energyAmount)
         {
@@ -262,7 +262,7 @@ public class ShipGameStats : NetworkBehaviour
         }
     }
 
-    bool CheckEnergy(float energyAmount)
+    public bool CheckEnergy(float energyAmount)
     {
         if (energy.Value < energyAmount)
         {
