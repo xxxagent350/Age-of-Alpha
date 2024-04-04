@@ -1,0 +1,53 @@
+using Unity.Netcode;
+using UnityEngine;
+
+public class NetworkTransformIlia : NetworkBehaviour
+{
+    Rigidbody2D myRigidbody2D;
+    NetworkObject myNetworkObject;
+
+    private void Start()
+    {
+        myRigidbody2D = GetComponent<Rigidbody2D>();
+        myNetworkObject = GetComponent<NetworkObject>();
+        if (!NetworkManager.Singleton.IsServer && NetworkManager.Singleton.IsClient)
+        {
+            myRigidbody2D.bodyType = RigidbodyType2D.Kinematic;
+            myRigidbody2D.simulated = false;
+        }
+    }
+
+    private void FixedUpdate()
+    {
+        if (myNetworkObject.IsSpawned)
+        {
+            IliaTransform();
+        }
+    }
+
+    void IliaTransform()
+    {
+        if (NetworkManager.Singleton.IsServer)
+        {
+            //то что тут напишешь будет выполняться у сервера
+            SetPositionRpc(new Transform2D(transform));
+        }
+        else
+        {
+            if (NetworkManager.Singleton.IsClient)
+            {
+                //то что тут напишешь будет выполняться у клиентов
+            }
+        }
+    }
+
+    //[Rpc(SendTo.NotServer)] отправляет это сообщение всем кроме сервера
+    [Rpc(SendTo.NotServer)]
+    void SetPositionRpc(Transform2D newTransform)
+    {
+        if (!NetworkManager.Singleton.IsServer && NetworkManager.Singleton.IsClient)
+        {
+            newTransform.SetTransformAtThis(transform);
+        }
+    }
+}
