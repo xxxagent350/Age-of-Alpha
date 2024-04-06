@@ -38,7 +38,7 @@ public class NetworkTransformIlia : NetworkBehaviour
             if (NetworkManager.Singleton.IsClient)
             {
                 //то что тут напишешь  выполняться у клиентов
-                Debug.LogError("тут я есть"+gais.xPos + gais.yPos);
+                Debug.Log($"X: {gais.xPos} Y: {gais.yPos} Поворот: {gais.rotationDegrees}");
             }
         }
     }
