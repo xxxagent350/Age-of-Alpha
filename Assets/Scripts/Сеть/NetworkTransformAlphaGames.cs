@@ -170,6 +170,7 @@ public class NetworkTransformByAlphaGames : NetworkBehaviour
 
 
     bool interpolationInitialized;
+    long initializingFrameNum;
     [Rpc(SendTo.NotServer)]
     void SetPositionRpcForInterpolatingRpc(Transform2D newTransform_)
     {
@@ -183,7 +184,9 @@ public class NetworkTransformByAlphaGames : NetworkBehaviour
                 }
                 clientsCount = transformsInterpolating.Count - 1;
                 interpolationInitialized = true;
+                initializingFrameNum = transformsInterpolating.Count - 1 - framesBuffering;
             }
+            //if (initializingFrameNum == )
             transformsInterpolating.Add(newTransform_);
             clientsCount--;
         }
