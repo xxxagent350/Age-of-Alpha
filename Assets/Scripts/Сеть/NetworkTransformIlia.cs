@@ -1,12 +1,15 @@
+using NUnit.Framework;
 using Unity.Netcode;
 using UnityEngine;
+using System;
+using System.Collections.Generic;
 
 public class NetworkTransformIlia : NetworkBehaviour
 {
     Rigidbody2D myRigidbody2D;
     NetworkObject myNetworkObject;
     [SerializeField] Transform2D gais;
-
+    List<Transform2D> Pozition;
     private void Start()
     {
         myRigidbody2D = GetComponent<Rigidbody2D>();
@@ -39,6 +42,8 @@ public class NetworkTransformIlia : NetworkBehaviour
             {
                 //то что тут напишешь  выполн€тьс€ у клиентов
                 Debug.Log($"X: {gais.xPos} Y: {gais.yPos} ѕоворот: {gais.rotationDegrees}");
+                transform.position = new Vector2(gais.xPos, gais.yPos);
+                Pozition.Add(gais);
             }
         }
     }
@@ -49,7 +54,7 @@ public class NetworkTransformIlia : NetworkBehaviour
     {
         if (!NetworkManager.Singleton.IsServer && NetworkManager.Singleton.IsClient)
         {
-            newTransform.SetTransformAtThis(transform);
+            //newTransform.SetTransformAtThis(transform);
             gais = newTransform ;
         }
     }
