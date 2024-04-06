@@ -342,8 +342,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   syncType:
     m_InternalValue: 2
-  framesBuffering: 20
-  interpolatingTimeScaleMod: 1.5
+  framesBuffering: 2
+  interpolatingTimeScaleMod: 0.5
   framesMaxBuffer: 50
   transformsInterpolating: []
   clientsCount: 0
@@ -372,7 +372,7 @@ Rigidbody2D:
   m_UseFullKinematicContacts: 0
   m_UseAutoMass: 0
   m_Mass: 100
-  m_LinearDrag: 0.1
+  m_LinearDrag: 0
   m_AngularDrag: 0
   m_GravityScale: 1
   m_Material: {fileID: 0}

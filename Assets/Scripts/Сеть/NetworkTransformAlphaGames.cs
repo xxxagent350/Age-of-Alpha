@@ -10,9 +10,9 @@ public class NetworkTransformByAlphaGames : NetworkBehaviour
     [SerializeField] NetworkVariable<TransformSyncTypes> syncType;
     [Tooltip("Ќа сколько кадров(fixed update) будет оставать анимаци€ от сервера (дл€ interpolate), больше = плавнее")]
     [SerializeField] uint framesBuffering = 5;
-    [Tooltip("„ем больше этот параметр, тем медленнее будет приближатьс€ объект к последней полученной по сети позиции(должен быть более 1; нужен дл€ interpolate)")]
-    [SerializeField] float interpolatingTimeScaleMod = 1.1f;
-    [Tooltip("„ем больше этот параметр, тем медленнее будет приближатьс€ объект к последней полученной по сети позиции(должен быть более framesBuffering; нужен дл€ interpolate)")]
+    [Tooltip("„ем больше этот параметр, тем более агрессивно клиент будет измен€ть скорость течени€ времени чтобы выровн€ть своЄ врем€ и врем€ сервера(должен быть более 0; нужен дл€ interpolate; 1 = линейное изменение)")]
+    [SerializeField] float interpolatingTimeScaleMod = 1;
+    [Tooltip("ћаксимальна€ длина списка кадров дл€ интерпол€ции")]
     [SerializeField] uint framesMaxBuffer = 50;
 
     Rigidbody2D myRigidbody2D;
@@ -32,10 +32,10 @@ public class NetworkTransformByAlphaGames : NetworkBehaviour
             framesBuffering = 1;
             Debug.LogWarning($"framesBuffering не может быть менее 1 ({gameObject.name})");
         }
-        if (interpolatingTimeScaleMod < 1)
+        if (interpolatingTimeScaleMod < 0)
         {
-            interpolatingTimeScaleMod = 1.1f;
-            Debug.LogWarning($"interpolatingTimeScaleMod не может быть менее 1 ({gameObject.name})");
+            interpolatingTimeScaleMod = 1f;
+            Debug.LogWarning($"interpolatingTimeScaleMod не может быть менее 0 ({gameObject.name})");
         }
         if (framesMaxBuffer <= framesBuffering)
         {
@@ -103,17 +103,13 @@ public class NetworkTransformByAlphaGames : NetworkBehaviour
 
     [Header("ќтладка")]
     [SerializeField] List<Transform2D> transformsInterpolating = new List<Transform2D>(0);
-
-    ulong serversCount;
     [SerializeField] float clientsCount;
 
     void InterpolatingTransform()
     {
-        //удачи, »ль€
         if (NetworkManager.Singleton.IsServer) //сервер
         {
-            SetPositionRpcForInterpolatingRpc(new Transform2D(transform), serversCount);
-            serversCount++;
+            SetPositionRpcForInterpolatingRpc(new Transform2D(transform));
         }
         else
         {
@@ -133,18 +129,25 @@ public class NetworkTransformByAlphaGames : NetworkBehaviour
 
     void Interpolate()
     {
-        clientsCount++;
+        float targetPositionInOrder = transformsInterpolating.Count - 1 - framesBuffering;
+        if (clientsCount >= targetPositionInOrder)
+        {
+            clientsCount += Mathf.Pow((transformsInterpolating.Count - 1 - clientsCount) / framesBuffering, interpolatingTimeScaleMod);
+        }
+        else
+        {
+            clientsCount += Mathf.Pow(1 + ((targetPositionInOrder - clientsCount) / framesBuffering), interpolatingTimeScaleMod);
+        }
+       
+
         if (clientsCount < 0)
         {
             clientsCount = 0;
         }
-        if (clientsCount > framesMaxBuffer - 1)
+        if (clientsCount > transformsInterpolating.Count - 1)
         {
-            clientsCount = framesMaxBuffer - 1;
+            clientsCount = transformsInterpolating.Count - 1;
         }
-
-        float targetPositionInOrder = transformsInterpolating.Count - 1 - framesBuffering;
-        clientsCount += (targetPositionInOrder - clientsCount) * interpolatingTimeScaleMod;
 
         Transform2D finalPos = new Transform2D();
         if (clientsCount == Mathf.RoundToInt(clientsCount))
@@ -154,32 +157,33 @@ public class NetworkTransformByAlphaGames : NetworkBehaviour
         else
         {
             float olderRatio = Mathf.RoundToInt(clientsCount + 0.5f) - clientsCount;
-            float newerRatio = clientsCount - Mathf.RoundToInt(clientsCount - 0.5f);
+            float newerRatio = 1 - olderRatio;
             Transform2D olderTransform = transformsInterpolating[Mathf.RoundToInt(clientsCount - 0.5f)];
             Transform2D newerTransform = transformsInterpolating[Mathf.RoundToInt(clientsCount + 0.5f)];
             finalPos.xPos = (olderTransform.xPos * olderRatio) + (newerTransform.xPos * newerRatio);
             finalPos.yPos = (olderTransform.yPos * olderRatio) + (newerTransform.yPos * newerRatio);
-            finalPos.rotationDegrees = (olderTransform.rotationDegrees * olderRatio) + (newerTransform.rotationDegrees * newerRatio);
-        }
-        
-
-        if (clientsCount < 0)
-        {
-            clientsCount = 0;
-        }
-        if (clientsCount > framesMaxBuffer - 1)
-        {
-            clientsCount = framesMaxBuffer - 1;
+            finalPos.rotationDegrees = olderTransform.rotationDegrees + (Mathf.DeltaAngle(olderTransform.rotationDegrees, newerTransform.rotationDegrees) * newerRatio);
         }
 
         finalPos.SetTransformAtThis(transform);
     }
 
+
+    bool interpolationInitialized;
     [Rpc(SendTo.NotServer)]
-    void SetPositionRpcForInterpolatingRpc(Transform2D newTransform_, ulong numInOrder_)
+    void SetPositionRpcForInterpolatingRpc(Transform2D newTransform_)
     {
         if (!NetworkManager.Singleton.IsServer && NetworkManager.Singleton.IsClient)
         {
+            if (!interpolationInitialized)
+            {
+                for (int transform2DNum = 0; transform2DNum < framesMaxBuffer; transform2DNum++)
+                {
+                    transformsInterpolating.Add(newTransform_);
+                }
+                clientsCount = transformsInterpolating.Count - 1;
+                interpolationInitialized = true;
+            }
             transformsInterpolating.Add(newTransform_);
             clientsCount--;
         }
