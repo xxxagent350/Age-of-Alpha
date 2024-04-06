@@ -12,6 +12,8 @@ public class NetworkTransformIlia : NetworkBehaviour
     List<Transform2D> Pozition;
     private void Start()
     {
+        gais = new Transform2D();
+        Pozition = new List<Transform2D>();
         myRigidbody2D = GetComponent<Rigidbody2D>();
         myNetworkObject = GetComponent<NetworkObject>();
         if (!NetworkManager.Singleton.IsServer && NetworkManager.Singleton.IsClient)
@@ -43,6 +45,7 @@ public class NetworkTransformIlia : NetworkBehaviour
                 //то что тут напишешь  выполн€тьс€ у клиентов
                 Debug.Log($"X: {gais.xPos} Y: {gais.yPos} ѕоворот: {gais.rotationDegrees}");
                 transform.position = new Vector2(gais.xPos, gais.yPos);
+                transform.rotation = Quaternion.Euler(0, 0, gais.rotationDegrees);
                 Pozition.Add(gais);
             }
         }
