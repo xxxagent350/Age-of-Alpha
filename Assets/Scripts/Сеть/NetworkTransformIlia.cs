@@ -5,6 +5,7 @@ public class NetworkTransformIlia : NetworkBehaviour
 {
     Rigidbody2D myRigidbody2D;
     NetworkObject myNetworkObject;
+    [SerializeField] Transform2D gais;
 
     private void Start()
     {
@@ -36,7 +37,8 @@ public class NetworkTransformIlia : NetworkBehaviour
         {
             if (NetworkManager.Singleton.IsClient)
             {
-                //то что тут напишешь будет выполняться у клиентов
+                //то что тут напишешь  выполняться у клиентов
+                Debug.Log(gais);
             }
         }
     }
@@ -48,6 +50,7 @@ public class NetworkTransformIlia : NetworkBehaviour
         if (!NetworkManager.Singleton.IsServer && NetworkManager.Singleton.IsClient)
         {
             newTransform.SetTransformAtThis(transform);
+            gais = newTransform ;
         }
     }
 }
