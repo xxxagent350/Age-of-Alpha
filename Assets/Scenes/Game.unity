@@ -615,7 +615,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9a142acd3c2fbc341aa326ef62fa4973, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playerTransform: {fileID: 0}
+  playerShipTransform: {fileID: 0}
 --- !u!114 &57428357
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1796,6 +1796,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   energyBarFilling: {fileID: 1359008997}
+  smoothness: 10
   fillingValue: 1
 --- !u!222 &554560394
 CanvasRenderer:
@@ -3954,6 +3955,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   buttonIndex: 0
+  useSpace: 1
 --- !u!1 &2118240674
 GameObject:
   m_ObjectHideFlags: 0
@@ -4143,5 +4145,5 @@ SceneRoots:
   - {fileID: 403893910}
   - {fileID: 57428355}
   - {fileID: 1766215688}
-  - {fileID: 1610897442}
   - {fileID: 1759707271}
+  - {fileID: 1610897442}
