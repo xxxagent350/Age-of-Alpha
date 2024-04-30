@@ -227,11 +227,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b526bc281128517409016a80db5249a7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxHP: 20
-  resistanceToFireDamage: 0
-  resistanceToEnergyDamage: 0
-  resistanceToPhysicalDamage: 0
-  HP: 0
+  durability:
+    maxDurability: 2.3
+    resistanceToFireDamage: 0
+    resistanceToEnergyDamage: 0
+    resistanceToPhysicalDamage: 0
+    currentDurability: 0
+  teamID: none
 --- !u!114 &8037975564134485726
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -248,6 +250,7 @@ MonoBehaviour:
   isWorking: 1
   weaponNum: 0
   myShipGameStats: {fileID: 0}
+  teamID: 
   projectilePrefab: {fileID: 2288871660798619471, guid: b2e6515e7e7ba5c4aaad7541b8331a23, type: 3}
   energyConsumption: 1.5
   barrelsPositions:
@@ -255,3 +258,4 @@ MonoBehaviour:
   reloadTime: 0.3
   projectilesPerSalvo: 1
   scatterAngle: 5
+  reloadTimer: 0

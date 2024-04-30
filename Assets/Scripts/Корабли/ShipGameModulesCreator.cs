@@ -4,6 +4,7 @@ public class ShipGameModulesCreator : MonoBehaviour
 {
     [HideInInspector] public ModuleOnShipData[] modulesOnShip;
     Transform modulesParent;
+    [HideInInspector] public string teamID;
 
     public void CreateShipModules()
     {
@@ -15,6 +16,12 @@ public class ShipGameModulesCreator : MonoBehaviour
             moduleSpawned.transform.parent = modulesParent;
             moduleSpawned.transform.localPosition = modulesOnShip[moduleNum].position.GetVector2();
             moduleSpawned.transform.Find("Image").GetComponent<SpriteRenderer>().enabled = false;
+
+            Durability modulesDurability = moduleSpawned.GetComponent<Durability>();
+            if (modulesDurability != null)
+            {
+                modulesDurability.teamID = teamID;
+            }
         }
     }
 

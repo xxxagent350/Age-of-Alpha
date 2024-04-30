@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using Unity.Netcode;
 using UnityEngine;
-using System.Linq;
 
 public class ShipGameStats : NetworkBehaviour
 {
@@ -11,6 +10,7 @@ public class ShipGameStats : NetworkBehaviour
     [SerializeField] List<TrailRenderer> trails;
 
     [Header("Отладка")]
+    public string teamID;
     public float mass; //масса корпуса с модулями
     public NetworkVariable<float> energyGeneration; //суммарная генерация энергии со всех модулей
     public NetworkVariable<float> energyMaxCapacity; //максимальное количество запасаемой энергии во всех модулях
@@ -142,7 +142,7 @@ public class ShipGameStats : NetworkBehaviour
         }
         else
         {
-            if (energy.Value + (energyGeneration.Value * Time.deltaTime) >= energyMaxCapacity.Value)
+            if (energy.Value + (energyGeneration.Value * Time.fixedDeltaTime) >= energyMaxCapacity.Value)
             {
                 energyBar.fillingValue = 1;
             }
@@ -162,13 +162,13 @@ public class ShipGameStats : NetworkBehaviour
 
     void FlightEffects()
     {
-        float enginesLightsAlphaFrameChange = enginesLightsAlphaChangingSpeed * Time.deltaTime;
+        float enginesLightsAlphaFrameChange = enginesLightsAlphaChangingSpeed * Time.fixedDeltaTime;
 
         if (movementJoystickPressed.Value && Mathf.Abs(Mathf.DeltaAngle(transform.eulerAngles.z, movementJoystickDirInDegrees.Value)) < ignoredDirDifferenceDegrees)
         {
             float enginesLightsMod;
 
-            if (CheckEnergy(((enginesConsumption.Value * movementJoystickMagnitude.Value) + energyGeneration.Value) * Time.deltaTime))
+            if (CheckEnergy(((enginesConsumption.Value * movementJoystickMagnitude.Value) + energyGeneration.Value) * Time.fixedDeltaTime))
             {
                 enginesLightsMod = movementJoystickMagnitude.Value;
             }
@@ -177,7 +177,7 @@ public class ShipGameStats : NetworkBehaviour
                 enginesLightsMod = movementJoystickMagnitude.Value * (energyGeneration.Value / (enginesConsumption.Value * movementJoystickMagnitude.Value));
             }
 
-            if (CheckEnergy(enginesConsumption.Value * movementJoystickMagnitude.Value * Time.deltaTime))
+            if (CheckEnergy(enginesConsumption.Value * movementJoystickMagnitude.Value * Time.fixedDeltaTime))
             {
                 foreach (TrailRenderer trail in trails)
                 {
@@ -227,7 +227,7 @@ public class ShipGameStats : NetworkBehaviour
 
     void GenerateEnergy()
     {
-        if (energy.Value <= energyGeneration.Value * Time.deltaTime)
+        if (energy.Value <= energyGeneration.Value * Time.fixedDeltaTime)
         {
             noEnergy = true;
         }
@@ -237,7 +237,7 @@ public class ShipGameStats : NetworkBehaviour
         }
         if (energy.Value < energyMaxCapacity.Value)
         {
-            energy.Value += energyGeneration.Value * Time.deltaTime;
+            energy.Value += energyGeneration.Value * Time.fixedDeltaTime;
         }
         if (energy.Value > energyMaxCapacity.Value)
         {
@@ -291,39 +291,28 @@ public class ShipGameStats : NetworkBehaviour
         float a = F / m; //угловое ускорение
         float S = Mathf.DeltaAngle(transform.eulerAngles.z, movementJoystickDirInDegrees.Value);
 
-        //Debug.Log($"S: {S}; v2: {v2}; a: {a}");
+        //Debug.Log($"S: {S}; v2: {v2}; a: {a}; 2as: {2 * a * S}");
 
-        float ignoredDir = a * Mathf.Pow(Time.deltaTime * 2, 2);
-        if (Mathf.Abs(S) < ignoredDir && Mathf.Abs(myRigidbody2D.angularVelocity) < a / Time.deltaTime * 2)
+        float ignoredDir = a * Mathf.Pow(Time.fixedDeltaTime * 2, 2);
+        
+        if (Mathf.Abs(S) < ignoredDir && Mathf.Abs(myRigidbody2D.angularVelocity) < a / Time.fixedDeltaTime / 2)
         {
             transform.eulerAngles = new Vector3(0, 0, movementJoystickDirInDegrees.Value);
             myRigidbody2D.angularVelocity = 0;
         }
         else
         {
-            if (TakeEnergy(enginesConsumption.Value * Time.deltaTime))
+            if (TakeEnergy(enginesConsumption.Value * Time.fixedDeltaTime))
             {
-                if (S > 0)
+                if (v2 < 2 * a * S) //ещё не разогнались достаточно, продолжаем ускоряться
                 {
-                    if (v2 < 2 * a * S * 0.9f) //ещё не разогнались достаточно, продолжаем ускоряться
-                    {
-                        myRigidbody2D.AddTorque(F * Time.deltaTime);
-                    }
-                    else //тормозим дабы не возникло колебаний
-                    {
-                        myRigidbody2D.AddTorque(-F * Time.deltaTime * 0.9f);
-                    }
+                    //Debug.Log("S < 0, ускоряемся");
+                    myRigidbody2D.AddTorque(F * Time.fixedDeltaTime);
                 }
-                if (S < 0)
+                else //тормозим дабы не возникло колебаний
                 {
-                    if (v2 > 2 * a * S * 0.9f) //ещё не разогнались достаточно, продолжаем ускоряться
-                    {
-                        myRigidbody2D.AddTorque(-F * Time.deltaTime);
-                    }
-                    else //тормозим дабы не возникло колебаний
-                    {
-                        myRigidbody2D.AddTorque(F * Time.deltaTime * 0.9f);
-                    }
+                    //Debug.Log("S < 0, тормозим");
+                    myRigidbody2D.AddTorque(-F * Time.fixedDeltaTime);
                 }
             } 
         }
@@ -348,7 +337,7 @@ public class ShipGameStats : NetworkBehaviour
         {
             if (Mathf.Abs(Mathf.DeltaAngle(transform.eulerAngles.z, movementJoystickDirInDegrees.Value)) < ignoredDirDifferenceDegrees)
             {
-                if (TakeEnergy(enginesConsumption.Value * movementJoystickMagnitude.Value * Time.deltaTime))
+                if (TakeEnergy(enginesConsumption.Value * movementJoystickMagnitude.Value * Time.fixedDeltaTime))
                 {
                     myRigidbody2D.AddForce(DataOperator.RotateVector2(new Vector2(0, accelerationPower * accelerationPowerMod * movementJoystickMagnitude.Value), movementJoystickDirInDegrees.Value));
                 }

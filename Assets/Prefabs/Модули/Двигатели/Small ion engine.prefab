@@ -234,11 +234,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b526bc281128517409016a80db5249a7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxHP: 25
-  resistanceToFireDamage: 0
-  resistanceToEnergyDamage: 0
-  resistanceToPhysicalDamage: 0
-  HP: 0
+  durability:
+    maxDurability: 2.5
+    currentDurability: 0
+    resistanceToFireDamage: 0
+    resistanceToEnergyDamage: 0
+    resistanceToPhysicalDamage: 0
+  teamID: none
 --- !u!114 &-6233065258573794172
 MonoBehaviour:
   m_ObjectHideFlags: 0

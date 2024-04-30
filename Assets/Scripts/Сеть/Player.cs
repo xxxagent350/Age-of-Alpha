@@ -83,6 +83,7 @@ public class Player : NetworkBehaviour
             }
             ShipGameModulesCreator shipGameModulesCreator = playerShipSpawned.GetComponent<ShipGameModulesCreator>();
             shipGameModulesCreator.modulesOnShip = modulesOnPlayerShipData;
+            shipGameModulesCreator.teamID = teamID.Value.GetString();
             shipGameModulesCreator.CreateShipModules();
 
             ShipStats playerShipStats = playerShipSpawned.GetComponent<ShipStats>();
@@ -92,7 +93,10 @@ public class Player : NetworkBehaviour
 
             playerShipGO = playerShipSpawned;
             playerShipSpawned.GetComponent<NetworkObject>().SpawnWithOwnership(ownerClientID);
-            playerShipSpawned.GetComponent<ShipGameStats>().ServerInitialize();
+
+            ShipGameStats shipGameStats = playerShipSpawned.GetComponent<ShipGameStats>();
+            shipGameStats.ServerInitialize();
+            shipGameStats.teamID = teamID.Value.GetString();
         }
     }
 

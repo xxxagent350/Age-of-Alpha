@@ -9,9 +9,9 @@ public class NetworkTransformByAlphaGames : NetworkBehaviour
     [Tooltip("Network variable - с помощью сетевой переменной, rpc - с помощью сообщений(рекомендуетс€ дл€ моментальной синхронизации), interpolate - более плавна€ синхронизаци€ за счЄт искуственной задержки")]
     [SerializeField] NetworkVariable<TransformSyncTypes> syncType;
     [Tooltip("Ќа сколько кадров(fixed update) будет оставать анимаци€ от сервера (дл€ interpolate), больше = плавнее")]
-    [SerializeField] uint framesBuffering = 5;
+    [SerializeField] uint framesBuffering = 2;
     [Tooltip("„ем больше этот параметр, тем более агрессивно клиент будет измен€ть скорость течени€ времени чтобы выровн€ть своЄ врем€ и врем€ сервера(должен быть более 0; нужен дл€ interpolate; 1 = линейное изменение)")]
-    [SerializeField] float interpolatingTimeScaleMod = 1;
+    [SerializeField] float interpolatingTimeScaleMod = 0.5f;
     [Tooltip("ћаксимальна€ длина списка кадров дл€ интерпол€ции")]
     [SerializeField] uint framesMaxBuffer = 50;
 
@@ -170,7 +170,6 @@ public class NetworkTransformByAlphaGames : NetworkBehaviour
 
 
     bool interpolationInitialized;
-    long initializingFrameNum;
     [Rpc(SendTo.NotServer)]
     void SetPositionRpcForInterpolatingRpc(Transform2D newTransform_)
     {
@@ -184,7 +183,6 @@ public class NetworkTransformByAlphaGames : NetworkBehaviour
                 }
                 clientsCount = transformsInterpolating.Count - 1;
                 interpolationInitialized = true;
-                initializingFrameNum = transformsInterpolating.Count - 1 - framesBuffering;
             }
             //if (initializingFrameNum == )
             transformsInterpolating.Add(newTransform_);

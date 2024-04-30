@@ -1195,13 +1195,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   NetworkConfig:
-    ProtocolVersion: 0
+    ProtocolVersion: 1
     NetworkTransport: {fileID: 342360474}
     PlayerPrefab: {fileID: 7187572055764936245, guid: 54aa0c49f7c232844b657f324f200250, type: 3}
     Prefabs:
       NetworkPrefabsLists:
       - {fileID: 11400000, guid: 6a763b286e1595d4fafc7d37345554c6, type: 2}
-    TickRate: 50
+    TickRate: 60
     ClientConnectionBufferTimeout: 10
     ConnectionApproval: 0
     ConnectionData: 

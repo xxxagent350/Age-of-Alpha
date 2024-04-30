@@ -317,7 +317,7 @@ public class ModulesMenu : MonoBehaviour
 
         GameObject modulePrefab = DataOperator.instance.modulesPrefabs[module.moduleNum];
         ItemData itemData = modulePrefab.GetComponent<ItemData>();
-        Armour armourComponent = modulePrefab.GetComponent<Armour>();
+        Durability durabilityComponent = modulePrefab.GetComponent<Durability>();
         Engine engineComponent = modulePrefab.GetComponent<Engine>();
         Weapon weaponComponent = modulePrefab.GetComponent<Weapon>();
         EnergyGenerator generatorComponent = modulePrefab.GetComponent<EnergyGenerator>();
@@ -325,32 +325,32 @@ public class ModulesMenu : MonoBehaviour
 
         text.RussianText += "Масса: " + DataOperator.instance.RoundFloat(itemData.Mass);
         text.EnglishText += "Mass: " + DataOperator.instance.RoundFloat(itemData.Mass);
-        if (armourComponent != null)
+        if (durabilityComponent != null)
         {
-            text.RussianText += "\nПрочность: " + DataOperator.instance.RoundFloat(armourComponent.maxHP);
-            text.EnglishText += "\nDurability: " + DataOperator.instance.RoundFloat(armourComponent.maxHP);
+            text.RussianText += "\nПрочность: " + DataOperator.instance.RoundFloat(durabilityComponent.durability.maxDurability);
+            text.EnglishText += "\nDurability: " + DataOperator.instance.RoundFloat(durabilityComponent.durability.maxDurability);
 
-            if (armourComponent.resistanceToPhysicalDamage > 0)
+            if (durabilityComponent.durability.resistanceToPhysicalDamage > 0)
             {
-                text.RussianText += "\nСопротивление к физическому урону: " + DataOperator.instance.RoundFloat(armourComponent.resistanceToPhysicalDamage * 100) + "%";
-                text.EnglishText += "\nResistance to physical damage: " + DataOperator.instance.RoundFloat(armourComponent.resistanceToPhysicalDamage * 100) + "%";
+                text.RussianText += "\nСопротивление к физическому урону: " + DataOperator.instance.RoundFloat(durabilityComponent.durability.resistanceToPhysicalDamage * 100) + "%";
+                text.EnglishText += "\nResistance to physical damage: " + DataOperator.instance.RoundFloat(durabilityComponent.durability.resistanceToPhysicalDamage * 100) + "%";
             }
-            if (armourComponent.resistanceToFireDamage > 0)
+            if (durabilityComponent.durability.resistanceToFireDamage > 0)
             {
-                text.RussianText += "\nСопротивление к тепловому урону: " + DataOperator.instance.RoundFloat(armourComponent.resistanceToFireDamage * 100) + "%";
-                text.EnglishText += "\nResistance to heat damage: " + DataOperator.instance.RoundFloat(armourComponent.resistanceToFireDamage * 100) + "%";
+                text.RussianText += "\nСопротивление к тепловому урону: " + DataOperator.instance.RoundFloat(durabilityComponent.durability.resistanceToFireDamage * 100) + "%";
+                text.EnglishText += "\nResistance to heat damage: " + DataOperator.instance.RoundFloat(durabilityComponent.durability.resistanceToFireDamage * 100) + "%";
             }
-            if (armourComponent.resistanceToEnergyDamage > 0)
+            if (durabilityComponent.durability.resistanceToEnergyDamage > 0)
             {
-                text.RussianText += "\nСопротивление к энерго урону: " + DataOperator.instance.RoundFloat(armourComponent.resistanceToEnergyDamage * 100) + "%";
-                text.EnglishText += "\nResistance to energy damage: " + DataOperator.instance.RoundFloat(armourComponent.resistanceToEnergyDamage * 100) + "%";
+                text.RussianText += "\nСопротивление к энерго урону: " + DataOperator.instance.RoundFloat(durabilityComponent.durability.resistanceToEnergyDamage * 100) + "%";
+                text.EnglishText += "\nResistance to energy damage: " + DataOperator.instance.RoundFloat(durabilityComponent.durability.resistanceToEnergyDamage * 100) + "%";
             } 
         }
         else
         {
             TranslatedText debugText = new TranslatedText();
-            debugText.RussianText = "На префабе модуля " + modulePrefab.name + " отсутствует компонент Armour, который должен быть на всех модулях (он отвечает за прочность модуля)";
-            debugText.EnglishText = "On the module's prefab " + modulePrefab.name + " is missing armour component, which should be on all modules (it is responsible for the maxHP of the module)";
+            debugText.RussianText = "На префабе модуля " + modulePrefab.name + " отсутствует компонент Durability, который должен быть на всех модулях (он отвечает за прочность модуля)";
+            debugText.EnglishText = "On the module's prefab " + modulePrefab.name + " is missing Durability component, which should be on all modules (it is responsible for the maxHP of the module)";
             Debug.LogError(debugText.GetTranslatedString());
             return debugText;
         }

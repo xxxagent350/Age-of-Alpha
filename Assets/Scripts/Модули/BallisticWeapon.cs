@@ -18,7 +18,7 @@ public class BallisticWeapon : Weapon
     [Tooltip("Разброс в градусах")]
     [SerializeField] float scatterAngle = 5;
 
-    float reloadTimer;
+    [SerializeField] float reloadTimer;
     int currentBarrelNum;
     Rigidbody2D myShipRigidbody2D;
 
@@ -37,11 +37,18 @@ public class BallisticWeapon : Weapon
         }
     }
 
-    public override void ServerUpdate()
+    public override void FixedServerUpdate()
     {
         if (isWorking)
         {
             Reload();
+        }
+    }
+
+    public override void RandomizedServerUpdate()
+    {
+        if (isWorking)
+        {
             if (FIRE)
             {
                 Fire();
@@ -63,9 +70,9 @@ public class BallisticWeapon : Weapon
     {
         if (reloadTimer >= reloadTime)
         {
-            reloadTimer = 0;
             if (myShipGameStats.TakeEnergy(energyConsumption))
             {
+                reloadTimer = 0;
                 Salvo();
             }
         }
@@ -94,6 +101,10 @@ public class BallisticWeapon : Weapon
         Quaternion rotation = transform.rotation * Quaternion.Euler(0, 0, Random.Range(-scatterAngle, scatterAngle));
         GameObject projectile = Instantiate(projectilePrefab, position, rotation);
         projectile.GetComponent<Rigidbody2D>().velocity = myShipRigidbody2D.velocity;
+
+        Projectile projectileComponent = projectile.GetComponent<Projectile>();
+        projectileComponent.teamID = teamID;
+
         projectile.GetComponent<NetworkObject>().Spawn();
     }
 

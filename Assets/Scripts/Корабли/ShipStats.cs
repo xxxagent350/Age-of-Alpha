@@ -26,9 +26,6 @@ public class ShipStats : MonoBehaviour
     public ModulesInstallingHistory[] pastHistory;
     public ModulesInstallingHistory[] futureHistory;
 
-    public bool spawnBullet;//
-    public GameObject bullet;//
-
     [HideInInspector] public string teamID; //ID команды. Одинаковый - союзники, разный - враги
     string shipName;
     GameObject[] modulesUI;

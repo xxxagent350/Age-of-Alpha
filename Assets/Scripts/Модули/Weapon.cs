@@ -12,17 +12,20 @@ public class Weapon : MonoBehaviour
     public uint weaponNum;
 
     [HideInInspector] public ShipGameStats myShipGameStats;
-    const float serverUpdateDeltaTime = 0.02f;
+    [HideInInspector] public string teamID;
+    float serverUpdateDeltaTime;
 
     public void Start()
     {
         if (NetworkManager.Singleton.IsServer)
         {
+            serverUpdateDeltaTime = Time.fixedDeltaTime;
             myShipGameStats = GetComponentInParent<ShipGameStats>();
             myShipGameStats.attackButtonStateChangedMessage += ChangeFiringState;
+            teamID = myShipGameStats.teamID;
+            RandomUpdate();
         }
         Initialize();
-        RandomUpdate();
     }
 
     public void OnDestroy()
@@ -41,12 +44,17 @@ public class Weapon : MonoBehaviour
         }
     }
 
-    public void RandomUpdate()
+    private void FixedUpdate()
     {
         if (NetworkManager.Singleton.IsServer)
         {
-            ServerUpdate();
+            FixedServerUpdate();
         }
+    }
+
+    public void RandomUpdate()
+    {
+        RandomizedServerUpdate();
         Invoke(nameof(RandomUpdate), Random.Range(serverUpdateDeltaTime * 0.5f, serverUpdateDeltaTime * 1.5f));
     }
 
@@ -55,7 +63,12 @@ public class Weapon : MonoBehaviour
         //для переопределения наследуемыми классами
     }
 
-    public virtual void ServerUpdate()
+    public virtual void RandomizedServerUpdate()
+    {
+        //для переопределения наследуемыми классами
+    }
+
+    public virtual void FixedServerUpdate()
     {
         //для переопределения наследуемыми классами
     }
