@@ -155,10 +155,10 @@ public struct DurabilityStruct
         }
         else
         {
-            noDurability = true;
-            currentDurability = 0;
             float usedDamagePart = currentDurability / fullDamage;
             damage.UseDamage(damage.fireDamage * usedDamagePart, damage.energyDamage * usedDamagePart, damage.physicalDamage * usedDamagePart);
+            noDurability = true;
+            currentDurability = 0;
         }
     }
 

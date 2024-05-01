@@ -237,11 +237,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   damage:
-    fireDamage: 0
-    energyDamage: 0
-    physicalDamage: 1
+    fireDamage: 3
+    energyDamage: 3
+    physicalDamage: 3
   raycastPosition: {x: 0, y: 0.33}
-  startSpeed: 5
+  startSpeed: 100
   lifetime: 60
   damageType: 2
   selfDestructAfterHit: 0
