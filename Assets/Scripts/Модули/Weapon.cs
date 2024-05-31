@@ -1,7 +1,7 @@
 using Unity.Netcode;
 using UnityEngine;
 
-public class Weapon : MonoBehaviour
+public abstract class Weapon : MonoBehaviour
 {
     [Header("Отладка(менять не нужно)")]
     [Tooltip("Ведётся ли стрельба из орудия")]
@@ -13,8 +13,9 @@ public class Weapon : MonoBehaviour
 
     [HideInInspector] public ShipGameStats myShipGameStats;
     [HideInInspector] public string teamID;
+    bool noControl = false;
     float serverUpdateDeltaTime;
-
+    
     public void Start()
     {
         if (NetworkManager.Singleton.IsServer)
@@ -26,6 +27,11 @@ public class Weapon : MonoBehaviour
             RandomUpdate();
         }
         Initialize();
+    }
+
+    public void Disconnect()
+    {
+        noControl = true;
     }
 
     public void OnDestroy()
@@ -48,13 +54,19 @@ public class Weapon : MonoBehaviour
     {
         if (NetworkManager.Singleton.IsServer)
         {
-            FixedServerUpdate();
+            if (!noControl)
+            {
+                FixedServerUpdate();
+            }
         }
     }
 
     public void RandomUpdate()
     {
-        RandomizedServerUpdate();
+        if (!noControl)
+        {
+            RandomizedServerUpdate();
+        }
         Invoke(nameof(RandomUpdate), Random.Range(serverUpdateDeltaTime * 0.5f, serverUpdateDeltaTime * 1.5f));
     }
 

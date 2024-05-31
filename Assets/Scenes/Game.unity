@@ -1146,6 +1146,7 @@ GameObject:
   - component: {fileID: 342360475}
   - component: {fileID: 342360474}
   - component: {fileID: 342360477}
+  - component: {fileID: 342360478}
   m_Layer: 0
   m_Name: NETWORK MANAGER
   m_TagString: Untagged
@@ -1255,6 +1256,18 @@ MonoBehaviour:
     m_PositionLeftToRight: 0
     m_PositionTopToBottom: 0
   <Configuration>k__BackingField: {fileID: 11400000, guid: 8f1b4e3792d8446399527749cfb591a2, type: 2}
+--- !u!114 &342360478
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 342360473}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 40038dd4b56d44144b1a78eddea812bd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &343760375
 GameObject:
   m_ObjectHideFlags: 0
@@ -1496,7 +1509,10 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 5292908563983817125, guid: ce05983296f257a4c9b0f28c2411afd6, type: 3}
+      insertIndex: 2
+      addedObject: {fileID: 405579103}
   m_SourcePrefab: {fileID: 100100000, guid: ce05983296f257a4c9b0f28c2411afd6, type: 3}
 --- !u!1 &401022626
 GameObject:
@@ -1742,6 +1758,24 @@ MonoBehaviour:
   playerInterfaceEnabled: 0
   warningMessagesList: []
   localPlayer: {fileID: 0}
+--- !u!1 &405579099 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 5292908563983817125, guid: ce05983296f257a4c9b0f28c2411afd6, type: 3}
+  m_PrefabInstance: {fileID: 398751444}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &405579103
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 405579099}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b1644879f83d04a448fe67b0f723f163, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  allPooledObjects: []
 --- !u!1 &554560391
 GameObject:
   m_ObjectHideFlags: 0
@@ -3310,7 +3344,7 @@ GameObject:
   - component: {fileID: 1754685112}
   - component: {fileID: 1754685111}
   m_Layer: 5
-  m_Name: build
+  m_Name: back
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3392,21 +3426,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 2118240676}
-        m_TargetAssemblyTypeName: NetworkManagerController, Assembly-CSharp
-        m_MethodName: Stop
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
       - m_Target: {fileID: 1754685111}
         m_TargetAssemblyTypeName: SceneChanger, Assembly-CSharp
-        m_MethodName: ChangeScene
+        m_MethodName: ShutdownNetworkAndChangeScene
         m_Mode: 5
         m_Arguments:
           m_ObjectArgument: {fileID: 0}

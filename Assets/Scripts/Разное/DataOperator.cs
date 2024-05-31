@@ -47,7 +47,6 @@ public class DataOperator : MonoBehaviour
             return;
         }
         
-        
         if (!PlayerPrefs.HasKey("UserLanguage"))
         {
             if (Application.systemLanguage == SystemLanguage.Russian || Application.systemLanguage == SystemLanguage.Belarusian)
@@ -115,6 +114,7 @@ public class DataOperator : MonoBehaviour
         {
             cameraSize = camera_.orthographicSize;
         }
+        //Debug.Log(SceneManager.sceneCount);
     }
 
     private void ChangedActiveScene(Scene current, Scene next)
@@ -127,6 +127,11 @@ public class DataOperator : MonoBehaviour
         {
             gameScene = false;
         }
+    }
+
+    public static void ChangeScene(string sceneName)
+    {
+        SceneManager.LoadScene(sceneName);
     }
 
     public Camera GetCamera()
@@ -641,7 +646,7 @@ public class Effect
 
     GraphicsPresets graphicsPreset = GraphicsPresets.none;
 
-    public void SpawnEffects(Vector2 position, Quaternion rotation)
+    public GameObject[] SpawnEffects(Vector3 position, Quaternion rotation)
     {
         if (graphicsPreset == GraphicsPresets.none)
         {
@@ -650,14 +655,42 @@ public class Effect
         if (graphicsPreset == GraphicsPresets.low)
         {
             DataOperator.instance.CreateGameObjects(LowQualityEffects, position, rotation);
+            return LowQualityEffects;
         }
         if (graphicsPreset == GraphicsPresets.medium)
         {
             DataOperator.instance.CreateGameObjects(MediumQualityEffects, position, rotation);
+            return MediumQualityEffects;
         }
         if (graphicsPreset == GraphicsPresets.high)
         {
             DataOperator.instance.CreateGameObjects(HighQualityEffects, position, rotation);
+            return HighQualityEffects;
         }
+        return null;
+    }
+
+    public GameObject[] SpawnEffectsFromPool(Vector3 position, Quaternion rotation)
+    {
+        if (graphicsPreset == GraphicsPresets.none)
+        {
+            graphicsPreset = DataOperator.instance.userGraphics;
+        }
+        if (graphicsPreset == GraphicsPresets.low)
+        {
+            PoolingSystem.instance.SpawnGOs(LowQualityEffects, position, rotation);
+            return LowQualityEffects;
+        }
+        if (graphicsPreset == GraphicsPresets.medium)
+        {
+            PoolingSystem.instance.SpawnGOs(MediumQualityEffects, position, rotation);
+            return MediumQualityEffects;
+        }
+        if (graphicsPreset == GraphicsPresets.high)
+        {
+            PoolingSystem.instance.SpawnGOs(HighQualityEffects, position, rotation);
+            return HighQualityEffects;
+        }
+        return null;
     }
 }

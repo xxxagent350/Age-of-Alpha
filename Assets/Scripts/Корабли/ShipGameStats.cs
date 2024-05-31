@@ -12,10 +12,10 @@ public class ShipGameStats : NetworkBehaviour
     [Header("Отладка")]
     public string teamID;
     public float mass; //масса корпуса с модулями
-    public NetworkVariable<float> energyGeneration; //суммарная генерация энергии со всех модулей
-    public NetworkVariable<float> energyMaxCapacity; //максимальное количество запасаемой энергии во всех модулях
-    public NetworkVariable<float> energy; //текущее количество энергии в батареях
-    public NetworkVariable<float> enginesConsumption; //макс. потребление двигателями при полёте
+    public NetworkVariable<float> energyGeneration = new NetworkVariable<float>(); //суммарная генерация энергии со всех модулей
+    public NetworkVariable<float> energyMaxCapacity = new NetworkVariable<float>(); //максимальное количество запасаемой энергии во всех модулях
+    public NetworkVariable<float> energy = new NetworkVariable<float>(); //текущее количество энергии в батареях
+    public NetworkVariable<float> enginesConsumption = new NetworkVariable<float>(); //макс. потребление двигателями при полёте
     public float accelerationPower; //общая ускорительная мощь двигателей
     public float angularAccelerationPower; //общая угловая ускорительная мощь двигателей
 
@@ -23,13 +23,12 @@ public class ShipGameStats : NetworkBehaviour
     ItemData myItemData;
     EnergyBar energyBar;
     Rigidbody2D myRigidbody2D;
-    float enginesLightsAlpha;
-    [SerializeField] bool noEnergy;
+    [SerializeField] NetworkVariable<bool> noEnergy = new NetworkVariable<bool>();
 
     //данные с джойстика игрока
-    [HideInInspector] public NetworkVariable<bool> movementJoystickPressed;
-    [HideInInspector] public NetworkVariable<float> movementJoystickDirInDegrees;
-    [HideInInspector] public NetworkVariable<float> movementJoystickMagnitude;
+    [HideInInspector] public NetworkVariable<bool> movementJoystickPressed = new NetworkVariable<bool>();
+    [HideInInspector] public NetworkVariable<float> movementJoystickDirInDegrees = new NetworkVariable<float>();
+    [HideInInspector] public NetworkVariable<float> movementJoystickMagnitude = new NetworkVariable<float>();
 
     //модификаторы полёта
     const float ignoredDirDifferenceDegrees = 60;
@@ -37,8 +36,11 @@ public class ShipGameStats : NetworkBehaviour
     const float maxSpeedMod = 150;
     const float linearDragMod = 0.01f;
     const float accelerationPowerMod = 500;
-    
+
     bool noControl; //true когда нету блока управления
+
+    NetworkVariable<float> enginesLightsAlpha = new NetworkVariable<float>();
+    NetworkVariable<bool> trailsEmitting = new NetworkVariable<bool>();
 
     private void Start()
     {
@@ -50,11 +52,6 @@ public class ShipGameStats : NetworkBehaviour
         {
             energyBar = PlayerInterface.instance.energyBar;
             CameraMover.instance.SetPlayerShip(transform);
-        }
-        if (NetworkManager.Singleton.IsServer)
-        {
-            myRigidbody2D = GetComponent<Rigidbody2D>();
-            myRigidbody2D.mass = mass;
         }
         foreach (SpriteRenderer engineLight in enginesLights)
         {
@@ -75,11 +72,8 @@ public class ShipGameStats : NetworkBehaviour
         myShipStats = GetComponent<ShipStats>();
 
         mass = myShipStats.totalMass;
-        if (myRigidbody2D == null)
-        {
-            myRigidbody2D = GetComponent<Rigidbody2D>();
-        }
 
+        myRigidbody2D = GetComponent<Rigidbody2D>();
         myRigidbody2D.mass = mass;
 
         energyGeneration.Value = myShipStats.totalEnergyGeneration;
@@ -97,14 +91,21 @@ public class ShipGameStats : NetworkBehaviour
     {
         if (IsSpawned)
         {
+            OwnerInitializeRpc();
             if (myShipStats.ControlBlockExists())
             {
-                OwnerInitializeRpc(true);
+                ChangeOwnersInterfaceStateRpc(true);
             }
             else
             {
                 noControl = true;
-                OwnerInitializeRpc(false);
+                ChangeOwnersInterfaceStateRpc(false);
+                TranslatedText warningMessage = new TranslatedText
+                {
+                    RussianText = "Нет связи с кораблём: не установлен блок управления",
+                    EnglishText = "No communication with the ship: no control block installed"
+                };
+                SendMessageToOwnerRpc(new TranslatedNetworkText(warningMessage));
             }
         }
         else
@@ -125,18 +126,19 @@ public class ShipGameStats : NetworkBehaviour
                     Accelerate();
                 }
                 GenerateEnergy();
+                FlightEffectsServer();
             }
             if (IsOwner)
             {
                 OwnerUI();
             }
-            FlightEffects();
+            FlightEffectsClient();
         }
     }
 
     void OwnerUI()
     {
-        if (noEnergy)
+        if (noEnergy.Value)
         {
             energyBar.fillingValue = 0;
         }
@@ -160,11 +162,11 @@ public class ShipGameStats : NetworkBehaviour
         }
     }
 
-    void FlightEffects()
+    void FlightEffectsServer()
     {
         float enginesLightsAlphaFrameChange = enginesLightsAlphaChangingSpeed * Time.fixedDeltaTime;
 
-        if (movementJoystickPressed.Value && Mathf.Abs(Mathf.DeltaAngle(transform.eulerAngles.z, movementJoystickDirInDegrees.Value)) < ignoredDirDifferenceDegrees)
+        if (!noControl && movementJoystickPressed.Value && Mathf.Abs(Mathf.DeltaAngle(transform.eulerAngles.z, movementJoystickDirInDegrees.Value)) < ignoredDirDifferenceDegrees)
         {
             float enginesLightsMod;
 
@@ -179,30 +181,49 @@ public class ShipGameStats : NetworkBehaviour
 
             if (CheckEnergy(enginesConsumption.Value * movementJoystickMagnitude.Value * Time.fixedDeltaTime))
             {
-                foreach (TrailRenderer trail in trails)
-                {
-                    trail.emitting = true;
-                }
+                trailsEmitting.Value = true;
             }
             else
             {
-                foreach (TrailRenderer trail in trails)
-                {
-                    trail.emitting = false;
-                }
+                trailsEmitting.Value = false;
             }
 
-            if (enginesLightsAlpha < enginesLightsMod)
+            if (enginesLightsAlpha.Value < enginesLightsMod)
             {
-                enginesLightsAlpha += enginesLightsAlphaFrameChange;
+                enginesLightsAlpha.Value += enginesLightsAlphaFrameChange;
             }
-            if (enginesLightsAlpha > enginesLightsMod)
+            if (enginesLightsAlpha.Value > enginesLightsMod)
             {
-                enginesLightsAlpha -= enginesLightsAlphaFrameChange;
+                enginesLightsAlpha.Value -= enginesLightsAlphaFrameChange;
             }
-            if (Mathf.Abs(enginesLightsAlpha - enginesLightsMod) < enginesLightsAlphaFrameChange)
+            if (Mathf.Abs(enginesLightsAlpha.Value - enginesLightsMod) < enginesLightsAlphaFrameChange)
             {
-                enginesLightsAlpha = enginesLightsMod;
+                enginesLightsAlpha.Value = enginesLightsMod;
+            }
+        }
+        else
+        {
+            trailsEmitting.Value = false;
+            if (enginesLightsAlpha.Value > 0)
+            {
+                enginesLightsAlpha.Value -= enginesLightsAlphaFrameChange;
+            }
+        }
+    }
+
+    void FlightEffectsClient()
+    {
+        foreach (SpriteRenderer engineLight in enginesLights)
+        {
+            Color oldColor = engineLight.color;
+            engineLight.color = new Color(oldColor.r, oldColor.g, oldColor.b, enginesLightsAlpha.Value);
+        }
+
+        if (trailsEmitting.Value)
+        {
+            foreach (TrailRenderer trail in trails)
+            {
+                trail.emitting = true;
             }
         }
         else
@@ -211,29 +232,20 @@ public class ShipGameStats : NetworkBehaviour
             {
                 trail.emitting = false;
             }
-            if (enginesLightsAlpha > 0)
-            {
-                enginesLightsAlpha -= enginesLightsAlphaFrameChange;
-            }
-        }
-
-        foreach (SpriteRenderer engineLight in enginesLights)
-        {
-            Color oldColor = engineLight.color;
-            engineLight.color = new Color(oldColor.r, oldColor.g, oldColor.b, enginesLightsAlpha);
         }
     }
 
 
+
     void GenerateEnergy()
     {
-        if (energy.Value <= energyGeneration.Value * Time.fixedDeltaTime)
+        if (energy.Value <= energyGeneration.Value * Time.fixedDeltaTime || energyMaxCapacity.Value < 0.01f)
         {
-            noEnergy = true;
+            noEnergy.Value = true;
         }
         else
         {
-            noEnergy = false;
+            noEnergy.Value = false;
         }
         if (energy.Value < energyMaxCapacity.Value)
         {
@@ -349,8 +361,59 @@ public class ShipGameStats : NetworkBehaviour
         }
     }
 
+
+    public void ReduceShipСharacteristics(Durability destroyedModule)
+    {
+        ItemData itemData = destroyedModule.GetComponent<ItemData>();
+        Battery battery = destroyedModule.GetComponent<Battery>();
+        EnergyGenerator energyGenerator = destroyedModule.GetComponent<EnergyGenerator>();
+        Engine engine = destroyedModule.GetComponent<Engine>();
+
+        if (itemData != null)
+        {
+            mass -= itemData.Mass;
+            myRigidbody2D.mass = mass;
+            if (itemData.type == modulesTypes.ControlModules)
+            {   //блок управления уничтожен
+                DisconnectFromTheShip();
+                TranslatedText warningMessage = new TranslatedText
+                {
+                    RussianText = "Связь с кораблём потеряна: блок управления уничтожен",
+                    EnglishText = "Contact with the ship has been lost: the control unit has been destroyed"
+                };
+                SendMessageToOwnerRpc(new TranslatedNetworkText(warningMessage));
+            }
+        }
+        if (battery != null)
+        {
+            energy.Value -= (energy.Value / energyMaxCapacity.Value) * battery.maxCapacity;
+            energyMaxCapacity.Value -= battery.maxCapacity;
+        }
+        if (energyGenerator != null)
+        {
+            energyGeneration.Value -= energyGenerator.power;
+        }
+        if (engine != null)
+        {
+            enginesConsumption.Value -= engine.powerConsumption;
+            accelerationPower -= engine.accelerationPower;
+            angularAccelerationPower -= engine.angularPower;
+        }
+    }
+
+    void DisconnectFromTheShip()
+    {
+        noControl = true;
+        Weapon[] weapons = GetComponentsInChildren<Weapon>();
+        foreach (Weapon weapon in weapons)
+        {
+            weapon.Disconnect();
+        }
+    }
+
+
     [Rpc(SendTo.Owner)]
-    void OwnerInitializeRpc(bool controlBlockExists)
+    void OwnerInitializeRpc()
     {
         myItemData = GetComponent<ItemData>();
         Vector3 extremePoints = myItemData.GetMaxSlotsPosition() - myItemData.GetMinSlotsPosition();
@@ -358,20 +421,19 @@ public class ShipGameStats : NetworkBehaviour
 
         GameCameraScaler.instance.minZoom = shipSize * 2;
         GameCameraScaler.instance.zoom = shipSize * 5;
+    }
 
-        if (controlBlockExists)
-        {
-            PlayerInterface.instance.SetActivePlayerInterface(true);
-        }
-        else
-        {
-            TranslatedText warningMessage = new TranslatedText
-            {
-                RussianText = "Нет связи с кораблём: не установлен блок управления",
-                EnglishText = "No communication with the ship: no control block installed"
-            };
-            PlayerInterface.instance.ShowWarningText(warningMessage);
-        }
+    [Rpc(SendTo.Owner)]
+    void SendMessageToOwnerRpc(TranslatedNetworkText networkMessage)
+    {
+        TranslatedText message = networkMessage.GetTranslatedText();
+        PlayerInterface.instance.ShowWarningText(message);
+    }
+
+    [Rpc(SendTo.Owner)]
+    void ChangeOwnersInterfaceStateRpc(bool turnOn)
+    {
+        PlayerInterface.instance.SetActivePlayerInterface(turnOn);
     }
 
 

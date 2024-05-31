@@ -630,7 +630,7 @@ public class ModulesMenu : MonoBehaviour
 
     public void LoadOKScene()
     {
-        SceneManager.LoadScene(OKSceneName);
+        DataOperator.ChangeScene(OKSceneName);
     }
 }
 

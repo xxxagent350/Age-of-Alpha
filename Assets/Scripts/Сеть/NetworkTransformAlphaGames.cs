@@ -22,7 +22,7 @@ public class NetworkTransformByAlphaGames : NetworkBehaviour
     {
         myRigidbody2D = GetComponent<Rigidbody2D>();
         myNetworkObject = GetComponent<NetworkObject>();
-        if (!NetworkManager.Singleton.IsServer && NetworkManager.Singleton.IsClient)
+        if (NetworkManager.Singleton != null && !NetworkManager.Singleton.IsServer && NetworkManager.Singleton.IsClient)
         {
             myRigidbody2D.bodyType = RigidbodyType2D.Kinematic;
             myRigidbody2D.simulated = false;
@@ -46,7 +46,7 @@ public class NetworkTransformByAlphaGames : NetworkBehaviour
 
     private void FixedUpdate()
     {
-        if (myNetworkObject.IsSpawned)
+        if (NetworkManager.Singleton != null && myNetworkObject.IsSpawned)
         {
             if (syncType.Value == TransformSyncTypes.NetworkVariable)
             {

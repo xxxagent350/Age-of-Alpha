@@ -11,6 +11,8 @@ public class Durability: MonoBehaviour
     [Header("Отладка")]
     public string teamID = "none";
 
+    ShipGameStats myShipGameStats;
+
     private void Start()
     {
 #if UNITY_EDITOR
@@ -19,15 +21,19 @@ public class Durability: MonoBehaviour
 
         if (NetworkManager.Singleton.IsServer)
         {
+            myShipGameStats = GetComponentInParent<ShipGameStats>();
             durability.SetMaxDurability();
         }
     }
 
     private void FixedUpdate()
     {
-        if (durability.NoDurability())
+        if (NetworkManager.Singleton.IsServer)
         {
-            Explode();
+            if (durability.NoDurability())
+            {
+                Explode();
+            }
         }
     }
 
@@ -37,7 +43,10 @@ public class Durability: MonoBehaviour
         if (!alreadyExploded)
         {
             alreadyExploded = true;
-            //нужно сказать кораблю что его характеристики просели
+            if (myShipGameStats != null)
+            {
+                myShipGameStats.ReduceShipСharacteristics(this);
+            }
             Destroy(gameObject);
         }
     }

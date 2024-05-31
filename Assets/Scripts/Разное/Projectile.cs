@@ -21,12 +21,16 @@ public class Projectile : MonoBehaviour
     [Tooltip("Если включено, будет поворачивать картинку в сторону движения")]
     [SerializeField] bool rotateToVelocityVectorDir = false;
 
+    [Tooltip("Эффект пробития обшивки корабля")]
+    [SerializeField] Effect shipPenetrationEffects;
+    [SerializeField] Effect moduleHitEffects;
+
     [Header("Отладка")]
     [Tooltip("Команда корабля, который выпустил снаряд")]
     public string teamID = "none";
 
     Rigidbody2D myRigidbody2D;
-    LayerMask damagableLayers;
+    bool insideEnemyShip;
 
     private void Start()
     {
@@ -41,7 +45,6 @@ public class Projectile : MonoBehaviour
                 Destroy(gameObject, lifetime);
             }
             
-            damagableLayers = LayerMask.GetMask("Module", "Projectile", "Environment");
             myRigidbody2D = GetComponent<Rigidbody2D>();
             myRigidbody2D.velocity += DataOperator.RotateVector2(new Vector2(0, startSpeed), transform.eulerAngles.z);
         }
@@ -74,42 +77,73 @@ public class Projectile : MonoBehaviour
         Vector3 position = transform.position + (Vector3)DataOperator.RotateVector2(raycastPosition, transform.eulerAngles.z);
         Vector3 direction = myRigidbody2D.velocity.normalized;
 
-        RaycastHit2D[] mainLayerHits = Physics2D.RaycastAll(position, direction, distanceToCheck, damagableLayers);
+        RaycastHit2D[] mainLayerHits = Physics2D.RaycastAll(position, direction, distanceToCheck);
 
         if (mainLayerHits.Length > 0)
         {
+            bool insideEnemyShipThisFrame = false;
             foreach (RaycastHit2D hitInfo in mainLayerHits)
             {
                 if (hitInfo.collider != null)
                 {
                     LayerMask hitInfoLayer = hitInfo.collider.gameObject.layer;
 
-                    if (hitInfoLayer == LayerMask.NameToLayer("Projectile"))
+                    if (hitInfoLayer == LayerMask.NameToLayer("Ship"))
                     {
-                        Projectile hittedProjectile = hitInfo.collider.GetComponent<Projectile>();
-                        if (hittedProjectile != null && hittedProjectile.teamID != teamID)
+                        ShipGameStats shipGameStats = hitInfo.collider.GetComponent<ShipGameStats>();
+                        if (shipGameStats != null && shipGameStats.teamID != teamID)
                         {
-                            hittedProjectile.damage.DamageOtherDamage(damage);
+                            if (!insideEnemyShip)
+                            {
+
+                            }
+                            insideEnemyShip = true;
+                            insideEnemyShipThisFrame = true;
                         }
                     }
-                    if (hitInfoLayer == LayerMask.NameToLayer("Environment") || hitInfoLayer == LayerMask.NameToLayer("Module"))
+                    else
                     {
-                        Durability hittedObject = hitInfo.collider.GetComponent<Durability>();
-                        if (hittedObject != null && hittedObject.teamID != teamID)
+                        if (hitInfoLayer == LayerMask.NameToLayer("Projectile"))
                         {
-                            hittedObject.durability.TakeDamage(damage);
+                            Projectile hittedProjectile = hitInfo.collider.GetComponent<Projectile>();
+                            if (hittedProjectile != null && hittedProjectile.teamID != teamID)
+                            {
+                                hittedProjectile.damage.DamageOtherDamage(damage);
+                            }
                         }
-                    }
-                    if (selfDestructAfterHit)
-                    {
-                        Explode();
+                        if (hitInfoLayer == LayerMask.NameToLayer("Environment") || hitInfoLayer == LayerMask.NameToLayer("Module"))
+                        {
+                            Durability hittedObject = hitInfo.collider.GetComponent<Durability>();
+                            if (hittedObject != null && hittedObject.teamID != teamID)
+                            {
+                                hittedObject.durability.TakeDamage(damage);
+                            }
+                        }
+                        if (selfDestructAfterHit)
+                        {
+                            Explode();
+                        }
                     }
                 }
             }
+            if (!insideEnemyShipThisFrame)
+            {
+                insideEnemyShip = false;
+            }
+        }
+        else
+        {
+            insideEnemyShip = false;
         }
     }
 
     bool alreadyExploded = false;
+
+    private void CreateShipPenetrationEffect()
+    {
+
+    }
+
     private void Explode()
     {
         if (!alreadyExploded)
