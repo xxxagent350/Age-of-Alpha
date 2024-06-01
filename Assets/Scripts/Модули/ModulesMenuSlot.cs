@@ -106,7 +106,9 @@ public class ModulesMenuSlot : MonoBehaviour, IPointerDownHandler
         myModule = module_;
         ModulesOnStorageData modulesOnStorageData = DataOperator.instance.LoadDataModulesOnStorage(module_);
         GameObject modulePrefab = DataOperator.instance.modulesPrefabs[modulesOnStorageData.module.moduleNum];
-        image.sprite = modulePrefab.transform.Find("Image").GetComponent<SpriteRenderer>().sprite;
+        SpriteRenderer prefabsSpriteRenderer = modulePrefab.transform.Find("Image").GetComponent<SpriteRenderer>();
+        image.sprite = prefabsSpriteRenderer.sprite;
+        image.color = prefabsSpriteRenderer.color;
         name = modulePrefab.GetComponent<ItemData>().Name.EnglishText;
         name_.text = modulePrefab.GetComponent<ItemData>().Name.GetTranslatedString();
         amount.text = modulesOnStorageData.amount + "";

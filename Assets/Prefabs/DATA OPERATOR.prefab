@@ -456,6 +456,7 @@ GameObject:
   - component: {fileID: 3854791056911123853}
   - component: {fileID: 474222112773446393}
   - component: {fileID: 1592101764647440592}
+  - component: {fileID: -8607025167715745351}
   m_Layer: 0
   m_Name: DATA OPERATOR
   m_TagString: Untagged
@@ -491,6 +492,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4382a3a3cdd7dc246835f96264608a61, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  targetFrameRate_: 90
   shipsPrefabs:
   - {fileID: 7076352098320370933, guid: fc285a486a8769b46b1fe4d835d05938, type: 3}
   - {fileID: 6162979187479137575, guid: 48a3cc2654b13664d85d93cc41aff89a, type: 3}
@@ -502,6 +504,7 @@ MonoBehaviour:
   - {fileID: 3744825288711606085, guid: 94d41157d5ce30d4385f7de342b60b77, type: 3}
   - {fileID: 3171517011679500628, guid: 6a376f50c2640374d911d544f23431b1, type: 3}
   - {fileID: 724571104959012899, guid: 9817d0242823e4d478b492430caea695, type: 3}
+  - {fileID: 6539153803356699272, guid: 166775223e7b3dd46be57698401baa05, type: 3}
   UIAudioSource: {fileID: 1592101764647440592}
   defaultAudioSourcePrefab: {fileID: 5498154045212141642, guid: b4a1cc3d0bcc76249bbb4287755fb175, type: 3}
   DataPathAccessErrorScreen: {fileID: 4409338878380001049}
@@ -605,6 +608,19 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!114 &-8607025167715745351
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5292908563983817125}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b1644879f83d04a448fe67b0f723f163, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  allPooledObjects: []
 --- !u!1 &7247781850651555419
 GameObject:
   m_ObjectHideFlags: 0
