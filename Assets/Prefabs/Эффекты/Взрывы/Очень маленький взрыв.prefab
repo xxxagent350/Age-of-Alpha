@@ -9796,6 +9796,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2870257772010627703}
   - component: {fileID: 7055560409179890546}
+  - component: {fileID: 2118354584199013218}
   m_Layer: 0
   m_Name: "\u041E\u0447\u0435\u043D\u044C \u043C\u0430\u043B\u0435\u043D\u044C\u043A\u0438\u0439
     \u0432\u0437\u0440\u044B\u0432"
@@ -9834,3 +9835,17 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   pooledObjID: very small explode
+--- !u!114 &2118354584199013218
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5061291491831597189}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0d143d795c296f344a9b397495b3388e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  disablingDelay: 1
+  myParticleSystems: []

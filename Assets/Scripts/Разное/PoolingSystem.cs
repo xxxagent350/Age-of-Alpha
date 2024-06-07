@@ -23,6 +23,7 @@ public class PoolingSystem : MonoBehaviour
         }
     }
 
+    //GO - сокращение от GameObject
     public void ReturnGOToPool(GameObject GO)
     {
         //закидываем объект в пул
@@ -33,7 +34,7 @@ public class PoolingSystem : MonoBehaviour
             return;
         }
         string goID = pooledObject.pooledObjID;
-        if (GetRegisteredObjectsListOfGOsID(goID) != null) //проверяем существует ли список объектов такого типа
+        if (GetRegisteredObjectsListOfGOsID(goID) == null) //проверяем существует ли список объектов такого типа
         {
             RegisterNewObjectsType(goID);
         }
@@ -53,46 +54,59 @@ public class PoolingSystem : MonoBehaviour
             pooledBehaviour_.OnReturnedToPool();
         }
         GO.SetActive(false);
+
+        DontDestroyOnLoad(GO);
+        GO.transform.SetParent(transform);
     }
 
-    public void SpawnGOs(GameObject[] GOs, Vector3 position, Quaternion rotation)
+    public void SpawnGOs(GameObject[] GOsPrefabs, Vector3 position, Quaternion rotation)
     {
-        foreach (GameObject GO in GOs)
+        foreach (GameObject GOPrefab in GOsPrefabs)
         {
-            SpawnGO(GO, position, rotation);
+            SpawnGO(GOPrefab, position, rotation);
         }
     }
 
-    public void SpawnGO(GameObject GO, Vector3 position, Quaternion rotation)
+    public void SpawnGO(GameObject GOsPrefab, Vector3 position, Quaternion rotation)
     {
         //проверяем есть ли объект в пуле или надо создавать новый экземпляр
-        PooledObject pooledObject = GO.GetComponent<PooledObject>();
-        if (pooledObject == null)
+        PooledObject prefabsPooledObject = GOsPrefab.GetComponent<PooledObject>();
+        if (prefabsPooledObject == null)
         {
-            Debug.LogError($"На объекте {GO} отсутствует компонент PooledObject, необходимый для пулинга объекта");
+            Debug.LogError($"На объекте {GOsPrefab} отсутствует компонент PooledObject, необходимый для пулинга объекта");
             return;
         }
-        string goID = pooledObject.pooledObjID;
+        string goID = prefabsPooledObject.pooledObjID;
         SameTypeObjectsList sameTypeObjectsList = GetRegisteredObjectsListOfGOsID(goID);
         if (sameTypeObjectsList != null && sameTypeObjectsList.pooledSameTypeObjects.Count > 0)
         {
             GameObject pooledGO = sameTypeObjectsList.pooledSameTypeObjects[sameTypeObjectsList.pooledSameTypeObjects.Count - 1];
+
+            //переносим объект на нужную сцену
+            pooledGO.transform.SetParent(null);
             SceneManager.MoveGameObjectToScene(pooledGO, SceneManager.GetActiveScene());
             pooledGO.transform.position = position;
             pooledGO.transform.rotation = rotation;
             sameTypeObjectsList.pooledSameTypeObjects.RemoveAt(sameTypeObjectsList.pooledSameTypeObjects.Count - 1);
 
             //активируем объект
-            PooledBehaviour[] pooledBehaviours = GO.GetComponents<PooledBehaviour>();
+            pooledGO.SetActive(true);
+
+            PooledBehaviour[] pooledBehaviours = pooledGO.GetComponents<PooledBehaviour>();
             foreach (PooledBehaviour pooledBehaviour_ in pooledBehaviours)
             {
                 pooledBehaviour_.OnSpawnedFromPool();
             }
-            GO.SetActive(true);
         }
         else
         {
-            Instantiate(GO, position, rotation);
+            GameObject newGO = Instantiate(GOsPrefab, position, rotation);
+
+            PooledBehaviour[] pooledBehaviours = newGO.GetComponents<PooledBehaviour>();
+            foreach (PooledBehaviour pooledBehaviour_ in pooledBehaviours)
+            {
+                pooledBehaviour_.OnSpawnedFromPool();
+            }
         }
     }
 
@@ -121,4 +135,9 @@ public class SameTypeObjectsList
 {
     public string pooledObjectsID;
     public List<GameObject> pooledSameTypeObjects;
+
+    public SameTypeObjectsList()
+    {
+        pooledSameTypeObjects = new List<GameObject>(0);
+    }
 }

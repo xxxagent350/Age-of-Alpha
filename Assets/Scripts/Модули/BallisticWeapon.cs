@@ -18,7 +18,7 @@ public class BallisticWeapon : Weapon
     [Tooltip("Разброс в градусах")]
     [SerializeField] float scatterAngle = 5;
 
-    [SerializeField] float reloadTimer;
+    float reloadTimer;
     int currentBarrelNum;
     Rigidbody2D myShipRigidbody2D;
 

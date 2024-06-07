@@ -1,0 +1,11 @@
+# ninja log v5
+14	6251	7392237188158735	GameActivity/CMakeFiles/game.dir/UGAInputKeyEvent.cpp.o	3a31dd5f774a5144
+21	6304	7392237189208945	GameActivity/CMakeFiles/game.dir/UGAInputMotionEvent.cpp.o	a9cbf20f54a6f63c
+2	6511	7392237189418998	GameActivity/CMakeFiles/game.dir/UGAEntry.cpp.o	3e151dcff6a81e16
+8	6705	7392237192899666	GameActivity/CMakeFiles/game.dir/UGADebug.cpp.o	79158d632a2e98f6
+6304	6935	7392237195926659	FramePacing/CMakeFiles/swappywrapper.dir/UnitySwappyWrapper.cpp.o	b60cb464b8a88ffd
+17	7308	7392237199453398	GameActivity/CMakeFiles/game.dir/UGAInput.cpp.o	b0a22ce95f1c5975
+6936	7377	7392237198953300	F:/UnityProjects/The Age of Alpha/Library/Bee/Android/Prj/IL2CPP/Gradle/unityLibrary/build/intermediates/cxx/RelWithDebInfo/6a1v213j/obj/arm64-v8a/libswappywrapper.so	818827fc24d282c7
+11	7522	7392237201643848	GameActivity/CMakeFiles/game.dir/UGAApplication.cpp.o	c5f5aec5903d9797
+6277	8665	7392237213096682	GameActivity/CMakeFiles/game.dir/UGASoftKeyboard.cpp.o	5592dea234a5906e
+8665	8918	7392237214787007	F:/UnityProjects/The Age of Alpha/Library/Bee/Android/Prj/IL2CPP/Gradle/unityLibrary/build/intermediates/cxx/RelWithDebInfo/6a1v213j/obj/arm64-v8a/libgame.so	21fb00a1f3bac1fe

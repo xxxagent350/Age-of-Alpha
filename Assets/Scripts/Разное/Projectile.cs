@@ -21,9 +21,12 @@ public class Projectile : MonoBehaviour
     [Tooltip("≈сли включено, будет поворачивать картинку в сторону движени€")]
     [SerializeField] bool rotateToVelocityVectorDir = false;
 
-    [Tooltip("Ёффект пробити€ обшивки корабл€")]
-    [SerializeField] Effect shipPenetrationEffects;
-    [SerializeField] Effect moduleHitEffects;
+    [Tooltip("Ёффект пробити€ обшивки корабл€ (укажите название эффекта из префаба RpcHandlerForEffects)")]
+    [SerializeField] string shipPenetrationEffects;
+    [Tooltip("Ёффект попадани€ в модули корабл€, снар€ды, астероиды и прочие игровые объекты (укажите название эффекта из префаба RpcHandlerForEffects)")]
+    [SerializeField] string moduleHitEffects;
+    [Tooltip("Ёффект взрыва снар€да (укажите название эффекта из префаба RpcHandlerForEffects)")]
+    [SerializeField] string explodeEffects;
 
     [Header("ќтладка")]
     [Tooltip(" оманда корабл€, который выпустил снар€д")]
@@ -31,6 +34,9 @@ public class Projectile : MonoBehaviour
 
     Rigidbody2D myRigidbody2D;
     bool insideEnemyShip;
+
+    [Tooltip("ѕоследн€€ точка, в которой был нанесЄн урон (нужно дл€ определени€ положени€ эффекта взрыва)")]
+    Vector3 lastHitPoint;
 
     private void Start()
     {
@@ -95,7 +101,7 @@ public class Projectile : MonoBehaviour
                         {
                             if (!insideEnemyShip)
                             {
-
+                                SpawnEffect(EffectType.shipPenetration, hitInfo.point, transform.rotation);
                             }
                             insideEnemyShip = true;
                             insideEnemyShipThisFrame = true;
@@ -108,7 +114,9 @@ public class Projectile : MonoBehaviour
                             Projectile hittedProjectile = hitInfo.collider.GetComponent<Projectile>();
                             if (hittedProjectile != null && hittedProjectile.teamID != teamID)
                             {
+                                SpawnEffect(EffectType.moduleHit, hitInfo.point, transform.rotation);
                                 hittedProjectile.damage.DamageOtherDamage(damage);
+                                lastHitPoint = hitInfo.point;
                             }
                         }
                         if (hitInfoLayer == LayerMask.NameToLayer("Environment") || hitInfoLayer == LayerMask.NameToLayer("Module"))
@@ -116,7 +124,9 @@ public class Projectile : MonoBehaviour
                             Durability hittedObject = hitInfo.collider.GetComponent<Durability>();
                             if (hittedObject != null && hittedObject.teamID != teamID)
                             {
+                                SpawnEffect(EffectType.moduleHit, hitInfo.point, transform.rotation);
                                 hittedObject.durability.TakeDamage(damage);
+                                lastHitPoint = hitInfo.point;
                             }
                         }
                         if (selfDestructAfterHit)
@@ -139,15 +149,11 @@ public class Projectile : MonoBehaviour
 
     bool alreadyExploded = false;
 
-    private void CreateShipPenetrationEffect()
-    {
-
-    }
-
     private void Explode()
     {
         if (!alreadyExploded)
         {
+            SpawnEffect(EffectType.explode, lastHitPoint, transform.rotation);
             alreadyExploded = true;
             Destroy(gameObject);
         }
@@ -158,6 +164,28 @@ public class Projectile : MonoBehaviour
         transform.eulerAngles = new Vector3(0, 0, DataOperator.GetVector2DirInDegrees(myRigidbody2D.velocity));
     }
 
+    void SpawnEffect(EffectType effectType, Vector3 position, Quaternion rotation)
+    {
+        switch (effectType)
+        {
+            case EffectType.shipPenetration:
+                RpcHandlerForEffects.SpawnEffectOnClients(new NetworkString(shipPenetrationEffects), position, rotation);
+                break;
+            case EffectType.moduleHit:
+                RpcHandlerForEffects.SpawnEffectOnClients(new NetworkString(moduleHitEffects), position, rotation);
+                break;
+            case EffectType.explode:
+                RpcHandlerForEffects.SpawnEffectOnClients(new NetworkString(explodeEffects), position, rotation);
+                break;
+        }
+    }
+
+    enum EffectType
+    {
+        shipPenetration,
+        moduleHit,
+        explode
+    }
 
 #if UNITY_EDITOR
     //отрисовка позиции выхода raycast

@@ -257,5 +257,4 @@ MonoBehaviour:
   - {x: 0, y: 0.43}
   reloadTime: 0.3
   projectilesPerSalvo: 1
-  scatterAngle: 5
-  reloadTimer: 0
+  scatterAngle: 1
