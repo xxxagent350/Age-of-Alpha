@@ -43,7 +43,7 @@ public class NetworkTransformIlia : NetworkBehaviour
             if (NetworkManager.Singleton.IsClient)
             {
                 //то что тут напишешь  выполняться у клиентов
-                Debug.Log($"X: {gais.xPos} Y: {gais.yPos} Поворот: {gais.rotationDegrees}");
+                //Debug.Log($"X: {gais.xPos} Y: {gais.yPos} Поворот: {gais.rotationDegrees}");
                 transform.position = new Vector2(gais.xPos, gais.yPos);
                 transform.rotation = Quaternion.Euler(0, 0, gais.rotationDegrees);
                 Pozition.Add(gais);
