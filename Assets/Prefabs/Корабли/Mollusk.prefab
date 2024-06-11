@@ -512,7 +512,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GlobalObjectIdHash: 2317756959
+  GlobalObjectIdHash: 4293951302
   InScenePlacedSourceGlobalObjectIdHash: 0
   AlwaysReplicateAsRoot: 0
   SynchronizeTransform: 1
@@ -604,6 +604,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   modulesOnShip: []
+  teamID: 
 --- !u!60 &3763844478678350547
 PolygonCollider2D:
   m_ObjectHideFlags: 0
@@ -709,6 +710,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a625874215b417d4aa8bb7410ce650d3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  image: {fileID: 4238546952208583414}
+  category: 0
+  type: 0
   Name:
     RussianText: "\u041C\u043E\u043B\u043B\u044E\u0441\u043A"
     EnglishText: Mollusk
@@ -811,10 +815,7 @@ MonoBehaviour:
   modulesOnShip: []
   pastHistory: []
   futureHistory: []
-  spawnBullet: 0
-  bullet: {fileID: 2288871660798619471, guid: b2e6515e7e7ba5c4aaad7541b8331a23, type: 3}
   teamID: 137868101418742826431557444606
-  modulesCollidersKeepActiveTime: 3
 --- !u!114 &1235409478136646535
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -827,17 +828,29 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ff78f7028abc2e946ba31867f08e0a99, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  enginesLightsAlphaChangingSpeed: 2
+  enginesLights: []
+  trails: []
+  teamID: 
   mass: 0
-  energyGeneration: 0
+  energyGeneration:
+    m_InternalValue: 0
   energyMaxCapacity:
     m_InternalValue: 0
   energy:
     m_InternalValue: 0
+  enginesConsumption:
+    m_InternalValue: 0
   accelerationPower: 0
   angularAccelerationPower: 0
-  movementJoystickPressed: 0
-  movementJoystickDirInDegrees: 0
-  movementJoystickMagnitude: 0
+  noEnergy:
+    m_InternalValue: 0
+  movementJoystickPressed:
+    m_InternalValue: 0
+  movementJoystickDirInDegrees:
+    m_InternalValue: 0
+  movementJoystickMagnitude:
+    m_InternalValue: 0
 --- !u!1 &8166635181878687870
 GameObject:
   m_ObjectHideFlags: 0

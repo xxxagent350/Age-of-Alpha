@@ -35,7 +35,8 @@ public class ShipGameStats : NetworkBehaviour
     const float minDrag = 0;
     const float maxSpeedMod = 150;
     const float linearDragMod = 0.01f;
-    const float accelerationPowerMod = 500;
+    const float accelerationPowerMod = 1000;
+    const float rotationForceMod = 100000;
 
     bool noControl; //true когда нету блока управления
 
@@ -289,8 +290,6 @@ public class ShipGameStats : NetworkBehaviour
 
     void RotateShip()
     {
-        const float rotationForceMod = 50000;
-
         float F = angularAccelerationPower * rotationForceMod; //крутящий момент (аналог силы)
         float m = myRigidbody2D.inertia; //момент инерции (аналог массы)
 
@@ -409,6 +408,7 @@ public class ShipGameStats : NetworkBehaviour
         {
             weapon.Disconnect();
         }
+        ChangeOwnersInterfaceStateRpc(false);
     }
 
 
@@ -431,9 +431,9 @@ public class ShipGameStats : NetworkBehaviour
     }
 
     [Rpc(SendTo.Owner)]
-    void ChangeOwnersInterfaceStateRpc(bool turnOn)
+    void ChangeOwnersInterfaceStateRpc(bool state)
     {
-        PlayerInterface.instance.SetActivePlayerInterface(turnOn);
+        PlayerInterface.instance.SetActivePlayerInterface(state);
     }
 
 

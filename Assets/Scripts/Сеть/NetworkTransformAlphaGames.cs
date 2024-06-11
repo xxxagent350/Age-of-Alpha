@@ -63,19 +63,19 @@ public class NetworkTransformByAlphaGames : NetworkBehaviour
         }
     }
 
-    readonly NetworkVariable<Transform2D> NetworkTransform2DVar = new NetworkVariable<Transform2D>();
+    readonly NetworkVariable<AlphaTransform> NetworkTransformVar = new NetworkVariable<AlphaTransform>();
 
     void NetworkVariableTransform()
     {
         if (NetworkManager.Singleton.IsServer)
         {
-            NetworkTransform2DVar.Value = new Transform2D(transform);
+            NetworkTransformVar.Value = new AlphaTransform(transform);
         }
         else
         {
             if (NetworkManager.Singleton.IsClient)
             {
-                NetworkTransform2DVar.Value.SetTransformAtThis(transform);
+                NetworkTransformVar.Value.SetTransformAtThis(transform);
             }
         }
     }
@@ -87,12 +87,12 @@ public class NetworkTransformByAlphaGames : NetworkBehaviour
     {
         if (NetworkManager.Singleton.IsServer)
         {
-            SetPositionRpc(new Transform2D(transform));
+            SetPositionRpc(new AlphaTransform(transform));
         }
     }
 
     [Rpc(SendTo.NotServer)]
-    void SetPositionRpc(Transform2D newTransform)
+    void SetPositionRpc(AlphaTransform newTransform)
     {
         if (!NetworkManager.Singleton.IsServer && NetworkManager.Singleton.IsClient)
         {
@@ -102,14 +102,14 @@ public class NetworkTransformByAlphaGames : NetworkBehaviour
 
 
     [Header("Отладка")]
-    [SerializeField] List<Transform2D> transformsInterpolating = new List<Transform2D>(0);
+    [SerializeField] List<AlphaTransform> transformsInterpolating = new List<AlphaTransform>(0);
     [SerializeField] float clientsCount;
 
     void InterpolatingTransform()
     {
         if (NetworkManager.Singleton.IsServer) //сервер
         {
-            SetPositionRpcForInterpolatingRpc(new Transform2D(transform));
+            SendTransformForInterpolatingRpc(new AlphaTransform(transform));
         }
         else
         {
@@ -149,7 +149,7 @@ public class NetworkTransformByAlphaGames : NetworkBehaviour
             clientsCount = transformsInterpolating.Count - 1;
         }
 
-        Transform2D finalPos = new Transform2D();
+        AlphaTransform finalPos = new AlphaTransform();
         if (clientsCount == Mathf.RoundToInt(clientsCount))
         {
             finalPos = transformsInterpolating[Mathf.RoundToInt(clientsCount)];
@@ -158,20 +158,23 @@ public class NetworkTransformByAlphaGames : NetworkBehaviour
         {
             float olderRatio = Mathf.RoundToInt(clientsCount + 0.5f) - clientsCount;
             float newerRatio = 1 - olderRatio;
-            Transform2D olderTransform = transformsInterpolating[Mathf.RoundToInt(clientsCount - 0.5f)];
-            Transform2D newerTransform = transformsInterpolating[Mathf.RoundToInt(clientsCount + 0.5f)];
-            finalPos.xPos = (olderTransform.xPos * olderRatio) + (newerTransform.xPos * newerRatio);
-            finalPos.yPos = (olderTransform.yPos * olderRatio) + (newerTransform.yPos * newerRatio);
-            finalPos.rotationDegrees = olderTransform.rotationDegrees + (Mathf.DeltaAngle(olderTransform.rotationDegrees, newerTransform.rotationDegrees) * newerRatio);
-        }
+            AlphaTransform olderTransform = transformsInterpolating[Mathf.RoundToInt(clientsCount - 0.5f)];
+            AlphaTransform newerTransform = transformsInterpolating[Mathf.RoundToInt(clientsCount + 0.5f)];
 
+            finalPos.position = (olderTransform.position * olderRatio) + (newerTransform.position * newerRatio);
+            //finalPos.position.x = (olderTransform.position.x * olderRatio) + (newerTransform.position.x * newerRatio);
+            //finalPos.position.y = (olderTransform.position.y * olderRatio) + (newerTransform.position.y * newerRatio);
+            float xRot = olderTransform.rotation.eulerAngles.x + (Mathf.DeltaAngle(olderTransform.rotation.eulerAngles.x, newerTransform.rotation.eulerAngles.x) * newerRatio);
+            float yRot = olderTransform.rotation.eulerAngles.y + (Mathf.DeltaAngle(olderTransform.rotation.eulerAngles.y, newerTransform.rotation.eulerAngles.y) * newerRatio);
+            float zRot = olderTransform.rotation.eulerAngles.z + (Mathf.DeltaAngle(olderTransform.rotation.eulerAngles.z, newerTransform.rotation.eulerAngles.z) * newerRatio);
+            finalPos.rotation.eulerAngles = new Vector3(xRot, yRot, zRot); 
+        }
         finalPos.SetTransformAtThis(transform);
     }
 
-
     bool interpolationInitialized;
     [Rpc(SendTo.NotServer)]
-    void SetPositionRpcForInterpolatingRpc(Transform2D newTransform_)
+    void SendTransformForInterpolatingRpc(AlphaTransform newTransform_)
     {
         if (!NetworkManager.Singleton.IsServer && NetworkManager.Singleton.IsClient)
         {
@@ -200,43 +203,31 @@ public class NetworkTransformByAlphaGames : NetworkBehaviour
 }
 
 
+
 [Serializable]
-public struct Transform2D : INetworkSerializable
+public struct AlphaTransform : INetworkSerializable
 {
-    public float xPos;
-    public float yPos;
-    public float rotationDegrees;
+    public Vector3 position;
+    public Quaternion rotation;
 
-    public Transform2D(Vector2 position_, float rotationDegrees_)
+    public AlphaTransform(Vector3 position_, Quaternion rotation_)
     {
-        xPos = position_.x;
-        yPos = position_.y;
-        rotationDegrees = rotationDegrees_;
+        position = position_;
+        rotation = rotation_;
     }
-    public Transform2D(Transform transform_)
+    public AlphaTransform(Transform transform_)
     {
-        xPos = transform_.position.x;
-        yPos = transform_.position.y;
-        rotationDegrees = transform_.eulerAngles.z;
-    }
-
-    public Vector2 GetPosition()
-    {
-        return new Vector2(xPos, yPos);
-    }
-    public float GetRotationDegrees()
-    {
-        return rotationDegrees;
+        position = transform_.position;
+        rotation = transform_.rotation;
     }
     public void SetTransformAtThis(Transform transform_)
     {
-        transform_.SetPositionAndRotation(new Vector3(xPos, yPos, transform_.position.z), Quaternion.Euler(transform_.eulerAngles.x, transform_.eulerAngles.y, rotationDegrees));
+        transform_.SetPositionAndRotation(position, rotation);
     }
 
     public void NetworkSerialize<T>(BufferSerializer<T> serializer) where T : IReaderWriter
     {
-        serializer.SerializeValue(ref xPos);
-        serializer.SerializeValue(ref yPos);
-        serializer.SerializeValue(ref rotationDegrees);
+        serializer.SerializeValue(ref position);
+        serializer.SerializeValue(ref rotation);
     }
 }

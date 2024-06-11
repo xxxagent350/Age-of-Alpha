@@ -1,9 +1,11 @@
 using System;
 using UnityEngine;
 
-
 public class ItemData : MonoBehaviour
 {
+    [Header("Настройка")]
+    public Transform image;
+
     public modulesCategories category;
     public modulesTypes type;
 
@@ -20,7 +22,7 @@ public class ItemData : MonoBehaviour
     }
     void SetSize()
     {
-        transform.Find("Image").localScale = new Vector3(Size, Size, 0);
+        image.localScale = new Vector3(Size, Size, 0);
     }
 
     //ниже для конфигурации корабля в редакторе

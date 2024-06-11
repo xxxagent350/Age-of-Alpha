@@ -24,9 +24,9 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 965775129182004643}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 1, y: 1, z: 0}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 8653558629697192270}
@@ -274,7 +274,6 @@ GameObject:
   - component: {fileID: 5674795721380025807}
   - component: {fileID: 2016701519165959488}
   - component: {fileID: 8718349088648857919}
-  - component: {fileID: 5852557784296105713}
   - component: {fileID: 326923900850356466}
   - component: {fileID: 877548179166838476}
   - component: {fileID: 7689750848961759715}
@@ -319,7 +318,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GlobalObjectIdHash: 4018752480
+  GlobalObjectIdHash: 883202741
   InScenePlacedSourceGlobalObjectIdHash: 0
   AlwaysReplicateAsRoot: 0
   SynchronizeTransform: 1
@@ -347,22 +346,6 @@ MonoBehaviour:
   framesMaxBuffer: 50
   transformsInterpolating: []
   clientsCount: 0
---- !u!114 &5852557784296105713
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2754688915147245918}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a5674d90017f3924e9d1b577b1fe426a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  gais:
-    xPos: 0
-    yPos: 0
-    rotationDegrees: 0
 --- !u!50 &326923900850356466
 Rigidbody2D:
   serializedVersion: 4
@@ -403,6 +386,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   modulesOnShip: []
+  teamID: 
 --- !u!60 &7689750848961759715
 PolygonCollider2D:
   m_ObjectHideFlags: 0
@@ -499,6 +483,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a625874215b417d4aa8bb7410ce650d3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  image: {fileID: 5285209893416400858}
   category: 0
   type: 0
   Name:
@@ -599,8 +584,6 @@ MonoBehaviour:
   modulesOnShip: []
   pastHistory: []
   futureHistory: []
-  spawnBullet: 0
-  bullet: {fileID: 2288871660798619471, guid: b2e6515e7e7ba5c4aaad7541b8331a23, type: 3}
   teamID: 196730340214338153581425135233
 --- !u!114 &3708104295153655803
 MonoBehaviour:
@@ -623,6 +606,7 @@ MonoBehaviour:
   - {fileID: 5428605154188273445}
   - {fileID: 52305521070128999}
   - {fileID: 545906867280465073}
+  teamID: 
   mass: 0
   energyGeneration:
     m_InternalValue: 0
@@ -634,7 +618,8 @@ MonoBehaviour:
     m_InternalValue: 0
   accelerationPower: 0
   angularAccelerationPower: 0
-  noEnergy: 0
+  noEnergy:
+    m_InternalValue: 0
   movementJoystickPressed:
     m_InternalValue: 0
   movementJoystickDirInDegrees:
@@ -768,7 +753,7 @@ GameObject:
   - component: {fileID: 874173201488284650}
   - component: {fileID: 2703315557602549856}
   m_Layer: 0
-  m_Name: Image
+  m_Name: Image(Mosquito)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1258,7 +1243,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 1, y: 1, z: 0}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1635099089777734560}

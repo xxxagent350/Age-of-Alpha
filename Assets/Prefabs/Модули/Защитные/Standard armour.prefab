@@ -98,6 +98,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a625874215b417d4aa8bb7410ce650d3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  image: {fileID: 3609876112435870677}
   category: 2
   type: 5
   Name:
@@ -142,10 +143,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   durability:
     maxDurability: 10
-    currentDurability: 0
     resistanceToFireDamage: 0.3
     resistanceToEnergyDamage: 0.15
     resistanceToPhysicalDamage: 0
+    currentDurability: 0
   teamID: none
 --- !u!1 &8472655313240888435
 GameObject:

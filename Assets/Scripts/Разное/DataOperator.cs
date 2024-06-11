@@ -9,7 +9,7 @@ using UnityEngine.SceneManagement;
 public class DataOperator : MonoBehaviour
 {
     [Header("Настройка")]
-    [SerializeField] int targetFrameRate_ = 90;
+    [SerializeField] int targetFrameRate_ = 60;
     public GameObject[] shipsPrefabs;
     public GameObject[] modulesPrefabs;
     [SerializeField] AudioSource UIAudioSource;
