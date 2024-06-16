@@ -105,6 +105,7 @@ public class PoolingSystem : MonoBehaviour
             PooledBehaviour[] pooledBehaviours = newGO.GetComponents<PooledBehaviour>();
             foreach (PooledBehaviour pooledBehaviour_ in pooledBehaviours)
             {
+                pooledBehaviour_.Initialize();
                 pooledBehaviour_.OnSpawnedFromPool();
             }
         }

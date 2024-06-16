@@ -45,7 +45,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GlobalObjectIdHash: 3284779646
+  GlobalObjectIdHash: 3468045221
   InScenePlacedSourceGlobalObjectIdHash: 0
   AlwaysReplicateAsRoot: 0
   SynchronizeTransform: 1
@@ -66,15 +66,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 299c8b927ae2f8649a658cc58e79ebd5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  effects:
-  - effectName: very small explode
-    effect:
-      HighQualityEffects:
-      - {fileID: 5061291491831597189, guid: 8fcd36d5f3ccc39478a7c68747009747, type: 3}
-      MediumQualityEffects:
-      - {fileID: 5061291491831597189, guid: 8fcd36d5f3ccc39478a7c68747009747, type: 3}
-      LowQualityEffects:
-      - {fileID: 5061291491831597189, guid: 8fcd36d5f3ccc39478a7c68747009747, type: 3}
+  effectsList:
   - effectName: small explode
     effect:
       HighQualityEffects:
@@ -83,3 +75,27 @@ MonoBehaviour:
       - {fileID: 4496712341464496618, guid: be890f4137454e346b7cce5ae753dd63, type: 3}
       LowQualityEffects:
       - {fileID: 4496712341464496618, guid: be890f4137454e346b7cce5ae753dd63, type: 3}
+  - effectName: very small explode
+    effect:
+      HighQualityEffects:
+      - {fileID: 5061291491831597189, guid: 8fcd36d5f3ccc39478a7c68747009747, type: 3}
+      MediumQualityEffects:
+      - {fileID: 5061291491831597189, guid: 8fcd36d5f3ccc39478a7c68747009747, type: 3}
+      LowQualityEffects:
+      - {fileID: 5061291491831597189, guid: 8fcd36d5f3ccc39478a7c68747009747, type: 3}
+  - effectName: sound_Plasmogun Splitter shoot
+    effect:
+      HighQualityEffects:
+      - {fileID: 5077133317201384345, guid: f0785611cbf640741860b013fde14384, type: 3}
+      MediumQualityEffects:
+      - {fileID: 5077133317201384345, guid: f0785611cbf640741860b013fde14384, type: 3}
+      LowQualityEffects:
+      - {fileID: 5077133317201384345, guid: f0785611cbf640741860b013fde14384, type: 3}
+  - effectName: sound_Very small explode
+    effect:
+      HighQualityEffects:
+      - {fileID: 5077133317201384345, guid: 485dfedf623813a4a8be2ffb22b196b6, type: 3}
+      MediumQualityEffects:
+      - {fileID: 5077133317201384345, guid: 485dfedf623813a4a8be2ffb22b196b6, type: 3}
+      LowQualityEffects:
+      - {fileID: 5077133317201384345, guid: 485dfedf623813a4a8be2ffb22b196b6, type: 3}

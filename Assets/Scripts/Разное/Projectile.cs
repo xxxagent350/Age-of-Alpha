@@ -1,5 +1,6 @@
-using UnityEngine;
+using System.Collections.Generic;
 using Unity.Netcode;
+using UnityEngine;
 
 public class Projectile : MonoBehaviour
 {
@@ -21,12 +22,12 @@ public class Projectile : MonoBehaviour
     [Tooltip("≈сли включено, будет поворачивать картинку в сторону движени€")]
     [SerializeField] bool rotateToVelocityVectorDir = false;
 
-    [Tooltip("Ёффект пробити€ обшивки корабл€ (укажите название эффекта из префаба RpcHandlerForEffects)")]
-    [SerializeField] string shipPenetrationEffects;
-    [Tooltip("Ёффект попадани€ в модули корабл€, снар€ды, астероиды и прочие игровые объекты (укажите название эффекта из префаба RpcHandlerForEffects)")]
-    [SerializeField] string moduleHitEffects;
-    [Tooltip("Ёффект взрыва снар€да (укажите название эффекта из префаба RpcHandlerForEffects)")]
-    [SerializeField] string explodeEffects;
+    [Tooltip("Ёффекты пробити€ обшивки корабл€ (укажите названи€ эффектов из префаба RpcHandlerForEffects)")]
+    [SerializeField] List<string> shipPenetrationEffects;
+    [Tooltip("Ёффекты попадани€ в модули корабл€, снар€ды, астероиды и прочие игровые объекты (укажите названи€ эффектов из префаба RpcHandlerForEffects)")]
+    [SerializeField] List<string> moduleHitEffects;
+    [Tooltip("Ёффекты взрыва снар€да (укажите названи€ эффектов из префаба RpcHandlerForEffects)")]
+    [SerializeField] List<string> explodeEffects;
 
     [Header("ќтладка")]
     [Tooltip(" оманда корабл€, который выпустил снар€д")]
@@ -169,13 +170,13 @@ public class Projectile : MonoBehaviour
         switch (effectType)
         {
             case EffectType.shipPenetration:
-                RpcHandlerForEffects.SpawnEffectOnClients(new NetworkString(shipPenetrationEffects), position, rotation);
+                RpcHandlerForEffects.SpawnEffectsOnClients(shipPenetrationEffects, position, rotation);
                 break;
             case EffectType.moduleHit:
-                RpcHandlerForEffects.SpawnEffectOnClients(new NetworkString(moduleHitEffects), position, rotation);
+                RpcHandlerForEffects.SpawnEffectsOnClients(moduleHitEffects, position, rotation);
                 break;
             case EffectType.explode:
-                RpcHandlerForEffects.SpawnEffectOnClients(new NetworkString(explodeEffects), position, rotation);
+                RpcHandlerForEffects.SpawnEffectsOnClients(explodeEffects, position, rotation);
                 break;
         }
     }

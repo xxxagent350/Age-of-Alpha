@@ -49,6 +49,9 @@ SpriteRenderer:
   m_ReflectionProbeUsage: 1
   m_RayTracingMode: 0
   m_RayTraceProcedural: 0
+  m_RayTracingAccelStructBuildFlagsOverride: 0
+  m_RayTracingAccelStructBuildFlags: 1
+  m_SmallMeshCulling: 1
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -247,7 +250,12 @@ MonoBehaviour:
   selfDestructAfterHit: 0
   explodeOnLifetimeEnds: 0
   rotateToVelocityVectorDir: 0
-  shipPenetrationEffects: small explode
-  moduleHitEffects: very small explode
-  explodeEffects: small explode
+  shipPenetrationEffects:
+  - small explode
+  - sound_Very small explode
+  moduleHitEffects:
+  - very small explode
+  explodeEffects:
+  - small explode
+  - sound_Very small explode
   teamID: 

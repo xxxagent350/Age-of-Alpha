@@ -8,6 +8,7 @@ public class ShipGameStats : NetworkBehaviour
     [SerializeField] float enginesLightsAlphaChangingSpeed = 2;
     [SerializeField] List<SpriteRenderer> enginesLights;
     [SerializeField] List<TrailRenderer> trails;
+    [SerializeField] List<Sprite> destroyedSprites;
 
     [Header("Отладка")]
     public string teamID;
@@ -17,7 +18,7 @@ public class ShipGameStats : NetworkBehaviour
     public NetworkVariable<float> energy = new NetworkVariable<float>(); //текущее количество энергии в батареях
     public NetworkVariable<float> enginesConsumption = new NetworkVariable<float>(); //макс. потребление двигателями при полёте
     public float accelerationPower; //общая ускорительная мощь двигателей
-    public float angularAccelerationPower; //общая угловая ускорительная мощь двигателей
+    public float angularAccelerationPower; //общая вращательная мощь двигателей
 
     ShipStats myShipStats;
     ItemData myItemData;

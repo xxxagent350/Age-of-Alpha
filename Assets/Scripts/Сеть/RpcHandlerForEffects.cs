@@ -1,44 +1,39 @@
 using UnityEngine;
 using Unity.Netcode;
 using System;
+using System.Collections.Generic;
 
 //он нужен дл€ спавна эффектов у клиентов
 public class RpcHandlerForEffects : NetworkBehaviour
 {
     [Header("Ёффекты")]
-    [SerializeField] EffectWithName[] effects;
-
+    [SerializeField] List<EffectWithName> effectsList;
+    
     public static RpcHandlerForEffects instance;
+    private Dictionary<string, Effect> effectsDictionary = new Dictionary<string, Effect>();
 
     private void Awake()
     {
         instance = this;
+        for (int effectNum = 0; effectNum < effectsList.Count; effectNum++)
+        {
+            effectsDictionary.Add(effectsList[effectNum].effectName, effectsList[effectNum].effect);
+        }
     }
 
-    public static void SpawnEffectOnClients(NetworkString effectName, Vector3 position, Quaternion rotation)
+    public static void SpawnEffectsOnClients(List<string> effectsNames, Vector3 position, Quaternion rotation)
+    {
+        foreach (string effectName in effectsNames)
+        {
+            SpawnEffectOnClients(effectName, position, rotation);
+        }
+    }
+
+    public static void SpawnEffectOnClients(string effectName, Vector3 position, Quaternion rotation)
     {
         if (instance != null)
         {
-            int effectsIndex = -1;
-            string effectNameString = effectName.GetString();
-
-            for (int index = 0; index < instance.effects.Length; index++)
-            {
-                if (instance.effects[index].effectName == effectNameString)
-                {
-                    effectsIndex = index;
-                    break;
-                }
-            }
-
-            if (effectsIndex < 0)
-            {
-                Debug.LogError($"Ёффект {effectNameString} не найден в массиве префаба RpcHandlerForEffects");
-            }
-            else
-            {
-                instance.SpawnEffectOnClientsRpc((uint)effectsIndex, position, rotation);
-            }
+            instance.SpawnEffectOnClientsRpc(effectName, position, rotation);
         }
         else
         {
@@ -46,31 +41,24 @@ public class RpcHandlerForEffects : NetworkBehaviour
         }
     }
 
-    public static void SpawnEffectOnClients(uint effectNumInArray, Vector3 position, Quaternion rotation)
-    {
-        if (instance != null)
-        {
-            instance.SpawnEffectOnClientsRpc(effectNumInArray, position, rotation);
-        }
-        else
-        {
-            Debug.LogError($"RpcHandlerForEffects: не возможно заспавнить эффект {effectNumInArray}, так как RpcHandlerForEffects отсутствует на сцене");
-        }
-    }
-
     [Rpc(SendTo.Everyone)]
-    private void SpawnEffectOnClientsRpc(uint effectNumInArray, Vector3 position, Quaternion rotation)
+    private void SpawnEffectOnClientsRpc(string effectName, Vector3 position, Quaternion rotation)
     {
         if (IsSpawned)
         {
-            if (effects.Length > effectNumInArray)
+            Effect effect;
+            if (effectsDictionary.TryGetValue(effectName, out effect))
             {
-                effects[effectNumInArray].effect.SpawnEffectsFromPool(position, rotation);
+                effect.SpawnEffectsFromPool(position, rotation);
+            }
+            else
+            {
+                Debug.Log($"RpcHandlerForEffects: эффекта {effectName} не найдено в словаре");
             }
         }
         else
         {
-            Debug.LogWarning($"{gameObject}: не возможно заспавнить эффект {effectNumInArray}, так как RpcHandlerForEffects ещЄ не заспавнен");
+            Debug.LogWarning($"{gameObject}: не возможно заспавнить эффект {effectName}, так как RpcHandlerForEffects ещЄ не заспавнен");
         }
     }   
 

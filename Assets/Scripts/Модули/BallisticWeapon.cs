@@ -17,6 +17,8 @@ public class BallisticWeapon : Weapon
     [SerializeField] int projectilesPerSalvo = 1;
     [Tooltip("–азброс в градусах")]
     [SerializeField] float scatterAngle = 5;
+    [Tooltip("Ёффекты и звуки выстрела")]
+    [SerializeField] List<string> shootEffectsNames;
 
     float reloadTimer;
     int currentBarrelNum;
@@ -73,18 +75,29 @@ public class BallisticWeapon : Weapon
             if (myShipGameStats.TakeEnergy(energyConsumption))
             {
                 reloadTimer = 0;
-                Salvo();
+
+                Vector2 shotPoint = (Vector2)transform.position + DataOperator.RotateVector2(barrelsPositions[currentBarrelNum], transform.eulerAngles.z);
+                SpawnEffects(shotPoint);
+                Salvo(shotPoint);
             }
         }
     }
 
+    //спавн эффектов и звуков выстрела
+    void SpawnEffects(Vector2 shotPoint)
+    {
+        foreach (string effectName in shootEffectsNames)
+        {
+            RpcHandlerForEffects.SpawnEffectOnClients(effectName, shotPoint, transform.rotation);
+        }
+    }
+
     //залп
-    void Salvo()
+    void Salvo(Vector2 shotPoint)
     {
         for (int projectileNum = 0; projectileNum < projectilesPerSalvo; projectileNum++)
         {
-            Vector2 myPosition = transform.position;
-            SpawnProjectile(myPosition + DataOperator.RotateVector2(barrelsPositions[currentBarrelNum], transform.eulerAngles.z));
+            SpawnProjectile(shotPoint);
             if (currentBarrelNum < barrelsPositions.Count - 1)
             {
                 currentBarrelNum++;
@@ -96,10 +109,10 @@ public class BallisticWeapon : Weapon
         }
     }
 
-    void SpawnProjectile(Vector2 position)
+    void SpawnProjectile(Vector2 shotPoint)
     {
         Quaternion rotation = transform.rotation * Quaternion.Euler(0, 0, Random.Range(-scatterAngle, scatterAngle));
-        GameObject projectile = Instantiate(projectilePrefab, position, rotation);
+        GameObject projectile = Instantiate(projectilePrefab, shotPoint, rotation);
         projectile.GetComponent<Rigidbody2D>().velocity = myShipRigidbody2D.velocity;
 
         Projectile projectileComponent = projectile.GetComponent<Projectile>();

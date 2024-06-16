@@ -19,12 +19,13 @@ Physics2DSettings:
   m_LinearSleepTolerance: 0.01
   m_AngularSleepTolerance: 2
   m_DefaultContactOffset: 0.01
+  m_ContactThreshold: 0.01
   m_JobOptions:
     serializedVersion: 2
     useMultithreading: 1
     useConsistencySorting: 0
-    m_InterpolationPosesPerJob: 100
-    m_NewContactsPerJob: 30
+    m_InterpolationPosesPerJob: 50
+    m_NewContactsPerJob: 300
     m_CollideContactsPerJob: 100
     m_ClearFlagsPerJob: 200
     m_ClearBodyForcesPerJob: 200
