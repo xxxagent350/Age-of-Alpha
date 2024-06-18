@@ -53,12 +53,12 @@ public class RpcHandlerForEffects : NetworkBehaviour
             }
             else
             {
-                Debug.Log($"RpcHandlerForEffects: эффекта {effectName} не найдено в словаре");
+                Debug.LogError($"RpcHandlerForEffects: эффекта {effectName} не найдено в словаре");
             }
         }
         else
         {
-            Debug.LogWarning($"{gameObject}: не возможно заспавнить эффект {effectName}, так как RpcHandlerForEffects ещё не заспавнен");
+            Debug.LogError($"{gameObject}: не возможно заспавнить эффект {effectName}, так как RpcHandlerForEffects ещё не заспавнен");
         }
     }   
 

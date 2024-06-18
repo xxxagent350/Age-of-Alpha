@@ -55,26 +55,29 @@ public class PoolingSystem : MonoBehaviour
         }
         GO.SetActive(false);
 
+        GO.transform.parent = null;
         DontDestroyOnLoad(GO);
         GO.transform.SetParent(transform);
     }
 
-    public void SpawnGOs(GameObject[] GOsPrefabs, Vector3 position, Quaternion rotation)
+    public List<GameObject> SpawnGOs(List<GameObject> GOsPrefabs, Vector3 position, Quaternion rotation)
     {
+        List<GameObject> toReturn = new List<GameObject>(0);
         foreach (GameObject GOPrefab in GOsPrefabs)
         {
-            SpawnGO(GOPrefab, position, rotation);
+            toReturn.Add(SpawnGO(GOPrefab, position, rotation));
         }
+        return toReturn;
     }
 
-    public void SpawnGO(GameObject GOsPrefab, Vector3 position, Quaternion rotation)
+    public GameObject SpawnGO(GameObject GOsPrefab, Vector3 position, Quaternion rotation)
     {
         //проверяем есть ли объект в пуле или надо создавать новый экземпляр
         PooledObject prefabsPooledObject = GOsPrefab.GetComponent<PooledObject>();
         if (prefabsPooledObject == null)
         {
             Debug.LogError($"На объекте {GOsPrefab} отсутствует компонент PooledObject, необходимый для пулинга объекта");
-            return;
+            return null;
         }
         string goID = prefabsPooledObject.pooledObjID;
         SameTypeObjectsList sameTypeObjectsList = GetRegisteredObjectsListOfGOsID(goID);
@@ -97,6 +100,7 @@ public class PoolingSystem : MonoBehaviour
             {
                 pooledBehaviour_.OnSpawnedFromPool();
             }
+            return pooledGO;
         }
         else
         {
@@ -108,6 +112,8 @@ public class PoolingSystem : MonoBehaviour
                 pooledBehaviour_.Initialize();
                 pooledBehaviour_.OnSpawnedFromPool();
             }
+
+            return newGO;
         }
     }
 

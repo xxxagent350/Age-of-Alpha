@@ -331,7 +331,7 @@ MonoBehaviour:
   ActiveSceneSynchronization: 0
   SceneMigrationSynchronization: 1
   SpawnWithObservers: 1
-  DontDestroyWithOwner: 0
+  DontDestroyWithOwner: 1
   AutoObjectParentSync: 1
 --- !u!114 &8718349088648857919
 MonoBehaviour:
@@ -612,8 +612,23 @@ MonoBehaviour:
   - {fileID: 5428605154188273445}
   - {fileID: 52305521070128999}
   - {fileID: 545906867280465073}
-  destroyedSprites:
-  - {fileID: 4874238682600893174, guid: 8adb18b834ac0f54393a7a26fa49ed41, type: 3}
+  destroyEffects:
+  - HighQualityEffects:
+    - {fileID: 2067719033426604217, guid: 94664a78e97ecca4495f68526aebb4bc, type: 3}
+    MediumQualityEffects:
+    - {fileID: 2067719033426604217, guid: 94664a78e97ecca4495f68526aebb4bc, type: 3}
+    LowQualityEffects:
+    - {fileID: 2067719033426604217, guid: 94664a78e97ecca4495f68526aebb4bc, type: 3}
+  - HighQualityEffects:
+    - {fileID: 5077133317201384345, guid: 49025e962d6a4404aaf702a648a99344, type: 3}
+    MediumQualityEffects:
+    - {fileID: 5077133317201384345, guid: 49025e962d6a4404aaf702a648a99344, type: 3}
+    LowQualityEffects:
+    - {fileID: 5077133317201384345, guid: 49025e962d6a4404aaf702a648a99344, type: 3}
+  destroyedImage: {fileID: 4874238682600893174, guid: 8adb18b834ac0f54393a7a26fa49ed41, type: 3}
+  timeToDisappearAfterDestroy: 0
+  forceOnDestroy: 2000
+  rotationForceOnDestroy: 3000
   teamID: 
   mass: 0
   energyGeneration:
