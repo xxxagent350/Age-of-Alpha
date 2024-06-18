@@ -81,7 +81,7 @@ public class ShipGameStats : NetworkBehaviour
     public void ServerInitialize()
     {
         myShipStats = GetComponent<ShipStats>();
-        
+
         mass = myShipStats.totalMass;
 
         myRigidbody2D = GetComponent<Rigidbody2D>();
@@ -273,17 +273,17 @@ public class ShipGameStats : NetworkBehaviour
         }
     }
 
-    public bool TakeEnergy(float energyAmount)
+    public bool TrySpendEnergy(float amount)
     {
-        if (energy.Value < energyAmount)
-        {
+        if (amount <= 0)
             return false;
-        }
-        else
-        {
-            energy.Value -= energyAmount;
-            return true;
-        }
+
+        if (energy.Value < amount)
+            return false;
+
+        energy.Value -= amount;
+
+        return true;
     }
 
     public bool CheckEnergy(float energyAmount)
@@ -316,7 +316,7 @@ public class ShipGameStats : NetworkBehaviour
         //Debug.Log($"S: {S}; v2: {v2}; a: {a}; 2as: {2 * a * S}");
 
         float ignoredDir = a * Mathf.Pow(Time.fixedDeltaTime * 2, 2);
-        
+
         if (Mathf.Abs(S) < ignoredDir && Mathf.Abs(myRigidbody2D.angularVelocity) < a / Time.fixedDeltaTime / 2)
         {
             transform.eulerAngles = new Vector3(0, 0, movementJoystickDirInDegrees.Value);
@@ -324,7 +324,7 @@ public class ShipGameStats : NetworkBehaviour
         }
         else
         {
-            if (TakeEnergy(enginesConsumption.Value * Time.fixedDeltaTime))
+            if (TrySpendEnergy(enginesConsumption.Value * Time.fixedDeltaTime))
             {
                 if (v2 < 2 * a * S) //ещё не разогнались достаточно, продолжаем ускоряться
                 {
@@ -336,7 +336,7 @@ public class ShipGameStats : NetworkBehaviour
                     //Debug.Log("S < 0, тормозим");
                     myRigidbody2D.AddTorque(-F * Time.fixedDeltaTime);
                 }
-            } 
+            }
         }
     }
 
@@ -359,7 +359,7 @@ public class ShipGameStats : NetworkBehaviour
         {
             if (Mathf.Abs(Mathf.DeltaAngle(transform.eulerAngles.z, movementJoystickDirInDegrees.Value)) < ignoredDirDifferenceDegrees)
             {
-                if (TakeEnergy(enginesConsumption.Value * movementJoystickMagnitude.Value * Time.fixedDeltaTime))
+                if (TrySpendEnergy(enginesConsumption.Value * movementJoystickMagnitude.Value * Time.fixedDeltaTime))
                 {
                     myRigidbody2D.AddForce(DataOperator.RotateVector2(new Vector2(0, accelerationPower * accelerationPowerMod * movementJoystickMagnitude.Value), movementJoystickDirInDegrees.Value));
                 }

@@ -12,15 +12,12 @@ public class BallisticWeapon : Weapon
     [Tooltip("ѕозиции из которых по очереди будут вылетать пули(обозначены значком прицела в редакторе)")]
     [SerializeField] List<Vector2> barrelsPositions;
     [Tooltip("¬рем€ между выстрелами в секундах")]
-    [SerializeField] float reloadTime = 0.5f;
-    [Tooltip(" оличество снар€дов выпускаемых за 1 залп")]
     [SerializeField] int projectilesPerSalvo = 1;
     [Tooltip("–азброс в градусах")]
     [SerializeField] float scatterAngle = 5;
     [Tooltip("Ёффекты и звуки выстрела")]
     [SerializeField] List<string> shootEffectsNames;
-
-    float reloadTimer;
+    
     int currentBarrelNum;
     Rigidbody2D myShipRigidbody2D;
 
@@ -59,22 +56,16 @@ public class BallisticWeapon : Weapon
     }
 
     //отвечает за перезар€дку
-    void Reload()
-    {
-        if (reloadTimer < reloadTime)
-        {
-            reloadTimer += Time.deltaTime;
-        }
-    }
+
 
     //отвечает за стрельбу
     public void Fire()
     {
-        if (reloadTimer >= reloadTime)
+        if (CurrentReloadTime >= Cooldown)
         {
-            if (myShipGameStats.TakeEnergy(energyConsumption))
+            if (myShipGameStats.TrySpendEnergy(energyConsumption))
             {
-                reloadTimer = 0;
+                CurrentReloadTime = 0;
 
                 Vector2 shotPoint = (Vector2)transform.position + DataOperator.RotateVector2(barrelsPositions[currentBarrelNum], transform.eulerAngles.z);
                 SpawnEffects(shotPoint);

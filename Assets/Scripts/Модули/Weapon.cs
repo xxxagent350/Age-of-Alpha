@@ -1,3 +1,4 @@
+using System.Collections;
 using Unity.Netcode;
 using UnityEngine;
 
@@ -11,6 +12,9 @@ public abstract class Weapon : MonoBehaviour
     [Tooltip("Номер орудия (например если игрок хочет выстрелить из орудий обозначенных номером 2, то стреляют орудия у которых этот параметр равен 2), выставляется автоматически")]
     public uint weaponNum;
 
+    [SerializeField] protected float Cooldown;
+    protected float CurrentReloadTime = 0;
+
     [HideInInspector] public ShipGameStats myShipGameStats;
     [HideInInspector] public string teamID;
     bool noControl = false;
@@ -18,20 +22,33 @@ public abstract class Weapon : MonoBehaviour
     
     public void Start()
     {
-        if (NetworkManager.Singleton.IsServer)
-        {
-            serverUpdateDeltaTime = Time.fixedDeltaTime;
-            myShipGameStats = GetComponentInParent<ShipGameStats>();
-            myShipGameStats.attackButtonStateChangedMessage += ChangeFiringState;
-            teamID = myShipGameStats.teamID;
-            RandomUpdate();
-        }
+        StartCoroutine(OpenServer());
         Initialize();
+    }
+
+    public IEnumerator OpenServer()
+    {
+        while (NetworkManager.Singleton.IsServer == false)
+        {
+            yield return new WaitForSeconds(0.1f);
+        }
+
+        serverUpdateDeltaTime = Time.fixedDeltaTime;
+        myShipGameStats = GetComponentInParent<ShipGameStats>();
+        myShipGameStats.attackButtonStateChangedMessage += ChangeFiringState;
+        teamID = myShipGameStats.teamID;
+        RandomUpdate();
     }
 
     public void Disconnect()
     {
         noControl = true;
+    }
+
+    public void Reload()
+    {
+        if (CurrentReloadTime < Cooldown)
+            CurrentReloadTime += Time.deltaTime;
     }
 
     public void OnDestroy()
