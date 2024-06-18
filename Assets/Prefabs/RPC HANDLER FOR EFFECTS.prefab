@@ -45,7 +45,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GlobalObjectIdHash: 3468045221
+  GlobalObjectIdHash: 3284779646
   InScenePlacedSourceGlobalObjectIdHash: 0
   AlwaysReplicateAsRoot: 0
   SynchronizeTransform: 1
@@ -99,3 +99,11 @@ MonoBehaviour:
       - {fileID: 5077133317201384345, guid: 485dfedf623813a4a8be2ffb22b196b6, type: 3}
       LowQualityEffects:
       - {fileID: 5077133317201384345, guid: 485dfedf623813a4a8be2ffb22b196b6, type: 3}
+  - effectName: big explode
+    effect:
+      HighQualityEffects:
+      - {fileID: 2067719033426604217, guid: 94664a78e97ecca4495f68526aebb4bc, type: 3}
+      MediumQualityEffects:
+      - {fileID: 2067719033426604217, guid: 94664a78e97ecca4495f68526aebb4bc, type: 3}
+      LowQualityEffects:
+      - {fileID: 2067719033426604217, guid: 94664a78e97ecca4495f68526aebb4bc, type: 3}

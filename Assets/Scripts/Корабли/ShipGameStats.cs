@@ -8,7 +8,14 @@ public class ShipGameStats : NetworkBehaviour
     [SerializeField] float enginesLightsAlphaChangingSpeed = 2;
     [SerializeField] List<SpriteRenderer> enginesLights;
     [SerializeField] List<TrailRenderer> trails;
-    [SerializeField] List<Sprite> destroyedSprites;
+
+    [SerializeField] List<Effect> destroyEffects;
+    [SerializeField] Sprite destroyedImage;
+    [SerializeField] float timeToDisappearAfterDestroy;
+    [Tooltip("Импульс при уничтожении корабля")]
+    [SerializeField] float forceOnDestroy;
+    [Tooltip("Вращательный импульс при уничтожении корабля")]
+    [SerializeField] float rotationForceOnDestroy;
 
     [Header("Отладка")]
     public string teamID;
@@ -46,6 +53,8 @@ public class ShipGameStats : NetworkBehaviour
 
     private void Start()
     {
+        myItemData = GetComponent<ItemData>();
+
         if (!DataOperator.gameScene)
         {
             return;
@@ -72,7 +81,7 @@ public class ShipGameStats : NetworkBehaviour
     public void ServerInitialize()
     {
         myShipStats = GetComponent<ShipStats>();
-
+        
         mass = myShipStats.totalMass;
 
         myRigidbody2D = GetComponent<Rigidbody2D>();
@@ -108,6 +117,7 @@ public class ShipGameStats : NetworkBehaviour
                     EnglishText = "No communication with the ship: no control block installed"
                 };
                 SendMessageToOwnerRpc(new TranslatedNetworkText(warningMessage));
+                Invoke(nameof(ExplodeTheShipOnServer), 5f);
             }
         }
         else
@@ -410,13 +420,45 @@ public class ShipGameStats : NetworkBehaviour
             weapon.Disconnect();
         }
         ChangeOwnersInterfaceStateRpc(false);
+        ExplodeTheShipOnServer();
     }
 
+    void ExplodeTheShipOnServer()
+    {
+        float maxForce = forceOnDestroy * mass;
+        Vector2 force = new Vector2(Random.Range(-maxForce, maxForce), Random.Range(-maxForce, maxForce));
+        myRigidbody2D.AddForce(force);
+
+        float maxRotationForce = rotationForceOnDestroy * mass;
+        float rotationForce = Random.Range(-maxRotationForce, maxRotationForce);
+        myRigidbody2D.AddTorque(rotationForce);
+
+        ShowDestroyEffectsRpc();
+    }
+
+    [Rpc(SendTo.Everyone)]
+    void ShowDestroyEffectsRpc()
+    {
+        foreach (Effect effect in destroyEffects)
+        {
+            List<GameObject> spawnedGOs = effect.SpawnEffectsFromPool(Vector3.zero, Quaternion.identity);
+            foreach (GameObject spawnedGO in spawnedGOs)
+            {
+                spawnedGO.transform.parent = transform;
+                spawnedGO.transform.localPosition = Vector3.zero;
+                spawnedGO.transform.localRotation = Quaternion.identity;
+            }
+        }
+        myItemData.image.GetComponent<SpriteRenderer>().sprite = destroyedImage;
+    }
 
     [Rpc(SendTo.Owner)]
     void OwnerInitializeRpc()
     {
-        myItemData = GetComponent<ItemData>();
+        if (myItemData == null)
+        {
+            myItemData = GetComponent<ItemData>();
+        }
         Vector3 extremePoints = myItemData.GetMaxSlotsPosition() - myItemData.GetMinSlotsPosition();
         float shipSize = extremePoints.magnitude;
 

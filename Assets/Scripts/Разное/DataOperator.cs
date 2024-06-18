@@ -5,6 +5,7 @@ using System.IO;
 using Random = UnityEngine.Random;
 using Unity.Netcode;
 using UnityEngine.SceneManagement;
+using System.Collections.Generic;
 
 public class DataOperator : MonoBehaviour
 {
@@ -408,12 +409,14 @@ public class DataOperator : MonoBehaviour
         }
     }
 
-    public void CreateGameObjects(GameObject[] gameObjects, Vector2 position, Quaternion rotation)
+    public List<GameObject> CreateGameObjects(List<GameObject> gameObjects, Vector2 position, Quaternion rotation)
     {
+        List<GameObject> toReturn = new List<GameObject>(0);
         foreach (GameObject go in gameObjects)
         {
-            Instantiate(go, position, rotation);
+            toReturn.Add(Instantiate(go, position, rotation));
         }
+        return toReturn;
     }
 
     public string GetDataNameForModule(Module module)
@@ -640,13 +643,13 @@ public enum GraphicsPresets
 [Serializable]
 public class Effect
 {
-    public GameObject[] HighQualityEffects;
-    public GameObject[] MediumQualityEffects;
-    public GameObject[] LowQualityEffects;
+    public List<GameObject> HighQualityEffects;
+    public List<GameObject> MediumQualityEffects;
+    public List<GameObject> LowQualityEffects;
 
     GraphicsPresets graphicsPreset = GraphicsPresets.none;
 
-    public GameObject[] SpawnEffects(Vector3 position, Quaternion rotation)
+    public List<GameObject> SpawnEffects(Vector3 position, Quaternion rotation)
     {
         if (graphicsPreset == GraphicsPresets.none)
         {
@@ -654,23 +657,20 @@ public class Effect
         }
         if (graphicsPreset == GraphicsPresets.low)
         {
-            DataOperator.instance.CreateGameObjects(LowQualityEffects, position, rotation);
-            return LowQualityEffects;
+            return DataOperator.instance.CreateGameObjects(LowQualityEffects, position, rotation);
         }
         if (graphicsPreset == GraphicsPresets.medium)
         {
-            DataOperator.instance.CreateGameObjects(MediumQualityEffects, position, rotation);
-            return MediumQualityEffects;
+            return DataOperator.instance.CreateGameObjects(MediumQualityEffects, position, rotation);
         }
         if (graphicsPreset == GraphicsPresets.high)
         {
-            DataOperator.instance.CreateGameObjects(HighQualityEffects, position, rotation);
-            return HighQualityEffects;
+            return DataOperator.instance.CreateGameObjects(HighQualityEffects, position, rotation);
         }
         return null;
     }
 
-    public GameObject[] SpawnEffectsFromPool(Vector3 position, Quaternion rotation)
+    public List<GameObject> SpawnEffectsFromPool(Vector3 position, Quaternion rotation)
     {
         if (graphicsPreset == GraphicsPresets.none)
         {
@@ -678,18 +678,15 @@ public class Effect
         }
         if (graphicsPreset == GraphicsPresets.low)
         {
-            PoolingSystem.instance.SpawnGOs(LowQualityEffects, position, rotation);
-            return LowQualityEffects;
+            return PoolingSystem.instance.SpawnGOs(LowQualityEffects, position, rotation);
         }
         if (graphicsPreset == GraphicsPresets.medium)
         {
-            PoolingSystem.instance.SpawnGOs(MediumQualityEffects, position, rotation);
-            return MediumQualityEffects;
+            return PoolingSystem.instance.SpawnGOs(MediumQualityEffects, position, rotation);
         }
         if (graphicsPreset == GraphicsPresets.high)
         {
-            PoolingSystem.instance.SpawnGOs(HighQualityEffects, position, rotation);
-            return HighQualityEffects;
+            return PoolingSystem.instance.SpawnGOs(HighQualityEffects, position, rotation);
         }
         return null;
     }
