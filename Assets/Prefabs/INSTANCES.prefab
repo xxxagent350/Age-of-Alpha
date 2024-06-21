@@ -505,7 +505,7 @@ MonoBehaviour:
   - {fileID: 3311465877563407449, guid: 94d41157d5ce30d4385f7de342b60b77, type: 3}
   - {fileID: 885423952991709362, guid: 6a376f50c2640374d911d544f23431b1, type: 3}
   - {fileID: 563521672330568092, guid: 9817d0242823e4d478b492430caea695, type: 3}
-  - {fileID: 6539153803356699272, guid: 166775223e7b3dd46be57698401baa05, type: 3}
+  - {fileID: 4092036085832585726, guid: 166775223e7b3dd46be57698401baa05, type: 3}
   UIAudioSource: {fileID: 1592101764647440592}
   defaultAudioSourcePrefab: {fileID: 5498154045212141642, guid: b4a1cc3d0bcc76249bbb4287755fb175, type: 3}
   DataPathAccessErrorScreen: {fileID: 4409338878380001049}
@@ -636,6 +636,7 @@ MonoBehaviour:
   userLanguage: 0
   userGraphics: 0
   healthCellsShowPreset: 0
+  healthCellsShowTimeOnDurabilityChanged: 3
 --- !u!1 &7247781850651555419
 GameObject:
   m_ObjectHideFlags: 0
