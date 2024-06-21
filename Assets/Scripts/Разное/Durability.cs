@@ -1,6 +1,7 @@
 using UnityEngine;
 using Unity.Netcode;
 using System;
+using System.Collections.Generic;
 
 public class Durability: MonoBehaviour
 {
@@ -10,19 +11,46 @@ public class Durability: MonoBehaviour
     
     [Header("ŒÚÎ‡‰Í‡")]
     public string teamID = "none";
+    [SerializeField] Vector2Serializable[] _cellsLocalPositionsInShip;
 
-    ShipGameStats myShipGameStats;
+    ShipGameStats _myShipsGameStats;
 
     private void Start()
     {
 #if UNITY_EDITOR
         durability.CheckResistancesLimits();
 #endif
+    }
 
+    public void InitializeForModule(CellData[] cellsDatas, Vector2 cellsOffset)
+    {
         if (NetworkManager.Singleton.IsServer)
         {
-            myShipGameStats = GetComponentInParent<ShipGameStats>();
+            durability.OnDurabilityRatioChangedEvent += SendDurabilityChanged;
+            SetCellsLocalPositionsInShip(cellsDatas, cellsOffset);
+            _myShipsGameStats = GetComponentInParent<ShipGameStats>();
+            OnModuleDurabilityRatioChangedEvent += GetComponentInParent<ModulesCellsDurabilityShower>().OnHealthCellDurabilityChangedRpc;
             durability.SetMaxDurability();
+        }
+    }
+
+    delegate void OnModuleDurabilityRatioChangedContainer(float durabilityToMaxDurability, Vector2Serializable[] cellsLocalPositionsInShip);
+    event OnModuleDurabilityRatioChangedContainer OnModuleDurabilityRatioChangedEvent;
+
+
+    public void SendDurabilityChanged(float durabilityToMaxDurability)
+    {
+        OnModuleDurabilityRatioChangedEvent(durabilityToMaxDurability, _cellsLocalPositionsInShip);
+    }
+
+    public void SetCellsLocalPositionsInShip(CellData[] cellsDatas, Vector2 cellsOffset)
+    {
+        _cellsLocalPositionsInShip = new Vector2Serializable[cellsDatas.Length];
+        for (int cellNum = 0; cellNum < cellsDatas.Length; cellNum++)
+        {
+            Vector2 cellLocalPosition = (Vector2)transform.localPosition + cellsOffset + cellsDatas[cellNum].position;
+            Vector2Serializable cellLocalPositionSerializable = new Vector2Serializable(cellLocalPosition);
+            _cellsLocalPositionsInShip[cellNum] = cellLocalPositionSerializable;
         }
     }
 
@@ -43,9 +71,9 @@ public class Durability: MonoBehaviour
         if (!alreadyExploded)
         {
             alreadyExploded = true;
-            if (myShipGameStats != null)
+            if (_myShipsGameStats != null)
             {
-                myShipGameStats.ReduceShip—haracteristics(this);
+                _myShipsGameStats.ReduceShip—haracteristics(this);
             }
             Destroy(gameObject);
         }
@@ -141,6 +169,9 @@ public struct DurabilityStruct
 
     bool noDurability;
 
+    public delegate void OnDurabilityRatioChangedContainer(float durabilityToMaxDurabilityRatio);
+    public event OnDurabilityRatioChangedContainer OnDurabilityRatioChangedEvent;
+
     public bool NoDurability()
     {
         return noDurability;
@@ -152,7 +183,8 @@ public struct DurabilityStruct
     }
 
     public void TakeDamage(Damage damage)
-    {   //Ú‡ÍÊÂ ÓÚÌËÏ‡ÂÚ ÔËÌˇÚ˚È ÛÓÌ Û ÔÂÂ‰‡ÌÌÓ„Ó ÍÎ‡ÒÒ‡ Damage
+    {
+        //Ú‡ÍÊÂ ÓÚÌËÏ‡ÂÚ ÔËÌˇÚ˚È ÛÓÌ Û ÔÂÂ‰‡ÌÌÓ„Ó ÍÎ‡ÒÒ‡ Damage
         float fullDamage = (damage.fireDamage * (1 - resistanceToFireDamage))
             + (damage.energyDamage * (1 - resistanceToEnergyDamage))
             + (damage.physicalDamage * (1 - resistanceToPhysicalDamage));
@@ -169,9 +201,8 @@ public struct DurabilityStruct
             noDurability = true;
             currentDurability = 0;
         }
+        OnDurabilityRatioChangedEvent(currentDurability / maxDurability);
     }
-
-
 
     public void CheckResistancesLimits()
     {

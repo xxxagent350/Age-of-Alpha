@@ -10,12 +10,22 @@ public class GameCameraScaler : MonoBehaviour
     public float minZoom;
     [SerializeField] float mouseScrollSensitivity = 0.1f;
 
+    [Tooltip(" оэффициент, показывающий отношение минимального размера камеры к размеру корабл€. “. е. если установить это значение на 3, то минимальный размер камеры будет равен примерно трЄм диагонал€м корабл€ игрока")]
+    [SerializeField] float minZoomRelativeToPlayerShipSize = 1.2f;
+    [Tooltip(" оэффициент, показывающий отношение максимального размера камеры дл€ отображени€ €чеек прочности модулей к размеру корабл€. “. е. если установить это значение на 5, то €чейки прочности модулей начнут отображатьс€ когда размер камеры будет равен примерно п€ти диагонал€м корабл€ игрока")]
+    [SerializeField] float maxZoomRelativeToPlayerShipSizeToShowHealthCells = 2f;
+    [Tooltip("ћаксимальный зум камеры при котором €чейки прочности модулей могут отображатьс€. ѕри превышении этого значени€ отображатьс€ они не будут ни при каких обсто€тельствах")]
+    public float peakMaxZoomToShowHealthCells = 100;
+
     [Header("ќтладка")]
     public float zoom;
+    public bool showHealthCells { get; private set; }
 
     bool readyToScale;
     float lastDistance;
     public static GameCameraScaler instance;
+    private float maxZoomToShowHealthCells;
+
 
     private void Awake()
     {
@@ -28,6 +38,12 @@ public class GameCameraScaler : MonoBehaviour
             instance = this;
         }
         zoom = -transform.position.z;
+    }
+
+    public void SetCameraLimits(float playersShipSize)
+    {
+        minZoom = playersShipSize * minZoomRelativeToPlayerShipSize;
+        maxZoomToShowHealthCells = playersShipSize * maxZoomRelativeToPlayerShipSizeToShowHealthCells;
     }
 
     private void Update()
@@ -91,5 +107,15 @@ public class GameCameraScaler : MonoBehaviour
         //изменение положени€ камеры по оси z
         Vector3 oldPos = transform.position;
         transform.position = new Vector3(oldPos.x, oldPos.y, -zoom);
+
+        //определ€ем показывать ли €чеЄки прочности модулей
+        if (zoom < maxZoomToShowHealthCells)
+        {
+            showHealthCells = true;
+        }
+        else
+        {
+            showHealthCells = false;
+        }
     }
 }

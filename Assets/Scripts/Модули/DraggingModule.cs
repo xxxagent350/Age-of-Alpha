@@ -178,13 +178,13 @@ public class DraggingModule : MonoBehaviour
             {
                 canBeInstalled = true;
                 Vector2 offset = moduleData.cellsOffset;
-                cellsUI = new GameObject[moduleData.itemSlotsData.Length];
-                for (int cell = 0; cell < moduleData.itemSlotsData.Length; cell++)
+                cellsUI = new GameObject[moduleData.itemCellsData.Length];
+                for (int cell = 0; cell < moduleData.itemCellsData.Length; cell++)
                 {
-                    Vector2 globalPosition = new Vector2(moduleData.itemSlotsData[cell].position.x + transform.position.x, moduleData.itemSlotsData[cell].position.y + transform.position.y) + offset - shipData.cellsOffset;
-                    Vector2 localPosition = new Vector2(moduleData.itemSlotsData[cell].position.x, moduleData.itemSlotsData[cell].position.y) + offset;
+                    Vector2 globalPosition = new Vector2(moduleData.itemCellsData[cell].position.x + transform.position.x, moduleData.itemCellsData[cell].position.y + transform.position.y) + offset - shipData.cellsOffset;
+                    Vector2 localPosition = new Vector2(moduleData.itemCellsData[cell].position.x, moduleData.itemCellsData[cell].position.y) + offset;
                     GameObject slot;
-                    if (CheckIfSlotCanBeInstalled(globalPosition, moduleData.itemSlotsData[cell].type))
+                    if (CheckIfSlotCanBeInstalled(globalPosition, moduleData.itemCellsData[cell].type))
                     {
                         slot = Instantiate(greenSlot, new Vector3(), Quaternion.identity);
                     }
@@ -226,9 +226,9 @@ public class DraggingModule : MonoBehaviour
                 //перебираем все уже установленные модули на корабле
                 GameObject modulePrefab_ = DataOperator.instance.modulesPrefabs[moduleOnShip.module.moduleNum];
                 ItemData moduleData_ = modulePrefab_.GetComponent<ItemData>();
-                for (int moduleSlot_ = 0; moduleSlot_ < moduleData_.itemSlotsData.Length; moduleSlot_++)
+                for (int moduleSlot_ = 0; moduleSlot_ < moduleData_.itemCellsData.Length; moduleSlot_++)
                 {
-                    Vector2 moduleSlotPos = new Vector2(moduleData_.itemSlotsData[moduleSlot_].position.x + moduleOnShip.position.x, moduleData_.itemSlotsData[moduleSlot_].position.y + moduleOnShip.position.y) + moduleData_.cellsOffset - shipData.cellsOffset;
+                    Vector2 moduleSlotPos = new Vector2(moduleData_.itemCellsData[moduleSlot_].position.x + moduleOnShip.position.x, moduleData_.itemCellsData[moduleSlot_].position.y + moduleOnShip.position.y) + moduleData_.cellsOffset - shipData.cellsOffset;
                     if (Vector2.Distance(position, moduleSlotPos) < 0.01f)
                     {
                         return false;
@@ -237,13 +237,13 @@ public class DraggingModule : MonoBehaviour
             }
 
             //теперь провер€ем совместим ли слот
-            for (int slot = 0; slot < shipData.itemSlotsData.Length; slot++)
+            for (int slot = 0; slot < shipData.itemCellsData.Length; slot++)
             {
-                if (Mathf.Abs(shipData.itemSlotsData[slot].position.x - position.x) < 0.01f && Mathf.Abs(shipData.itemSlotsData[slot].position.y - position.y) < 0.01f)
+                if (Mathf.Abs(shipData.itemCellsData[slot].position.x - position.x) < 0.01f && Mathf.Abs(shipData.itemCellsData[slot].position.y - position.y) < 0.01f)
                 {
                     if (slotType == slotsTypes.standart) //обычна€ €чейка модул€ который перетаскиваетс€
                     {
-                        if (shipData.itemSlotsData[slot].type == slotsTypes.standart || shipData.itemSlotsData[slot].type == slotsTypes.universal)
+                        if (shipData.itemCellsData[slot].type == slotsTypes.standart || shipData.itemCellsData[slot].type == slotsTypes.universal)
                             return true;
                     }
                     if (slotType == slotsTypes.universal) //универсальна€ €чейка
@@ -252,7 +252,7 @@ public class DraggingModule : MonoBehaviour
                     }
                     if (slotType == slotsTypes.engine) //€чейка дл€ двигателей
                     {
-                        if (shipData.itemSlotsData[slot].type == slotsTypes.engine || shipData.itemSlotsData[slot].type == slotsTypes.universal)
+                        if (shipData.itemCellsData[slot].type == slotsTypes.engine || shipData.itemCellsData[slot].type == slotsTypes.universal)
                             return true;
                     }
                 }
@@ -287,7 +287,7 @@ public class DraggingModule : MonoBehaviour
         bool createdDown = false;
         int numCreatedSides = 0;
 
-        int slotsNum = moduleData.itemSlotsData.Length;
+        int slotsNum = moduleData.itemCellsData.Length;
         int minEffectsNum = Mathf.RoundToInt(slotsNum - Mathf.Pow(Mathf.Sqrt(slotsNum) - 2, 2) + 1) * 4;
         int effectsSpawnedNum = 0;
 

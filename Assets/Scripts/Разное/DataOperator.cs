@@ -19,8 +19,6 @@ public class DataOperator : MonoBehaviour
 
     [Header("Отладка")]
     [SerializeField] Data[] gameData;
-    public SupportedLanguages userLanguage;
-    public GraphicsPresets userGraphics = GraphicsPresets.high;
     public static bool gameScene;
 
     Camera camera_;
@@ -48,22 +46,7 @@ public class DataOperator : MonoBehaviour
             return;
         }
         
-        if (!PlayerPrefs.HasKey("UserLanguage"))
-        {
-            if (Application.systemLanguage == SystemLanguage.Russian || Application.systemLanguage == SystemLanguage.Belarusian)
-            {
-                PlayerPrefs.SetString("UserLanguage", "Russian");
-            }
-            else
-            {
-                PlayerPrefs.SetString("UserLanguage", "English");
-            }
-        }
-
-        if (PlayerPrefs.GetString("UserLanguage") == "Russian")
-            userLanguage = SupportedLanguages.Russian;
-        if (PlayerPrefs.GetString("UserLanguage") == "English")
-            userLanguage = SupportedLanguages.English;
+        
 
         dataPath = Application.persistentDataPath + "/Data/";
         if (Application.platform == RuntimePlatform.Android)
@@ -581,6 +564,8 @@ public class Data
     }
 }
 
+
+/*
 [Serializable]
 public class Limits
 {
@@ -606,7 +591,7 @@ public class Limits
         return constantRandomValue;
     }
 }
-
+*/
 
 [Serializable]
 public struct Vector2Serializable : INetworkSerializable
@@ -632,13 +617,7 @@ public struct Vector2Serializable : INetworkSerializable
 }
 
 
-public enum GraphicsPresets
-{
-    high,
-    medium,
-    low,
-    none
-}
+
 
 [Serializable]
 public class Effect
@@ -653,7 +632,7 @@ public class Effect
     {
         if (graphicsPreset == GraphicsPresets.none)
         {
-            graphicsPreset = DataOperator.instance.userGraphics;
+            graphicsPreset = GameSettingsKeeper.instance.userGraphics;
         }
         if (graphicsPreset == GraphicsPresets.low)
         {
@@ -674,7 +653,7 @@ public class Effect
     {
         if (graphicsPreset == GraphicsPresets.none)
         {
-            graphicsPreset = DataOperator.instance.userGraphics;
+            graphicsPreset = GameSettingsKeeper.instance.userGraphics;
         }
         if (graphicsPreset == GraphicsPresets.low)
         {

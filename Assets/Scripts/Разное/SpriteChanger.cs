@@ -23,7 +23,7 @@ public class Sprites
 
     public Sprite GetSprite()
     {
-        graphicsPreset = DataOperator.instance.userGraphics;
+        graphicsPreset = GameSettingsKeeper.instance.userGraphics;
 
         if (graphicsPreset == GraphicsPresets.low)
         {

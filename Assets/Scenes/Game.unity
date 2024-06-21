@@ -634,6 +634,8 @@ MonoBehaviour:
   maxZoom: 500
   minZoom: 30
   mouseScrollSensitivity: 0.1
+  minZoomRelativeToPlayerShipSize: 1.2
+  maxZoomRelativeToPlayerShipSizeToShowHealthCells: 3
   zoom: 0
 --- !u!1 &153779441
 GameObject:
@@ -1396,7 +1398,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5292908563983817125, guid: ce05983296f257a4c9b0f28c2411afd6, type: 3}
       propertyPath: m_Name
-      value: DATA OPERATOR
+      value: INSTANCES
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

@@ -94,9 +94,13 @@ public class Player : NetworkBehaviour
             playerShipGO = playerShipSpawned;
             playerShipSpawned.GetComponent<NetworkObject>().SpawnWithOwnership(ownerClientID);
 
+            ModulesCellsDurabilityShower modulesCellsDurabilityShower = playerShipSpawned.GetComponent<ModulesCellsDurabilityShower>();
+            modulesCellsDurabilityShower.RenderHealthCells();
+
             ShipGameStats shipGameStats = playerShipSpawned.GetComponent<ShipGameStats>();
             shipGameStats.ServerInitialize();
             shipGameStats.teamID = teamID.Value.GetString();
+            shipGameStats.myPlayer = this;
         }
     }
 

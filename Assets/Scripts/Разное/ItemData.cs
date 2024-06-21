@@ -14,12 +14,28 @@ public class ItemData : MonoBehaviour
     public float Size = 1;
     public float Mass;
     public Vector2 cellsOffset;
-    public slotsData[] itemSlotsData;
+    public CellData[] itemCellsData;
+
+    public bool isModule;
 
     private void Start()
     {
         SetSize();
+
+        if (isModule)
+        {
+            Durability myDurability = GetComponent<Durability>();
+            if (myDurability != null)
+            {
+                myDurability.InitializeForModule(itemCellsData, cellsOffset);
+            }
+            else
+            {
+                Debug.LogError($"На модуле {gameObject.name} отсутствует обязательный для всех модулей компонент Durability. Если это не модуль, уберите галочку в префабе с ItemData.isModule");
+            }
+        }
     }
+
     void SetSize()
     {
         image.localScale = new Vector3(Size, Size, 0);
@@ -40,9 +56,9 @@ public class ItemData : MonoBehaviour
     public Vector2 GetMinSlotsPosition()
     {
         Vector2 minPosition = new Vector2();
-        for (int cell = 0; cell < itemSlotsData.Length; cell++)
+        for (int cell = 0; cell < itemCellsData.Length; cell++)
         {
-            Vector2 position = itemSlotsData[cell].position + cellsOffset;
+            Vector2 position = itemCellsData[cell].position + cellsOffset;
             if (position.x < minPosition.x)
             {
                 minPosition = new Vector2(position.x, minPosition.y);
@@ -59,9 +75,9 @@ public class ItemData : MonoBehaviour
     public Vector2 GetMaxSlotsPosition()
     {
         Vector2 maxPosition = new Vector2();
-        for (int cell = 0; cell < itemSlotsData.Length; cell++)
+        for (int cell = 0; cell < itemCellsData.Length; cell++)
         {
-            Vector2 position = itemSlotsData[cell].position + cellsOffset;
+            Vector2 position = itemCellsData[cell].position + cellsOffset;
             if (position.x > maxPosition.x)
             {
                 maxPosition = new Vector2(position.x, maxPosition.y);
@@ -112,7 +128,7 @@ public enum modulesTypes
 }
 
 [Serializable]
-public class slotsData
+public class CellData
 {
     public Vector2Int position;
     public slotsTypes type;

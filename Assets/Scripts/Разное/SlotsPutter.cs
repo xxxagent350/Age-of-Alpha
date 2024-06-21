@@ -260,7 +260,7 @@ public class SlotsPutter : MonoBehaviour
 
             Vector2 roundedPointInUnits = new Vector2(Mathf.RoundToInt(pointInUnits.x), Mathf.RoundToInt(pointInUnits.y));
 
-            slotsData newSlotData = new slotsData();
+            CellData newSlotData = new CellData();
             newSlotData.position = new Vector2Int(Mathf.RoundToInt(roundedPointInUnits.x), Mathf.RoundToInt(roundedPointInUnits.y));
             newSlotData.type = choosenSlotType;
 
@@ -294,13 +294,13 @@ public class SlotsPutter : MonoBehaviour
                 int xPos = Mathf.RoundToInt(roundedPointInUnits.x);
                 int yPos = Mathf.RoundToInt(roundedPointInUnits.y);
 
-                for (int cell = 0; cell < itemData.itemSlotsData.Length; cell++)
+                for (int cell = 0; cell < itemData.itemCellsData.Length; cell++)
                 {
-                    if (xPos == itemData.itemSlotsData[cell].position.x && yPos == itemData.itemSlotsData[cell].position.y)
+                    if (xPos == itemData.itemCellsData[cell].position.x && yPos == itemData.itemCellsData[cell].position.y)
                     {
-                        if (itemData.itemSlotsData[cell].type != choosenSlotType)
+                        if (itemData.itemCellsData[cell].type != choosenSlotType)
                         {
-                            itemData.itemSlotsData[cell].type = choosenSlotType;
+                            itemData.itemCellsData[cell].type = choosenSlotType;
                             ReloadCellsUI();
                         }
                         return;
@@ -317,17 +317,17 @@ public class SlotsPutter : MonoBehaviour
         {
             return;
         }
-        int allCellsNum = itemData.itemSlotsData.Length;
+        int allCellsNum = itemData.itemCellsData.Length;
         int mainCellsNum = 0;
         int universalNum = 0;
         int engineNum = 0;
         for (int cell = 0; cell < allCellsNum; cell++)
         {
-            if (itemData.itemSlotsData[cell].type == slotsTypes.standart)
+            if (itemData.itemCellsData[cell].type == slotsTypes.standart)
                 mainCellsNum++;
-            if (itemData.itemSlotsData[cell].type == slotsTypes.universal)
+            if (itemData.itemCellsData[cell].type == slotsTypes.universal)
                 universalNum++;
-            if (itemData.itemSlotsData[cell].type == slotsTypes.engine)
+            if (itemData.itemCellsData[cell].type == slotsTypes.engine)
                 engineNum++;
         }
         if (cellsNumInfo != null)
@@ -354,7 +354,7 @@ public class SlotsPutter : MonoBehaviour
         {
             allCellsDeleteAskTimer = 3;
         }
-        itemData.itemSlotsData = new slotsData[0];
+        itemData.itemCellsData = new CellData[0];
         RemoveAllCellsUI();
         CountCellsNumber();
     }
@@ -377,10 +377,10 @@ public class SlotsPutter : MonoBehaviour
         }
         Vector2 offset = itemData.cellsOffset;
 
-        cellsUI = new GameObject[itemData.itemSlotsData.Length];
-        for (int cell = 0; cell < itemData.itemSlotsData.Length; cell++)
+        cellsUI = new GameObject[itemData.itemCellsData.Length];
+        for (int cell = 0; cell < itemData.itemCellsData.Length; cell++)
         {
-            Vector2 position = itemData.itemSlotsData[cell].position + offset;
+            Vector2 position = itemData.itemCellsData[cell].position + offset;
             if (position.x < minCellsPositions.x)
                 minCellsPositions = new Vector2(position.x, minCellsPositions.y);
             if (position.y < minCellsPositions.y)
@@ -390,15 +390,15 @@ public class SlotsPutter : MonoBehaviour
             if (position.y > maxCellsPositions.y)
                 maxCellsPositions = new Vector2(maxCellsPositions.x, position.y);
 
-            if (itemData.itemSlotsData[cell].type == slotsTypes.standart)
+            if (itemData.itemCellsData[cell].type == slotsTypes.standart)
             {
                 cellsUI[cell] = Instantiate(mainSlotPrefab, position, Quaternion.identity);
             }
-            if (itemData.itemSlotsData[cell].type == slotsTypes.universal)
+            if (itemData.itemCellsData[cell].type == slotsTypes.universal)
             {
                 cellsUI[cell] = Instantiate(universalSlotPrefab, position, Quaternion.identity);
             }
-            if (itemData.itemSlotsData[cell].type == slotsTypes.engine)
+            if (itemData.itemCellsData[cell].type == slotsTypes.engine)
             {
                 cellsUI[cell] = Instantiate(engineSlotPrefab, position, Quaternion.identity);
             }
@@ -437,15 +437,15 @@ public class SlotsPutter : MonoBehaviour
         cellsUI = new GameObject[0];
     }
 
-    void AddCellDataInArray(slotsData slotData)
+    void AddCellDataInArray(CellData slotData)
     {
-        for (int cell = 0; cell < itemData.itemSlotsData.Length; cell++)
+        for (int cell = 0; cell < itemData.itemCellsData.Length; cell++)
         {
-            if (slotData.position.x == itemData.itemSlotsData[cell].position.x && slotData.position.y == itemData.itemSlotsData[cell].position.y)
+            if (slotData.position.x == itemData.itemCellsData[cell].position.x && slotData.position.y == itemData.itemCellsData[cell].position.y)
             {
-                if (itemData.itemSlotsData[cell].type != slotData.type)
+                if (itemData.itemCellsData[cell].type != slotData.type)
                 {
-                    itemData.itemSlotsData[cell].type = slotData.type;
+                    itemData.itemCellsData[cell].type = slotData.type;
                 }
                 else
                 {
@@ -455,21 +455,21 @@ public class SlotsPutter : MonoBehaviour
             }
         }
 
-        Array.Resize(ref itemData.itemSlotsData, itemData.itemSlotsData.Length + 1);
-        itemData.itemSlotsData[itemData.itemSlotsData.Length - 1] = slotData;
+        Array.Resize(ref itemData.itemCellsData, itemData.itemCellsData.Length + 1);
+        itemData.itemCellsData[itemData.itemCellsData.Length - 1] = slotData;
     }
 
     void DeleteCellDataInArray(int index)
     {
-        if (index == itemData.itemSlotsData.Length - 1)
+        if (index == itemData.itemCellsData.Length - 1)
         {
-            Array.Resize(ref itemData.itemSlotsData, itemData.itemSlotsData.Length - 1);
+            Array.Resize(ref itemData.itemCellsData, itemData.itemCellsData.Length - 1);
         }
         else
         {
-            slotsData slotDataRezerve = itemData.itemSlotsData[itemData.itemSlotsData.Length - 1];
-            Array.Resize(ref itemData.itemSlotsData, itemData.itemSlotsData.Length - 1);
-            itemData.itemSlotsData[index] = slotDataRezerve;
+            CellData slotDataRezerve = itemData.itemCellsData[itemData.itemCellsData.Length - 1];
+            Array.Resize(ref itemData.itemCellsData, itemData.itemCellsData.Length - 1);
+            itemData.itemCellsData[index] = slotDataRezerve;
         }
     }
 

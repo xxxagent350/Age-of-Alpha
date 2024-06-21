@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Collections;
 using Unity.Netcode;
 using UnityEngine;
 
@@ -47,6 +48,10 @@ public class ShipGameStats : NetworkBehaviour
     const float rotationForceMod = 100000;
 
     bool noControl; //true когда нету блока управлени€
+    NetworkVariable<bool> alreadyDestroyed = new NetworkVariable<bool>();
+    SpriteRenderer shipsSpriteRenderer;
+
+    [HideInInspector] public Player myPlayer;
 
     NetworkVariable<float> enginesLightsAlpha = new NetworkVariable<float>();
     NetworkVariable<bool> trailsEmitting = new NetworkVariable<bool>();
@@ -67,6 +72,25 @@ public class ShipGameStats : NetworkBehaviour
         foreach (SpriteRenderer engineLight in enginesLights)
         {
             engineLight.gameObject.SetActive(true);
+        }
+        shipsSpriteRenderer = myItemData.image.GetComponent<SpriteRenderer>();
+    }
+
+    private void Awake()
+    {
+        StartCoroutine(WaitingForChangingImageToDestroyed());
+    }
+
+    IEnumerator WaitingForChangingImageToDestroyed()
+    {
+        while (true)
+        {
+            if (alreadyDestroyed.Value)
+            {
+                shipsSpriteRenderer.sprite = destroyedImage;
+                break;
+            }
+            yield return new WaitForSeconds(Time.fixedDeltaTime);
         }
     }
 
@@ -132,6 +156,12 @@ public class ShipGameStats : NetworkBehaviour
         {
             if (NetworkManager.Singleton.IsServer)
             {
+                if (myPlayer == null)
+                {
+                    //игрок, управл€ющий кораблЄм, отключилс€
+                    ExplodeTheShipOnServer();
+                    return;
+                }
                 if (!noControl)
                 {
                     RotateShip();
@@ -178,7 +208,7 @@ public class ShipGameStats : NetworkBehaviour
     {
         float enginesLightsAlphaFrameChange = enginesLightsAlphaChangingSpeed * Time.fixedDeltaTime;
 
-        if (!noControl && movementJoystickPressed.Value && Mathf.Abs(Mathf.DeltaAngle(transform.eulerAngles.z, movementJoystickDirInDegrees.Value)) < ignoredDirDifferenceDegrees)
+        if (accelerationPower > 0.01f && !noControl && movementJoystickPressed.Value && Mathf.Abs(Mathf.DeltaAngle(transform.eulerAngles.z, movementJoystickDirInDegrees.Value)) < ignoredDirDifferenceDegrees)
         {
             float enginesLightsMod;
 
@@ -383,9 +413,9 @@ public class ShipGameStats : NetworkBehaviour
         {
             mass -= itemData.Mass;
             myRigidbody2D.mass = mass;
-            if (itemData.type == modulesTypes.ControlModules)
+            if (!alreadyDestroyed.Value && itemData.type == modulesTypes.ControlModules)
             {   //блок управлени€ уничтожен
-                DisconnectFromTheShip();
+                ExplodeTheShipOnServer();
                 TranslatedText warningMessage = new TranslatedText
                 {
                     RussianText = "—в€зь с кораблЄм потер€на: блок управлени€ уничтожен",
@@ -413,27 +443,37 @@ public class ShipGameStats : NetworkBehaviour
 
     void DisconnectFromTheShip()
     {
-        noControl = true;
-        Weapon[] weapons = GetComponentsInChildren<Weapon>();
-        foreach (Weapon weapon in weapons)
-        {
-            weapon.Disconnect();
-        }
         ChangeOwnersInterfaceStateRpc(false);
-        ExplodeTheShipOnServer();
     }
 
     void ExplodeTheShipOnServer()
     {
-        float maxForce = forceOnDestroy * mass;
-        Vector2 force = new Vector2(Random.Range(-maxForce, maxForce), Random.Range(-maxForce, maxForce));
-        myRigidbody2D.AddForce(force);
+        if (!alreadyDestroyed.Value)
+        {
+            //отключаем все ещЄ оставшиес€ системы корабл€
+            enabled = false;
+            if (myPlayer != null)
+            {
+                DisconnectFromTheShip();
+            }
+            noControl = true;
+            Weapon[] weapons = GetComponentsInChildren<Weapon>();
+            foreach (Weapon weapon in weapons)
+            {
+                weapon.Disconnect();
+            }
 
-        float maxRotationForce = rotationForceOnDestroy * mass;
-        float rotationForce = Random.Range(-maxRotationForce, maxRotationForce);
-        myRigidbody2D.AddTorque(rotationForce);
+            alreadyDestroyed.Value = true;
+            float maxForce = forceOnDestroy * mass;
+            Vector2 force = new Vector2(Random.Range(-maxForce, maxForce), Random.Range(-maxForce, maxForce));
+            myRigidbody2D.AddForce(force);
 
-        ShowDestroyEffectsRpc();
+            float maxRotationForce = rotationForceOnDestroy * mass;
+            float rotationForce = Random.Range(-maxRotationForce, maxRotationForce);
+            myRigidbody2D.AddTorque(rotationForce);
+
+            ShowDestroyEffectsRpc();
+        }
     }
 
     [Rpc(SendTo.Everyone)]
@@ -449,7 +489,6 @@ public class ShipGameStats : NetworkBehaviour
                 spawnedGO.transform.localRotation = Quaternion.identity;
             }
         }
-        myItemData.image.GetComponent<SpriteRenderer>().sprite = destroyedImage;
     }
 
     [Rpc(SendTo.Owner)]
@@ -461,9 +500,7 @@ public class ShipGameStats : NetworkBehaviour
         }
         Vector3 extremePoints = myItemData.GetMaxSlotsPosition() - myItemData.GetMinSlotsPosition();
         float shipSize = extremePoints.magnitude;
-
-        GameCameraScaler.instance.minZoom = shipSize * 2;
-        GameCameraScaler.instance.zoom = shipSize * 5;
+        GameCameraScaler.instance.SetCameraLimits(shipSize);
     }
 
     [Rpc(SendTo.Owner)]

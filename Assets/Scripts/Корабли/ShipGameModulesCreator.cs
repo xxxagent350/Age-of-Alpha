@@ -1,6 +1,7 @@
 using UnityEngine;
+using Unity.Netcode;
 
-public class ShipGameModulesCreator : MonoBehaviour
+public class ShipGameModulesCreator : NetworkBehaviour
 {
     [HideInInspector] public ModuleOnShipData[] modulesOnShip;
     Transform modulesParent;

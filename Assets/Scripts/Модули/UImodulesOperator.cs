@@ -137,9 +137,9 @@ public class UImodulesOperator : MonoBehaviour
             //перебираем все установленные модули на корабле
             GameObject modulePrefab_ = DataOperator.instance.modulesPrefabs[moduleOnShip.module.moduleNum];
             ItemData moduleData_ = modulePrefab_.GetComponent<ItemData>();
-            for (int moduleSlot_ = 0; moduleSlot_ < moduleData_.itemSlotsData.Length; moduleSlot_++)
+            for (int moduleSlot_ = 0; moduleSlot_ < moduleData_.itemCellsData.Length; moduleSlot_++)
             {
-                Vector2 moduleSlotPos = new Vector2(moduleData_.itemSlotsData[moduleSlot_].position.x + moduleOnShip.position.x, moduleData_.itemSlotsData[moduleSlot_].position.y + moduleOnShip.position.y) + moduleData_.cellsOffset - shipData.cellsOffset;
+                Vector2 moduleSlotPos = new Vector2(moduleData_.itemCellsData[moduleSlot_].position.x + moduleOnShip.position.x, moduleData_.itemCellsData[moduleSlot_].position.y + moduleOnShip.position.y) + moduleData_.cellsOffset - shipData.cellsOffset;
                 if (Vector2.Distance(position, moduleSlotPos) < 0.01f)
                 {
                     clickedModuleOnShipPos = moduleOnShip.position.GetVector2();

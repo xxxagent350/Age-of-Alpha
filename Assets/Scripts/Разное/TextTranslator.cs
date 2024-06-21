@@ -61,7 +61,7 @@ public struct TranslatedText
 
     public string GetTranslatedString()
     {
-        SupportedLanguages userLanguage = DataOperator.instance.userLanguage;
+        SupportedLanguages userLanguage = GameSettingsKeeper.instance.userLanguage;
 
         if (userLanguage == SupportedLanguages.Russian)
             return RussianText;
@@ -97,10 +97,4 @@ public struct TranslatedNetworkText : INetworkSerializable
         RussianText.NetworkSerialize(serializer);
         EnglishText.NetworkSerialize(serializer);
     }
-}
-
-public enum SupportedLanguages
-{
-    Russian,
-    English
 }

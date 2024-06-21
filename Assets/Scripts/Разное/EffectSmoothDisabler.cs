@@ -3,9 +3,9 @@ using UnityEngine;
 public class EffectSmoothDisabler : MonoBehaviour
 {
     [Header("Задержка перед включением")]
-    [SerializeField] Limits enablingDelay;
+    [SerializeField] FloatInterval enablingDelay;
     [Header("Время жизни эффекта")]
-    [SerializeField] Limits timelife;
+    [SerializeField] FloatInterval timelife;
     [Header("Задержка перед удалением")]
     [SerializeField] float deleteDelay = 1;
 
@@ -18,14 +18,14 @@ public class EffectSmoothDisabler : MonoBehaviour
         particleSystemsInChildren = GetComponentsInChildren<ParticleSystem>();
 
         particleSystem_.Stop(true);
-        Invoke(nameof(EnableParticles), enablingDelay.GetRandomValue());
+        Invoke(nameof(EnableParticles), enablingDelay.GetRandomValueFromInterval());
         
     }
 
     void EnableParticles()
     {
         particleSystem_.Play(true);
-        Invoke(nameof(DisableEmission), timelife.GetRandomValue());
+        Invoke(nameof(DisableEmission), timelife.GetRandomValueFromInterval());
     }
 
     void DisableEmission()
