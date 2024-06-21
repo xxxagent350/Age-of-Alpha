@@ -226,7 +226,7 @@ MonoBehaviour:
     type: 1
   - position: {x: -1, y: -1}
     type: 1
-  isModule: 0
+  isModule: 1
 --- !u!114 &3034156793473752486
 MonoBehaviour:
   m_ObjectHideFlags: 0
