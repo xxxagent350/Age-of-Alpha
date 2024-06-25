@@ -714,12 +714,13 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3770142049736562553}
+  - component: {fileID: 4401335419843933380}
+  - component: {fileID: 4697228927048159046}
   - component: {fileID: 3138801457635384484}
   - component: {fileID: 811640495251930356}
-  - component: {fileID: 4401335419843933380}
   - component: {fileID: 3081943789781118396}
+  - component: {fileID: 8244972465585439976}
   - component: {fileID: 6911573173976042051}
-  - component: {fileID: 4697228927048159046}
   - component: {fileID: 8088452711607585973}
   - component: {fileID: 4556900802579622588}
   - component: {fileID: 7017737955606815744}
@@ -750,46 +751,6 @@ Transform:
   - {fileID: 182131252240889834}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &3138801457635384484
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7983694099988454875}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  GlobalObjectIdHash: 814598103
-  InScenePlacedSourceGlobalObjectIdHash: 0
-  AlwaysReplicateAsRoot: 0
-  SynchronizeTransform: 1
-  ActiveSceneSynchronization: 0
-  SceneMigrationSynchronization: 1
-  SpawnWithObservers: 1
-  DontDestroyWithOwner: 1
-  AutoObjectParentSync: 1
---- !u!114 &811640495251930356
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7983694099988454875}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 972cb3968ee123342bbf8fe267569130, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  syncType:
-    m_InternalValue: 2
-  framesBuffering: 2
-  interpolatingTimeScaleMod: 0.5
-  framesMaxBuffer: 50
-  transformsInterpolating: []
-  clientsCount: 0
 --- !u!50 &4401335419843933380
 Rigidbody2D:
   serializedVersion: 4
@@ -813,42 +774,10 @@ Rigidbody2D:
   m_ExcludeLayers:
     serializedVersion: 2
     m_Bits: 0
-  m_Interpolate: 0
+  m_Interpolate: 1
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 0
---- !u!114 &3081943789781118396
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7983694099988454875}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 44122159b45ccfd40bf9edda36674210, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  modulesOnShip: []
-  teamID: 
---- !u!114 &6911573173976042051
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7983694099988454875}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a6838540d4328af4dad508a19a0f668b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  healthCellsParent: {fileID: 4559959442172875517}
-  healthCellPrefab: {fileID: 6937352971062761732, guid: 5781bbc72ee429945834d129b15e4f52, type: 3}
-  destroyedHealthCellSprite: {fileID: 7290124768140145153, guid: 0087ffd6930c4b042af14d4f3928c68e, type: 3}
-  maxCameraZoomToShowHealthCells: 0
-  healthCellsAlphaChangingSpeedWhileVisibilityChanging: 5
-  healthCellsAlphaChangingSpeedWhenDurabilityChanged: 25
 --- !u!60 &4697228927048159046
 PolygonCollider2D:
   m_ObjectHideFlags: 0
@@ -933,6 +862,90 @@ PolygonCollider2D:
       - {x: 1.7523785, y: -1.1128663}
       - {x: 4.44551, y: -1.7260053}
   m_UseDelaunayMesh: 0
+--- !u!114 &3138801457635384484
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7983694099988454875}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  GlobalObjectIdHash: 814598103
+  InScenePlacedSourceGlobalObjectIdHash: 0
+  AlwaysReplicateAsRoot: 0
+  SynchronizeTransform: 1
+  ActiveSceneSynchronization: 0
+  SceneMigrationSynchronization: 1
+  SpawnWithObservers: 1
+  DontDestroyWithOwner: 1
+  AutoObjectParentSync: 1
+--- !u!114 &811640495251930356
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7983694099988454875}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 972cb3968ee123342bbf8fe267569130, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncType:
+    m_InternalValue: 2
+  framesBuffering: 2
+  interpolatingTimeScaleMod: 0.5
+  framesMaxBuffer: 50
+  transformsInterpolating: []
+  clientsCount: 0
+--- !u!114 &3081943789781118396
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7983694099988454875}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 44122159b45ccfd40bf9edda36674210, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  modulesOnShip: []
+  teamID: 
+--- !u!114 &8244972465585439976
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7983694099988454875}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0e839a0912469724883c184e8014e368, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &6911573173976042051
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7983694099988454875}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a6838540d4328af4dad508a19a0f668b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  healthCellsParent: {fileID: 4559959442172875517}
+  healthCellPrefab: {fileID: 6937352971062761732, guid: 5781bbc72ee429945834d129b15e4f52, type: 3}
+  destroyedHealthCellSprite: {fileID: 7290124768140145153, guid: 0087ffd6930c4b042af14d4f3928c68e, type: 3}
+  maxCameraZoomToShowHealthCells: 0
+  healthCellsAlphaChangingSpeedWhileVisibilityChanging: 5
+  healthCellsAlphaChangingSpeedWhenDurabilityChanged: 25
 --- !u!114 &8088452711607585973
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1086,25 +1099,25 @@ MonoBehaviour:
   timeToDisappearAfterDestroy: 0
   forceOnDestroy: 2000
   rotationForceOnDestroy: 3000
-  teamID: 
-  mass: 0
-  energyGeneration:
+  TeamID: 
+  Mass: 0
+  EnergyGeneration:
     m_InternalValue: 0
-  energyMaxCapacity:
+  EnergyMaxCapacity:
     m_InternalValue: 0
-  energy:
+  Energy:
     m_InternalValue: 0
-  enginesConsumption:
+  EnginesConsumption:
     m_InternalValue: 0
-  accelerationPower: 0
-  angularAccelerationPower: 0
+  AccelerationPower: 0
+  AngularAccelerationPower: 0
   noEnergy:
     m_InternalValue: 0
-  movementJoystickPressed:
+  MovementJoystickPressed:
     m_InternalValue: 0
-  movementJoystickDirInDegrees:
+  MovementJoystickDirInDegrees:
     m_InternalValue: 0
-  movementJoystickMagnitude:
+  MovementJoystickMagnitude:
     m_InternalValue: 0
   myPlayer: {fileID: 0}
 --- !u!1 &8125067798000382834

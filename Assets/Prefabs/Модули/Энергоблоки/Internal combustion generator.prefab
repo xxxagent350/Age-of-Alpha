@@ -9,7 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2041801316197074371}
-  - component: {fileID: 7534964268346606412}
+  - component: {fileID: 5928429504894475534}
   - component: {fileID: 3536031906554412468}
   - component: {fileID: 3240999094785782961}
   - component: {fileID: 8589627249583840758}
@@ -36,8 +36,8 @@ Transform:
   - {fileID: 3541302703618903476}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!60 &7534964268346606412
-PolygonCollider2D:
+--- !u!58 &5928429504894475534
+CircleCollider2D:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -71,22 +71,7 @@ PolygonCollider2D:
   m_CompositeOperation: 0
   m_CompositeOrder: 0
   m_Offset: {x: 0, y: 0}
-  m_SpriteTilingProperty:
-    border: {x: 0, y: 0, z: 0, w: 0}
-    pivot: {x: 0, y: 0}
-    oldSize: {x: 0, y: 0}
-    newSize: {x: 0, y: 0}
-    adaptiveTilingThreshold: 0
-    drawMode: 0
-    adaptiveTiling: 0
-  m_AutoTiling: 0
-  m_Points:
-    m_Paths:
-    - - {x: 1, y: 1}
-      - {x: 1, y: -1}
-      - {x: -1, y: -1}
-      - {x: -1, y: 1}
-  m_UseDelaunayMesh: 0
+  m_Radius: 1
 --- !u!114 &3536031906554412468
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -147,6 +132,12 @@ MonoBehaviour:
     resistanceToEnergyDamage: 0
     resistanceToPhysicalDamage: 0
     currentDurability: 0
+  _moduleDestroyEffects:
+  - sound_Internal combustion generator explode
+  - small module destroyed
+  _moduleDestroyOnShipEffects:
+  - fire explosion
+  _explodeStrengthOnDestroy: 0
   teamID: none
   _cellsLocalPositionsInShip: []
 --- !u!114 &8589627249583840758

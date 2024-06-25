@@ -99,7 +99,7 @@ public class Player : NetworkBehaviour
 
             ShipGameStats shipGameStats = playerShipSpawned.GetComponent<ShipGameStats>();
             shipGameStats.ServerInitialize();
-            shipGameStats.teamID = teamID.Value.GetString();
+            shipGameStats.TeamID = teamID.Value.GetString();
             shipGameStats.myPlayer = this;
         }
     }
@@ -134,9 +134,9 @@ public class Player : NetworkBehaviour
         
         if (playerShipGameStats != null)
         {
-            playerShipGameStats.movementJoystickPressed.Value = movementJoystickPressed;
-            playerShipGameStats.movementJoystickDirInDegrees.Value = movementJoystickDirInDegrees;
-            playerShipGameStats.movementJoystickMagnitude.Value = movementJoystickMagnitude;
+            playerShipGameStats.MovementJoystickPressed.Value = movementJoystickPressed;
+            playerShipGameStats.MovementJoystickDirInDegrees.Value = movementJoystickDirInDegrees;
+            playerShipGameStats.MovementJoystickMagnitude.Value = movementJoystickMagnitude;
         }
     }
 

@@ -38,6 +38,8 @@ public class Projectile : MonoBehaviour
 
     [Tooltip("Последняя точка, в которой был нанесён урон (нужно для определения положения эффекта взрыва)")]
     Vector3 lastHitPoint;
+    [Tooltip("Скорость последнего объекта, в который врезался снаряд (нужно для скорости эффектов при взрыве снаряда)")]
+    Vector3 lastHitCollidersSpeed = Vector3.one;
 
     private void Start()
     {
@@ -95,14 +97,22 @@ public class Projectile : MonoBehaviour
                 {
                     LayerMask hitInfoLayer = hitInfo.collider.gameObject.layer;
 
+                    Rigidbody2D collidersRigidbody2D = hitInfo.collider.GetComponent<Rigidbody2D>();
+                    Vector3 collidersSpeed = Vector3.zero;
+                    if (collidersRigidbody2D != null)
+                    {
+                        collidersSpeed = collidersRigidbody2D.velocity;
+                        lastHitCollidersSpeed = collidersSpeed;
+                    }
+
                     if (hitInfoLayer == LayerMask.NameToLayer("Ship"))
                     {
                         ShipGameStats shipGameStats = hitInfo.collider.GetComponent<ShipGameStats>();
-                        if (shipGameStats != null && shipGameStats.teamID != teamID)
+                        if (shipGameStats != null && shipGameStats.TeamID != teamID)
                         {
                             if (!insideEnemyShip)
                             {
-                                SpawnEffect(EffectType.shipPenetration, hitInfo.point, transform.rotation);
+                                SpawnEffect(EffectType.shipPenetration, hitInfo.point, transform.rotation, collidersSpeed);
                             }
                             insideEnemyShip = true;
                             insideEnemyShipThisFrame = true;
@@ -115,7 +125,7 @@ public class Projectile : MonoBehaviour
                             Projectile hittedProjectile = hitInfo.collider.GetComponent<Projectile>();
                             if (hittedProjectile != null && hittedProjectile.teamID != teamID)
                             {
-                                SpawnEffect(EffectType.moduleHit, hitInfo.point, transform.rotation);
+                                SpawnEffect(EffectType.moduleHit, hitInfo.point, transform.rotation, collidersSpeed);
                                 hittedProjectile.damage.DamageOtherDamage(damage);
                                 lastHitPoint = hitInfo.point;
                             }
@@ -125,7 +135,7 @@ public class Projectile : MonoBehaviour
                             Durability hittedObject = hitInfo.collider.GetComponent<Durability>();
                             if (hittedObject != null && hittedObject.teamID != teamID)
                             {
-                                SpawnEffect(EffectType.moduleHit, hitInfo.point, transform.rotation);
+                                SpawnEffect(EffectType.moduleHit, hitInfo.point, transform.rotation, collidersSpeed);
                                 hittedObject.durability.TakeDamage(damage);
                                 lastHitPoint = hitInfo.point;
                             }
@@ -154,7 +164,14 @@ public class Projectile : MonoBehaviour
     {
         if (!alreadyExploded)
         {
-            SpawnEffect(EffectType.explode, lastHitPoint, transform.rotation);
+            if (lastHitCollidersSpeed == Vector3.one)
+            {
+                SpawnEffect(EffectType.explode, lastHitPoint, transform.rotation, myRigidbody2D.velocity);
+            }
+            else
+            {
+                SpawnEffect(EffectType.explode, lastHitPoint, transform.rotation, lastHitCollidersSpeed);
+            }
             alreadyExploded = true;
             Destroy(gameObject);
         }
@@ -165,18 +182,18 @@ public class Projectile : MonoBehaviour
         transform.eulerAngles = new Vector3(0, 0, DataOperator.GetVector2DirInDegrees(myRigidbody2D.velocity));
     }
 
-    void SpawnEffect(EffectType effectType, Vector3 position, Quaternion rotation)
+    void SpawnEffect(EffectType effectType, Vector3 position, Quaternion rotation, Vector3 speed)
     {
         switch (effectType)
         {
             case EffectType.shipPenetration:
-                RpcHandlerForEffects.SpawnEffectsOnClients(shipPenetrationEffects, position, rotation);
+                RpcHandlerForEffects.SpawnEffectsOnClients(shipPenetrationEffects, position, rotation, speed);
                 break;
             case EffectType.moduleHit:
-                RpcHandlerForEffects.SpawnEffectsOnClients(moduleHitEffects, position, rotation);
+                RpcHandlerForEffects.SpawnEffectsOnClients(moduleHitEffects, position, rotation, speed);
                 break;
             case EffectType.explode:
-                RpcHandlerForEffects.SpawnEffectsOnClients(explodeEffects, position, rotation);
+                RpcHandlerForEffects.SpawnEffectsOnClients(explodeEffects, position, rotation, speed);
                 break;
         }
     }

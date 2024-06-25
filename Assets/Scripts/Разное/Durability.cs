@@ -1,42 +1,68 @@
-using UnityEngine;
-using Unity.Netcode;
 using System;
 using System.Collections.Generic;
+using Unity.Netcode;
+using UnityEngine;
 
-public class Durability: MonoBehaviour
+public class Durability : MonoBehaviour
 {
     [Header("Настройка")]
     [Tooltip("Прочность")]
     public DurabilityStruct durability;
-    
+    [SerializeField] private List<string> _moduleDestroyEffects;
+    [Tooltip("Названия эффектов уничтожения модуля, которые будут прикреплены к кораблю. Например, продолжительный эффект огня и дыма после взрыва чего-то огнеопасного")]
+    [SerializeField] private List<string> _moduleDestroyOnShipEffects;
+    [Tooltip("Сила взрыва при уничтожении модуля. Например, если установить значение 5, то модули в радиусе 1 ячейки от взрыва получат урон 5, а модули расположенные подальше получат меньший урон. Прочные модули могут остановить ударную волну")]
+    [SerializeField] private float _explodeStrengthOnDestroy = 0;
+
     [Header("Отладка")]
     public string teamID = "none";
-    [SerializeField] Vector2Serializable[] _cellsLocalPositionsInShip;
+    [SerializeField] private Vector2Serializable[] _cellsLocalPositionsInShip;
 
-    ShipGameStats _myShipsGameStats;
+    private Rigidbody2D _shipsRigidbody2D;
+    private ShipGameStats _myShipsGameStats;
+    private DestroyedModulesEffectsSpawner _destroyedModulesEffectsSpawner;
+    private Collider2D[] _colliders2D;
 
     private void Start()
     {
 #if UNITY_EDITOR
         durability.CheckResistancesLimits();
 #endif
+        if (NetworkManager.Singleton.IsServer)
+        {
+            _colliders2D = GetComponents<Collider2D>();
+        }
     }
 
     public void InitializeForModule(CellData[] cellsDatas, Vector2 cellsOffset)
     {
         if (NetworkManager.Singleton.IsServer)
         {
-            durability.OnDurabilityRatioChangedEvent += SendDurabilityChanged;
+            OnModuleDurabilityRatioChangedEvent += GetComponentInParent<ModulesCellsDurabilityShower>().OnHealthCellDurabilityChangedRpc;
+            durability.OnDurabilityRatioChanged += SendDurabilityChanged;
+            durability.OnNoDurability += Explode;
+
             SetCellsLocalPositionsInShip(cellsDatas, cellsOffset);
             _myShipsGameStats = GetComponentInParent<ShipGameStats>();
-            OnModuleDurabilityRatioChangedEvent += GetComponentInParent<ModulesCellsDurabilityShower>().OnHealthCellDurabilityChangedRpc;
+            _shipsRigidbody2D = GetComponentInParent<Rigidbody2D>();
+            _destroyedModulesEffectsSpawner = GetComponentInParent<DestroyedModulesEffectsSpawner>();
             durability.SetMaxDurability();
         }
     }
 
-    delegate void OnModuleDurabilityRatioChangedContainer(float durabilityToMaxDurability, Vector2Serializable[] cellsLocalPositionsInShip);
-    event OnModuleDurabilityRatioChangedContainer OnModuleDurabilityRatioChangedEvent;
+    private void OnDestroy()
+    {
+        if (NetworkManager.Singleton != null && NetworkManager.Singleton.IsServer)
+        {
+            OnModuleDurabilityRatioChangedEvent -= GetComponentInParent<ModulesCellsDurabilityShower>().OnHealthCellDurabilityChangedRpc;
+            durability.OnDurabilityRatioChanged -= SendDurabilityChanged;
+            durability.OnNoDurability -= Explode;
+        }
+    }
 
+    private delegate void OnModuleDurabilityRatioChangedContainer(float durabilityToMaxDurability, Vector2Serializable[] cellsLocalPositionsInShip);
+
+    private event OnModuleDurabilityRatioChangedContainer OnModuleDurabilityRatioChangedEvent;
 
     public void SendDurabilityChanged(float durabilityToMaxDurability)
     {
@@ -49,34 +75,57 @@ public class Durability: MonoBehaviour
         for (int cellNum = 0; cellNum < cellsDatas.Length; cellNum++)
         {
             Vector2 cellLocalPosition = (Vector2)transform.localPosition + cellsOffset + cellsDatas[cellNum].position;
-            Vector2Serializable cellLocalPositionSerializable = new Vector2Serializable(cellLocalPosition);
+            Vector2Serializable cellLocalPositionSerializable = new(cellLocalPosition);
             _cellsLocalPositionsInShip[cellNum] = cellLocalPositionSerializable;
         }
     }
 
-    private void FixedUpdate()
-    {
-        if (NetworkManager.Singleton.IsServer)
-        {
-            if (durability.NoDurability())
-            {
-                Explode();
-            }
-        }
-    }
-
-    bool alreadyExploded = false;
+    public bool AlreadyExploded { get; private set; } = false;
     private void Explode()
     {
-        if (!alreadyExploded)
+        if (!AlreadyExploded)
         {
-            alreadyExploded = true;
+            AlreadyExploded = true;
+            DisableModuleColliders();
+            if (_explodeStrengthOnDestroy > 0)
+            {
+                ShockWave.CreateShockWave(_explodeStrengthOnDestroy, transform.position);
+            }
+            SpawnModuleDestroyEffects();
+            if (_moduleDestroyOnShipEffects.Count > 0)
+            {
+                SpawnOnShipModuleDestroyEffects();
+            }
+
             if (_myShipsGameStats != null)
             {
                 _myShipsGameStats.ReduceShipСharacteristics(this);
             }
             Destroy(gameObject);
         }
+    }
+
+    private void DisableModuleColliders()
+    {
+        foreach (Collider2D collider2D in _colliders2D)
+        {
+            collider2D.enabled = false;
+        }
+    }
+
+    private void SpawnModuleDestroyEffects()
+    {
+        RpcHandlerForEffects.SpawnEffectsOnClients(_moduleDestroyEffects, transform.position, Quaternion.identity, _shipsRigidbody2D.velocity);
+    }
+
+    private void SpawnOnShipModuleDestroyEffects()
+    {
+        NetworkString[] effectsNamesNetworkStringArray = new NetworkString[_moduleDestroyOnShipEffects.Count];
+        for (int numInList = 0; numInList < _moduleDestroyOnShipEffects.Count; numInList++)
+        {
+            effectsNamesNetworkStringArray[numInList] = new NetworkString(_moduleDestroyOnShipEffects[numInList]);
+        }
+        _destroyedModulesEffectsSpawner.SpawnAndAttachDestroyedModuleEffectRpc(effectsNamesNetworkStringArray, transform.localPosition);
     }
 }
 
@@ -99,7 +148,14 @@ public class Damage
     public float physicalDamage;
 
     [Tooltip("true когда весь урон израсходован")]
-    bool allDamageUsed = false;
+    private bool allDamageUsed = false;
+
+    public Damage(float fireDamage_, float energyDamage_, float physicalDamage_)
+    {
+        fireDamage = fireDamage_;
+        energyDamage = energyDamage_;
+        physicalDamage = physicalDamage_;
+    }
 
     public bool AllDamageUsed()
     {
@@ -166,11 +222,13 @@ public struct DurabilityStruct
 
     [Tooltip("Текущая прочность (не трогать)")]
     public float currentDurability;
-
-    bool noDurability;
+    private bool noDurability;
 
     public delegate void OnDurabilityRatioChangedContainer(float durabilityToMaxDurabilityRatio);
-    public event OnDurabilityRatioChangedContainer OnDurabilityRatioChangedEvent;
+    public event OnDurabilityRatioChangedContainer OnDurabilityRatioChanged;
+
+    public delegate void OnNoDurabilityContainer();
+    public event OnNoDurabilityContainer OnNoDurability;
 
     public bool NoDurability()
     {
@@ -200,8 +258,9 @@ public struct DurabilityStruct
             damage.UseDamage(damage.fireDamage * usedDamagePart, damage.energyDamage * usedDamagePart, damage.physicalDamage * usedDamagePart);
             noDurability = true;
             currentDurability = 0;
+            OnNoDurability();
         }
-        OnDurabilityRatioChangedEvent(currentDurability / maxDurability);
+        OnDurabilityRatioChanged(currentDurability / maxDurability);
     }
 
     public void CheckResistancesLimits()

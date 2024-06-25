@@ -45,7 +45,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GlobalObjectIdHash: 3284779646
+  GlobalObjectIdHash: 3468045221
   InScenePlacedSourceGlobalObjectIdHash: 0
   AlwaysReplicateAsRoot: 0
   SynchronizeTransform: 1
@@ -107,3 +107,59 @@ MonoBehaviour:
       - {fileID: 2067719033426604217, guid: 94664a78e97ecca4495f68526aebb4bc, type: 3}
       LowQualityEffects:
       - {fileID: 2067719033426604217, guid: 94664a78e97ecca4495f68526aebb4bc, type: 3}
+  - effectName: small module destroyed
+    effect:
+      HighQualityEffects:
+      - {fileID: 349329333982107927, guid: c1d7bc43cb977c549acb56527a96a10e, type: 3}
+      MediumQualityEffects:
+      - {fileID: 349329333982107927, guid: c1d7bc43cb977c549acb56527a96a10e, type: 3}
+      LowQualityEffects:
+      - {fileID: 349329333982107927, guid: c1d7bc43cb977c549acb56527a96a10e, type: 3}
+  - effectName: sound_Small module destroyed
+    effect:
+      HighQualityEffects:
+      - {fileID: 5077133317201384345, guid: d9d8327d3f2b1ad48ae0493148363959, type: 3}
+      MediumQualityEffects:
+      - {fileID: 5077133317201384345, guid: d9d8327d3f2b1ad48ae0493148363959, type: 3}
+      LowQualityEffects:
+      - {fileID: 5077133317201384345, guid: d9d8327d3f2b1ad48ae0493148363959, type: 3}
+  - effectName: medium module destroyed
+    effect:
+      HighQualityEffects:
+      - {fileID: 3706094909674530675, guid: 9004f6846e526df42abaaddd3ea280ad, type: 3}
+      MediumQualityEffects:
+      - {fileID: 3706094909674530675, guid: 9004f6846e526df42abaaddd3ea280ad, type: 3}
+      LowQualityEffects:
+      - {fileID: 3706094909674530675, guid: 9004f6846e526df42abaaddd3ea280ad, type: 3}
+  - effectName: small enegy explosion
+    effect:
+      HighQualityEffects:
+      - {fileID: 3310301582214859125, guid: 040ac65fa9a62354db16ed9eac1ee8f8, type: 3}
+      MediumQualityEffects:
+      - {fileID: 3310301582214859125, guid: 040ac65fa9a62354db16ed9eac1ee8f8, type: 3}
+      LowQualityEffects:
+      - {fileID: 3310301582214859125, guid: 040ac65fa9a62354db16ed9eac1ee8f8, type: 3}
+  - effectName: fire explosion
+    effect:
+      HighQualityEffects:
+      - {fileID: 1346996406576288765, guid: b565710086da32840a2dd589aa1e1628, type: 3}
+      MediumQualityEffects:
+      - {fileID: 1346996406576288765, guid: b565710086da32840a2dd589aa1e1628, type: 3}
+      LowQualityEffects:
+      - {fileID: 1346996406576288765, guid: b565710086da32840a2dd589aa1e1628, type: 3}
+  - effectName: sound_small battery explode
+    effect:
+      HighQualityEffects:
+      - {fileID: 5077133317201384345, guid: 60c4dbf3c380c7748968db88554c0fa5, type: 3}
+      MediumQualityEffects:
+      - {fileID: 5077133317201384345, guid: 60c4dbf3c380c7748968db88554c0fa5, type: 3}
+      LowQualityEffects:
+      - {fileID: 5077133317201384345, guid: d9d8327d3f2b1ad48ae0493148363959, type: 3}
+  - effectName: sound_Internal combustion generator explode
+    effect:
+      HighQualityEffects:
+      - {fileID: 5077133317201384345, guid: 00f3b44bb60a74548aa3738874f281e3, type: 3}
+      MediumQualityEffects:
+      - {fileID: 5077133317201384345, guid: 00f3b44bb60a74548aa3738874f281e3, type: 3}
+      LowQualityEffects:
+      - {fileID: 5077133317201384345, guid: 00f3b44bb60a74548aa3738874f281e3, type: 3}

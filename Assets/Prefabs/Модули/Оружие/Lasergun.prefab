@@ -114,7 +114,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4396375315942069305}
-  - component: {fileID: 8652373758378096778}
+  - component: {fileID: 8864924610019181709}
   - component: {fileID: 7579367292860626789}
   - component: {fileID: 3034156793473752486}
   - component: {fileID: 4105205623631562342}
@@ -142,8 +142,8 @@ Transform:
   - {fileID: 1543073848588864742}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!60 &8652373758378096778
-PolygonCollider2D:
+--- !u!58 &8864924610019181709
+CircleCollider2D:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -177,22 +177,7 @@ PolygonCollider2D:
   m_CompositeOperation: 0
   m_CompositeOrder: 0
   m_Offset: {x: 0, y: 0}
-  m_SpriteTilingProperty:
-    border: {x: 0, y: 0, z: 0, w: 0}
-    pivot: {x: 0, y: 0}
-    oldSize: {x: 0, y: 0}
-    newSize: {x: 0, y: 0}
-    adaptiveTilingThreshold: 0
-    drawMode: 0
-    adaptiveTiling: 0
-  m_AutoTiling: 0
-  m_Points:
-    m_Paths:
-    - - {x: 1, y: 1}
-      - {x: 1, y: -1}
-      - {x: -1, y: -1}
-      - {x: -1, y: 1}
-  m_UseDelaunayMesh: 0
+  m_Radius: 1
 --- !u!114 &7579367292860626789
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -245,6 +230,11 @@ MonoBehaviour:
     resistanceToEnergyDamage: 0
     resistanceToPhysicalDamage: 0
     currentDurability: 0
+  _moduleDestroyEffects:
+  - sound_Small module destroyed
+  - small module destroyed
+  _moduleDestroyOnShipEffects: []
+  _explodeStrengthOnDestroy: 0
   teamID: none
   _cellsLocalPositionsInShip: []
 --- !u!114 &4105205623631562342

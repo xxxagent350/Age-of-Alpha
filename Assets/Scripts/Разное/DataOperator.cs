@@ -657,15 +657,15 @@ public class Effect
         }
         if (graphicsPreset == GraphicsPresets.low)
         {
-            return PoolingSystem.instance.SpawnGOs(LowQualityEffects, position, rotation);
+            return PoolingSystem.Instance.SpawnGOs(LowQualityEffects, position, rotation);
         }
         if (graphicsPreset == GraphicsPresets.medium)
         {
-            return PoolingSystem.instance.SpawnGOs(MediumQualityEffects, position, rotation);
+            return PoolingSystem.Instance.SpawnGOs(MediumQualityEffects, position, rotation);
         }
         if (graphicsPreset == GraphicsPresets.high)
         {
-            return PoolingSystem.instance.SpawnGOs(HighQualityEffects, position, rotation);
+            return PoolingSystem.Instance.SpawnGOs(HighQualityEffects, position, rotation);
         }
         return null;
     }

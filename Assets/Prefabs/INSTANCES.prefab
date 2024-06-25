@@ -458,6 +458,8 @@ GameObject:
   - component: {fileID: 1592101764647440592}
   - component: {fileID: -8607025167715745351}
   - component: {fileID: -30606208567417342}
+  - component: {fileID: -8805658539764822535}
+  - component: {fileID: 8499773304295227333}
   m_Layer: 0
   m_Name: INSTANCES
   m_TagString: Untagged
@@ -637,6 +639,31 @@ MonoBehaviour:
   userGraphics: 0
   healthCellsShowPreset: 0
   healthCellsShowTimeOnDurabilityChanged: 3
+--- !u!114 &-8805658539764822535
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5292908563983817125}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8085853df05f83b4b97a622d415d4757, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  AllModulesGOs: []
+--- !u!114 &8499773304295227333
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5292908563983817125}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 03e8a82c01ffbe1418608ba099619db2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &7247781850651555419
 GameObject:
   m_ObjectHideFlags: 0

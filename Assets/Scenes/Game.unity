@@ -571,7 +571,7 @@ Camera:
     height: 1
   near clip plane: 0.01
   far clip plane: 1000000
-  field of view: 60.000004
+  field of view: 60
   orthographic: 0
   orthographic size: 5
   m_Depth: -1
@@ -636,6 +636,7 @@ MonoBehaviour:
   mouseScrollSensitivity: 0.1
   minZoomRelativeToPlayerShipSize: 1.2
   maxZoomRelativeToPlayerShipSizeToShowHealthCells: 3
+  peakMaxZoomToShowHealthCells: 100
   zoom: 0
 --- !u!1 &153779441
 GameObject:
@@ -1348,14 +1349,6 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 3854791056911123853, guid: ce05983296f257a4c9b0f28c2411afd6, type: 3}
-      propertyPath: m_LocalScale.x
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 3854791056911123853, guid: ce05983296f257a4c9b0f28c2411afd6, type: 3}
-      propertyPath: m_LocalScale.y
-      value: 1
-      objectReference: {fileID: 0}
     - target: {fileID: 3854791056911123853, guid: ce05983296f257a4c9b0f28c2411afd6, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0

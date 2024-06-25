@@ -79,7 +79,7 @@ public class BallisticWeapon : Weapon
     {
         foreach (string effectName in shootEffectsNames)
         {
-            RpcHandlerForEffects.SpawnEffectOnClients(effectName, shotPoint, transform.rotation);
+            RpcHandlerForEffects.SpawnEffectOnClients(effectName, shotPoint, transform.rotation, myShipRigidbody2D.velocity);
         }
     }
 

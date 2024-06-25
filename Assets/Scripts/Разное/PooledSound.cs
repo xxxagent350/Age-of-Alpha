@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PooledSound : PooledBehaviour
+public class PooledSound : PooledEffect
 {
     [Header("Настройка")]
     [Tooltip("Пределы модификации громкости для разнообразия звуков")]
@@ -22,7 +22,6 @@ public class PooledSound : PooledBehaviour
     public override void Initialize()
     {
         audioSource = GetComponent<AudioSource>();
-
         startVolume = audioSource.volume;
         startPitch = audioSource.pitch;
     }
@@ -35,7 +34,6 @@ public class PooledSound : PooledBehaviour
         {
             audioSource.clip = audioClips[Random.Range(0, audioClips.Count)];
         }
-
         clipLength = audioSource.clip.length + 0.1f;
         audioSource.Play();
         Invoke(nameof(ReturnToPool), clipLength);
@@ -43,6 +41,6 @@ public class PooledSound : PooledBehaviour
 
     void ReturnToPool()
     {
-        PoolingSystem.instance.ReturnGOToPool(gameObject);
+        PoolingSystem.Instance.ReturnGOToPool(gameObject);
     }
 }

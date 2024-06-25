@@ -19,14 +19,14 @@ public class ShipGameStats : NetworkBehaviour
     [SerializeField] float rotationForceOnDestroy;
 
     [Header("Отладка")]
-    public string teamID;
-    public float mass; //масса корпуса с модулями
-    public NetworkVariable<float> energyGeneration = new NetworkVariable<float>(); //суммарная генерация энергии со всех модулей
-    public NetworkVariable<float> energyMaxCapacity = new NetworkVariable<float>(); //максимальное количество запасаемой энергии во всех модулях
-    public NetworkVariable<float> energy = new NetworkVariable<float>(); //текущее количество энергии в батареях
-    public NetworkVariable<float> enginesConsumption = new NetworkVariable<float>(); //макс. потребление двигателями при полёте
-    public float accelerationPower; //общая ускорительная мощь двигателей
-    public float angularAccelerationPower; //общая вращательная мощь двигателей
+    public string TeamID;
+    public float Mass; //масса корпуса с модулями
+    public NetworkVariable<float> EnergyGeneration = new NetworkVariable<float>(); //суммарная генерация энергии со всех модулей
+    public NetworkVariable<float> EnergyMaxCapacity = new NetworkVariable<float>(); //максимальное количество запасаемой энергии во всех модулях
+    public NetworkVariable<float> Energy = new NetworkVariable<float>(); //текущее количество энергии в батареях
+    public NetworkVariable<float> EnginesConsumption = new NetworkVariable<float>(); //макс. потребление двигателями при полёте
+    public float AccelerationPower; //общая ускорительная мощь двигателей
+    public float AngularAccelerationPower; //общая вращательная мощь двигателей
 
     ShipStats myShipStats;
     ItemData myItemData;
@@ -35,17 +35,17 @@ public class ShipGameStats : NetworkBehaviour
     [SerializeField] NetworkVariable<bool> noEnergy = new NetworkVariable<bool>();
 
     //данные с джойстика игрока
-    [HideInInspector] public NetworkVariable<bool> movementJoystickPressed = new NetworkVariable<bool>();
-    [HideInInspector] public NetworkVariable<float> movementJoystickDirInDegrees = new NetworkVariable<float>();
-    [HideInInspector] public NetworkVariable<float> movementJoystickMagnitude = new NetworkVariable<float>();
+    [HideInInspector] public NetworkVariable<bool> MovementJoystickPressed = new NetworkVariable<bool>();
+    [HideInInspector] public NetworkVariable<float> MovementJoystickDirInDegrees = new NetworkVariable<float>();
+    [HideInInspector] public NetworkVariable<float> MovementJoystickMagnitude = new NetworkVariable<float>();
 
     //модификаторы полёта
-    const float ignoredDirDifferenceDegrees = 60;
-    const float minDrag = 0;
-    const float maxSpeedMod = 150;
-    const float linearDragMod = 0.01f;
-    const float accelerationPowerMod = 1000;
-    const float rotationForceMod = 100000;
+    private const float IgnoredDirDifferenceDegrees = 60;
+    private const float MinDrag = 0;
+    private const float MaxSpeedMod = 100;
+    private const float LinearDragMod = 0.05f;
+    private const float AccelerationPowerMod = 1500;
+    private const float RotationForceMod = 150000;
 
     bool noControl; //true когда нету блока управления
     NetworkVariable<bool> alreadyDestroyed = new NetworkVariable<bool>();
@@ -106,18 +106,18 @@ public class ShipGameStats : NetworkBehaviour
     {
         myShipStats = GetComponent<ShipStats>();
 
-        mass = myShipStats.totalMass;
+        Mass = myShipStats.totalMass;
 
         myRigidbody2D = GetComponent<Rigidbody2D>();
-        myRigidbody2D.mass = mass;
+        myRigidbody2D.mass = Mass;
 
-        energyGeneration.Value = myShipStats.totalEnergyGeneration;
-        energyMaxCapacity.Value = myShipStats.totalEnergyCapacity;
-        energy.Value = energyMaxCapacity.Value;
+        EnergyGeneration.Value = myShipStats.totalEnergyGeneration;
+        EnergyMaxCapacity.Value = myShipStats.totalEnergyCapacity;
+        Energy.Value = EnergyMaxCapacity.Value;
 
-        enginesConsumption.Value = myShipStats.totalEnginesConsumption;
-        accelerationPower = myShipStats.totalAccelerationPower;
-        angularAccelerationPower = myShipStats.totalAngularAccelerationPower;
+        EnginesConsumption.Value = myShipStats.totalEnginesConsumption;
+        AccelerationPower = myShipStats.totalAccelerationPower;
+        AngularAccelerationPower = myShipStats.totalAngularAccelerationPower;
 
         Invoke(nameof(WaitingToBeSpawned), 0.1f);
     }
@@ -166,6 +166,11 @@ public class ShipGameStats : NetworkBehaviour
                 {
                     RotateShip();
                     Accelerate();
+                    ApplyFriction();
+                }
+                else
+                {
+                    myRigidbody2D.drag = MinDrag;
                 }
                 GenerateEnergy();
                 FlightEffectsServer();
@@ -186,15 +191,15 @@ public class ShipGameStats : NetworkBehaviour
         }
         else
         {
-            if (energy.Value + (energyGeneration.Value * Time.fixedDeltaTime) >= energyMaxCapacity.Value)
+            if (Energy.Value + (EnergyGeneration.Value * Time.fixedDeltaTime) >= EnergyMaxCapacity.Value)
             {
                 energyBar.fillingValue = 1;
             }
             else
             {
-                if (energyMaxCapacity.Value > 0.001f)
+                if (EnergyMaxCapacity.Value > 0.001f)
                 {
-                    energyBar.fillingValue = energy.Value / energyMaxCapacity.Value;
+                    energyBar.fillingValue = Energy.Value / EnergyMaxCapacity.Value;
                 }
                 else
                 {
@@ -208,20 +213,20 @@ public class ShipGameStats : NetworkBehaviour
     {
         float enginesLightsAlphaFrameChange = enginesLightsAlphaChangingSpeed * Time.fixedDeltaTime;
 
-        if (accelerationPower > 0.01f && !noControl && movementJoystickPressed.Value && Mathf.Abs(Mathf.DeltaAngle(transform.eulerAngles.z, movementJoystickDirInDegrees.Value)) < ignoredDirDifferenceDegrees)
+        if (AccelerationPower > 0.01f && !noControl && MovementJoystickPressed.Value && Mathf.Abs(Mathf.DeltaAngle(transform.eulerAngles.z, MovementJoystickDirInDegrees.Value)) < IgnoredDirDifferenceDegrees)
         {
             float enginesLightsMod;
 
-            if (CheckEnergy(((enginesConsumption.Value * movementJoystickMagnitude.Value) + energyGeneration.Value) * Time.fixedDeltaTime))
+            if (CheckEnergy(((EnginesConsumption.Value * MovementJoystickMagnitude.Value) + EnergyGeneration.Value) * Time.fixedDeltaTime))
             {
-                enginesLightsMod = movementJoystickMagnitude.Value;
+                enginesLightsMod = MovementJoystickMagnitude.Value;
             }
             else
             {
-                enginesLightsMod = movementJoystickMagnitude.Value * (energyGeneration.Value / (enginesConsumption.Value * movementJoystickMagnitude.Value));
+                enginesLightsMod = MovementJoystickMagnitude.Value * (EnergyGeneration.Value / (EnginesConsumption.Value * MovementJoystickMagnitude.Value));
             }
 
-            if (CheckEnergy(enginesConsumption.Value * movementJoystickMagnitude.Value * Time.fixedDeltaTime))
+            if (CheckEnergy(EnginesConsumption.Value * MovementJoystickMagnitude.Value * Time.fixedDeltaTime))
             {
                 trailsEmitting.Value = true;
             }
@@ -281,7 +286,7 @@ public class ShipGameStats : NetworkBehaviour
 
     void GenerateEnergy()
     {
-        if (energy.Value <= energyGeneration.Value * Time.fixedDeltaTime || energyMaxCapacity.Value < 0.01f)
+        if (Energy.Value <= EnergyGeneration.Value * Time.fixedDeltaTime || EnergyMaxCapacity.Value < 0.01f)
         {
             noEnergy.Value = true;
         }
@@ -289,17 +294,17 @@ public class ShipGameStats : NetworkBehaviour
         {
             noEnergy.Value = false;
         }
-        if (energy.Value < energyMaxCapacity.Value)
+        if (Energy.Value < EnergyMaxCapacity.Value)
         {
-            energy.Value += energyGeneration.Value * Time.fixedDeltaTime;
+            Energy.Value += EnergyGeneration.Value * Time.fixedDeltaTime;
         }
-        if (energy.Value > energyMaxCapacity.Value)
+        if (Energy.Value > EnergyMaxCapacity.Value)
         {
-            energy.Value = energyMaxCapacity.Value;
+            Energy.Value = EnergyMaxCapacity.Value;
         }
-        if (energy.Value < 0)
+        if (Energy.Value < 0)
         {
-            energy.Value = 0;
+            Energy.Value = 0;
         }
     }
 
@@ -308,17 +313,17 @@ public class ShipGameStats : NetworkBehaviour
         if (amount <= 0)
             return false;
 
-        if (energy.Value < amount)
+        if (Energy.Value < amount)
             return false;
 
-        energy.Value -= amount;
+        Energy.Value -= amount;
 
         return true;
     }
 
     public bool CheckEnergy(float energyAmount)
     {
-        if (energy.Value < energyAmount)
+        if (Energy.Value < energyAmount)
         {
             return false;
         }
@@ -331,7 +336,7 @@ public class ShipGameStats : NetworkBehaviour
 
     void RotateShip()
     {
-        float F = angularAccelerationPower * rotationForceMod; //крутящий момент (аналог силы)
+        float F = AngularAccelerationPower * RotationForceMod; //крутящий момент (аналог силы)
         float m = myRigidbody2D.inertia; //момент инерции (аналог массы)
 
         float v2 = Mathf.Abs(Mathf.Pow(myRigidbody2D.angularVelocity, 2)); //угловая скорость в квадрате
@@ -341,7 +346,7 @@ public class ShipGameStats : NetworkBehaviour
         }
 
         float a = F / m; //угловое ускорение
-        float S = Mathf.DeltaAngle(transform.eulerAngles.z, movementJoystickDirInDegrees.Value);
+        float S = Mathf.DeltaAngle(transform.eulerAngles.z, MovementJoystickDirInDegrees.Value);
 
         //Debug.Log($"S: {S}; v2: {v2}; a: {a}; 2as: {2 * a * S}");
 
@@ -349,12 +354,12 @@ public class ShipGameStats : NetworkBehaviour
 
         if (Mathf.Abs(S) < ignoredDir && Mathf.Abs(myRigidbody2D.angularVelocity) < a / Time.fixedDeltaTime / 2)
         {
-            transform.eulerAngles = new Vector3(0, 0, movementJoystickDirInDegrees.Value);
+            transform.eulerAngles = new Vector3(0, 0, MovementJoystickDirInDegrees.Value);
             myRigidbody2D.angularVelocity = 0;
         }
         else
         {
-            if (TrySpendEnergy(enginesConsumption.Value * Time.fixedDeltaTime))
+            if (TrySpendEnergy(EnginesConsumption.Value * 0.3f * Time.fixedDeltaTime))
             {
                 if (v2 < 2 * a * S) //ещё не разогнались достаточно, продолжаем ускоряться
                 {
@@ -372,35 +377,36 @@ public class ShipGameStats : NetworkBehaviour
 
     void Accelerate()
     {
-        Vector3 velocity = myRigidbody2D.velocity;
-        float maxSpeed = accelerationPower * maxSpeedMod / mass;
-
-        if (velocity.magnitude > maxSpeed)
+        if (MovementJoystickPressed.Value)
         {
-            myRigidbody2D.drag = minDrag + ((velocity.magnitude - maxSpeed) * linearDragMod);
-        }
-        else
-        {
-            myRigidbody2D.drag = minDrag;
-        }
-
-
-        if (movementJoystickPressed.Value)
-        {
-            if (Mathf.Abs(Mathf.DeltaAngle(transform.eulerAngles.z, movementJoystickDirInDegrees.Value)) < ignoredDirDifferenceDegrees)
+            if (Mathf.Abs(Mathf.DeltaAngle(transform.eulerAngles.z, MovementJoystickDirInDegrees.Value)) < IgnoredDirDifferenceDegrees)
             {
-                if (TrySpendEnergy(enginesConsumption.Value * movementJoystickMagnitude.Value * Time.fixedDeltaTime))
+                if (TrySpendEnergy(EnginesConsumption.Value * MovementJoystickMagnitude.Value * Time.fixedDeltaTime))
                 {
-                    myRigidbody2D.AddForce(DataOperator.RotateVector2(new Vector2(0, accelerationPower * accelerationPowerMod * movementJoystickMagnitude.Value), movementJoystickDirInDegrees.Value));
+                    myRigidbody2D.AddForce(DataOperator.RotateVector2(new Vector2(0, AccelerationPower * AccelerationPowerMod * MovementJoystickMagnitude.Value), MovementJoystickDirInDegrees.Value));
                 }
             }
         }
         else
         {
-            myRigidbody2D.drag = minDrag;
+            myRigidbody2D.drag = MinDrag;
         }
     }
 
+    void ApplyFriction()
+    {
+        Vector3 velocity = myRigidbody2D.velocity;
+        float maxSpeed = AccelerationPower * MaxSpeedMod / Mass;
+
+        if (velocity.magnitude > maxSpeed)
+        {
+            myRigidbody2D.drag = MinDrag + ((velocity.magnitude - maxSpeed) * LinearDragMod);
+        }
+        else
+        {
+            myRigidbody2D.drag = MinDrag;
+        }
+    }
 
     public void ReduceShipСharacteristics(Durability destroyedModule)
     {
@@ -411,8 +417,8 @@ public class ShipGameStats : NetworkBehaviour
 
         if (itemData != null)
         {
-            mass -= itemData.Mass;
-            myRigidbody2D.mass = mass;
+            Mass -= itemData.Mass;
+            myRigidbody2D.mass = Mass;
             if (!alreadyDestroyed.Value && itemData.type == modulesTypes.ControlModules)
             {   //блок управления уничтожен
                 ExplodeTheShipOnServer();
@@ -426,18 +432,18 @@ public class ShipGameStats : NetworkBehaviour
         }
         if (battery != null)
         {
-            energy.Value -= (energy.Value / energyMaxCapacity.Value) * battery.maxCapacity;
-            energyMaxCapacity.Value -= battery.maxCapacity;
+            Energy.Value -= (Energy.Value / EnergyMaxCapacity.Value) * battery.maxCapacity;
+            EnergyMaxCapacity.Value -= battery.maxCapacity;
         }
         if (energyGenerator != null)
         {
-            energyGeneration.Value -= energyGenerator.power;
+            EnergyGeneration.Value -= energyGenerator.power;
         }
         if (engine != null)
         {
-            enginesConsumption.Value -= engine.powerConsumption;
-            accelerationPower -= engine.accelerationPower;
-            angularAccelerationPower -= engine.angularPower;
+            EnginesConsumption.Value -= engine.powerConsumption;
+            AccelerationPower -= engine.accelerationPower;
+            AngularAccelerationPower -= engine.angularPower;
         }
     }
 
@@ -452,6 +458,7 @@ public class ShipGameStats : NetworkBehaviour
         {
             //отключаем все ещё оставшиеся системы корабля
             enabled = false;
+            myRigidbody2D.drag = MinDrag;
             if (myPlayer != null)
             {
                 DisconnectFromTheShip();
@@ -464,29 +471,44 @@ public class ShipGameStats : NetworkBehaviour
             }
 
             alreadyDestroyed.Value = true;
-            float maxForce = forceOnDestroy * mass;
+            float maxForce = forceOnDestroy * Mass;
             Vector2 force = new Vector2(Random.Range(-maxForce, maxForce), Random.Range(-maxForce, maxForce));
             myRigidbody2D.AddForce(force);
 
-            float maxRotationForce = rotationForceOnDestroy * mass;
+            float maxRotationForce = rotationForceOnDestroy * Mass;
             float rotationForce = Random.Range(-maxRotationForce, maxRotationForce);
             myRigidbody2D.AddTorque(rotationForce);
 
-            ShowDestroyEffectsRpc();
+            DisableFlightEffectsRpc();
+            ShowDestroyEffectsRpc(myRigidbody2D.velocity);
         }
     }
 
     [Rpc(SendTo.Everyone)]
-    void ShowDestroyEffectsRpc()
+    void DisableFlightEffectsRpc()
+    {
+        foreach (SpriteRenderer engineLight in enginesLights)
+        {
+            Color oldColor = engineLight.color;
+            engineLight.color = new Color(oldColor.r, oldColor.g, oldColor.b, 0);
+        }
+        foreach (TrailRenderer trail in trails)
+        {
+            trail.emitting = false;
+        }
+
+        enabled = false;
+    }
+
+    [Rpc(SendTo.Everyone)]
+    void ShowDestroyEffectsRpc(Vector3 effectsSpeed)
     {
         foreach (Effect effect in destroyEffects)
         {
-            List<GameObject> spawnedGOs = effect.SpawnEffectsFromPool(Vector3.zero, Quaternion.identity);
+            List<GameObject> spawnedGOs = effect.SpawnEffectsFromPool(transform.position, Quaternion.identity);
             foreach (GameObject spawnedGO in spawnedGOs)
             {
-                spawnedGO.transform.parent = transform;
-                spawnedGO.transform.localPosition = Vector3.zero;
-                spawnedGO.transform.localRotation = Quaternion.identity;
+                spawnedGO.GetComponent<PooledEffect>().speed = effectsSpeed;
             }
         }
     }

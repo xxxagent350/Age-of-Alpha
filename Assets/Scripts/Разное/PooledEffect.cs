@@ -5,12 +5,17 @@ public class PooledEffect : PooledBehaviour
     [Header("Настройка")]
     [SerializeField] float disablingDelay;
 
-    [Header("Отладка")]
     [SerializeField] ParticleSystem[] myParticleSystems;
+    [HideInInspector] public Vector3 speed = Vector3.zero; 
 
     void Awake()
     {
         myParticleSystems = GetComponentsInChildren<ParticleSystem>();
+        foreach (ParticleSystem particleSystem in myParticleSystems)
+        {
+            var particleSystemMain = particleSystem.main;
+            particleSystemMain.stopAction = ParticleSystemStopAction.None;
+        }
     }
 
     public override void OnSpawnedFromPool()
@@ -23,8 +28,13 @@ public class PooledEffect : PooledBehaviour
         }
     }
 
+    public virtual void FixedUpdate()
+    {
+        transform.position += speed * Time.deltaTime;
+    }
+
     void Disable()
     {
-        PoolingSystem.instance.ReturnGOToPool(gameObject);
+        PoolingSystem.Instance.ReturnGOToPool(gameObject);
     }
 }

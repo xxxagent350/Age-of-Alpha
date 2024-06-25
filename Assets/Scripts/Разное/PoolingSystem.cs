@@ -6,15 +6,15 @@ using UnityEngine.SceneManagement;
 public class PoolingSystem : MonoBehaviour
 {
     [Header("Отладка")]
-    [SerializeField] List<SameTypeObjectsList> allPooledObjects;
+    [SerializeField] private List<SameTypeObjectsList> _allPooledObjects;
 
-    public static PoolingSystem instance;
+    public static PoolingSystem Instance { get; private set; }
 
     private void Awake()
     {
-        if (instance == null)
+        if (Instance == null)
         {
-            instance = this;
+            Instance = this;
             DontDestroyOnLoad(this);
         }
         else
@@ -38,7 +38,7 @@ public class PoolingSystem : MonoBehaviour
         {
             RegisterNewObjectsType(goID);
         }
-        foreach (SameTypeObjectsList registeredObjectsType in allPooledObjects)
+        foreach (SameTypeObjectsList registeredObjectsType in _allPooledObjects)
         {
             if (goID == registeredObjectsType.pooledObjectsID)
             {
@@ -119,7 +119,7 @@ public class PoolingSystem : MonoBehaviour
 
     SameTypeObjectsList GetRegisteredObjectsListOfGOsID(string ID)
     {
-        foreach (SameTypeObjectsList registeredObjectsType in allPooledObjects)
+        foreach (SameTypeObjectsList registeredObjectsType in _allPooledObjects)
         {
             if (registeredObjectsType.pooledObjectsID == ID)
             {
@@ -133,7 +133,7 @@ public class PoolingSystem : MonoBehaviour
     {
         SameTypeObjectsList newSameTypeObjectsList = new SameTypeObjectsList();
         newSameTypeObjectsList.pooledObjectsID = ID;
-        allPooledObjects.Add(newSameTypeObjectsList);
+        _allPooledObjects.Add(newSameTypeObjectsList);
     }
 }
 
