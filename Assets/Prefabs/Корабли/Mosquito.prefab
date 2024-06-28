@@ -722,6 +722,7 @@ GameObject:
   - component: {fileID: 8244972465585439976}
   - component: {fileID: 6911573173976042051}
   - component: {fileID: 8088452711607585973}
+  - component: {fileID: -4055303343286194623}
   - component: {fileID: 4556900802579622588}
   - component: {fileID: 7017737955606815744}
   m_Layer: 6
@@ -804,10 +805,10 @@ PolygonCollider2D:
     m_Bits: 64
   m_ContactCaptureLayers:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 64
   m_CallbackLayers:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 64
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_CompositeOperation: 0
@@ -968,7 +969,7 @@ MonoBehaviour:
     RussianText: 
     EnglishText: 
   Size: 1.45
-  Mass: 21
+  Mass: 35
   cellsOffset: {x: 0, y: 0}
   itemCellsData:
   - position: {x: 0, y: 4}
@@ -1034,6 +1035,19 @@ MonoBehaviour:
   - position: {x: -1, y: -2}
     type: 3
   isModule: 0
+--- !u!114 &-4055303343286194623
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7983694099988454875}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d0aaf3e65ed392b448aac8c829c99e5b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _ramEffectsData: {fileID: 11400000, guid: c4842beda5f0f364f96f988147eeafd1, type: 2}
 --- !u!114 &4556900802579622588
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1097,8 +1111,8 @@ MonoBehaviour:
     - {fileID: 5077133317201384345, guid: 49025e962d6a4404aaf702a648a99344, type: 3}
   destroyedImage: {fileID: 4874238682600893174, guid: 8adb18b834ac0f54393a7a26fa49ed41, type: 3}
   timeToDisappearAfterDestroy: 0
-  forceOnDestroy: 2000
-  rotationForceOnDestroy: 3000
+  forceOnDestroy: 1000
+  rotationForceOnDestroy: 1500
   TeamID: 
   Mass: 0
   EnergyGeneration:

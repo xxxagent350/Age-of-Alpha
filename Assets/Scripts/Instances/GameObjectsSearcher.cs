@@ -3,8 +3,7 @@ using UnityEngine;
 
 public class GameObjectsSearcher : MonoBehaviour
 {
-    public static GameObject[] AllModulesGameObjects { get; private set; }
-
+    private static GameObject[] _allModulesGameObjects;
     private static GameObjectsSearcher _instance;
     private const float Frequency = 10;
     private const string ModulesLayerMask = "Module";
@@ -25,6 +24,19 @@ public class GameObjectsSearcher : MonoBehaviour
         StartCoroutine(LowUpdateCoroutine());
     }
 
+    public static GameObject[] GetAllModulesGameObjects()
+    {
+        foreach (GameObject gameObject in _allModulesGameObjects)
+        {
+            if (gameObject == null)
+            {
+                LowUpdate();
+                break;
+            }
+        }
+        return _allModulesGameObjects;
+    }
+
     private IEnumerator LowUpdateCoroutine()
     {
         while (true)
@@ -35,8 +47,8 @@ public class GameObjectsSearcher : MonoBehaviour
     }
 
     //аналог FixedUpdate, но с пониженной частотой обновления для уменьшения нагрузки
-    private void LowUpdate()
+    private static void LowUpdate()
     {
-        AllModulesGameObjects = GameObject.FindGameObjectsWithTag(ModulesLayerMask);
+        _allModulesGameObjects = GameObject.FindGameObjectsWithTag(ModulesLayerMask);
     }
 }

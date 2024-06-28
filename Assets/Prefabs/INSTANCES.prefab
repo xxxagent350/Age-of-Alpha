@@ -495,7 +495,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4382a3a3cdd7dc246835f96264608a61, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  targetFrameRate_: 90
+  targetFrameRate_: 120
   shipsPrefabs:
   - {fileID: 7076352098320370933, guid: fc285a486a8769b46b1fe4d835d05938, type: 3}
   - {fileID: 6162979187479137575, guid: 48a3cc2654b13664d85d93cc41aff89a, type: 3}
@@ -622,7 +622,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b1644879f83d04a448fe67b0f723f163, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  allPooledObjects: []
+  _allPooledObjects: []
 --- !u!114 &-30606208567417342
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -651,7 +651,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8085853df05f83b4b97a622d415d4757, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  AllModulesGOs: []
 --- !u!114 &8499773304295227333
 MonoBehaviour:
   m_ObjectHideFlags: 0

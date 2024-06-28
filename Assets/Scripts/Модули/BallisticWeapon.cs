@@ -17,7 +17,8 @@ public class BallisticWeapon : Weapon
     [SerializeField] float scatterAngle = 5;
     [Tooltip("Ёффекты и звуки выстрела")]
     [SerializeField] List<string> shootEffectsNames;
-    
+
+    private DestroyedModulesEffectsSpawner _destroyedModulesEffectsSpawner;
     int currentBarrelNum;
     Rigidbody2D myShipRigidbody2D;
 
@@ -33,6 +34,7 @@ public class BallisticWeapon : Weapon
         if (NetworkManager.Singleton.IsServer)
         {
             myShipRigidbody2D = myShipGameStats.GetComponent<Rigidbody2D>();
+            _destroyedModulesEffectsSpawner = GetComponentInParent<DestroyedModulesEffectsSpawner>();
         }
     }
 
@@ -68,19 +70,21 @@ public class BallisticWeapon : Weapon
                 CurrentReloadTime = 0;
 
                 Vector2 shotPoint = (Vector2)transform.position + DataOperator.RotateVector2(barrelsPositions[currentBarrelNum], transform.eulerAngles.z);
-                SpawnEffects(shotPoint);
+                Vector2 localShotPoint = (Vector2)transform.localPosition + barrelsPositions[currentBarrelNum];
                 Salvo(shotPoint);
+                SpawnEffects(localShotPoint);
             }
         }
     }
 
-    //спавн эффектов и звуков выстрела
-    void SpawnEffects(Vector2 shotPoint)
+    private void SpawnEffects(Vector2 localShotPoint)
     {
-        foreach (string effectName in shootEffectsNames)
+        NetworkString[] effectsNamesNetworkStringArray = new NetworkString[shootEffectsNames.Count];
+        for (int numInList = 0; numInList < shootEffectsNames.Count; numInList++)
         {
-            RpcHandlerForEffects.SpawnEffectOnClients(effectName, shotPoint, transform.rotation, myShipRigidbody2D.velocity);
+            effectsNamesNetworkStringArray[numInList] = new NetworkString(shootEffectsNames[numInList]);
         }
+        _destroyedModulesEffectsSpawner.SpawnAndAttachDestroyedModuleEffectRpc(effectsNamesNetworkStringArray, localShotPoint);
     }
 
     //залп
@@ -111,7 +115,6 @@ public class BallisticWeapon : Weapon
 
         projectile.GetComponent<NetworkObject>().Spawn();
     }
-
 
     //отрисовка позиций из которых вылетают снар€ды дл€ редактора
     private void OnDrawGizmos()

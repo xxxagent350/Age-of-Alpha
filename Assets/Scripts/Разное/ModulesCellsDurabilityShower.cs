@@ -22,7 +22,7 @@ public class ModulesCellsDurabilityShower : NetworkBehaviour
 
     private bool _showHealthCells; 
 
-    private void Awake()
+    private void Start()
     {
         _maxCellAlpha = healthCellPrefab.GetComponent<SpriteRenderer>().color.a;
         Update();

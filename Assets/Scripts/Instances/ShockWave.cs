@@ -14,7 +14,7 @@ public class ShockWave : MonoBehaviour
 
         List<GameObject> modulesToDamage = new(0);
         List<float> distancesToModules = new(0);
-        foreach (GameObject moduleGameObject in GameObjectsSearcher.AllModulesGameObjects)
+        foreach (GameObject moduleGameObject in GameObjectsSearcher.GetAllModulesGameObjects())
         {
             float distanceToModule = Vector3.Distance(shockWavePosition, moduleGameObject.transform.position);
             if (distanceToModule <= maxDistance)

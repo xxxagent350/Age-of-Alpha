@@ -42,10 +42,10 @@ public class ShipGameStats : NetworkBehaviour
     //модификаторы полёта
     private const float IgnoredDirDifferenceDegrees = 60;
     private const float MinDrag = 0;
-    private const float MaxSpeedMod = 100;
-    private const float LinearDragMod = 0.05f;
-    private const float AccelerationPowerMod = 1500;
-    private const float RotationForceMod = 150000;
+    private const float MaxSpeedMod = 150;
+    private const float LinearDragMod = 0.3f;
+    private const float AccelerationPowerMod = 1600;
+    private const float RotationForceMod = 75000;
 
     bool noControl; //true когда нету блока управления
     NetworkVariable<bool> alreadyDestroyed = new NetworkVariable<bool>();
@@ -78,16 +78,18 @@ public class ShipGameStats : NetworkBehaviour
 
     private void Awake()
     {
-        StartCoroutine(WaitingForChangingImageToDestroyed());
+        StartCoroutine(WaitingForBeingDestroyed());
     }
 
-    IEnumerator WaitingForChangingImageToDestroyed()
+    IEnumerator WaitingForBeingDestroyed()
     {
         while (true)
         {
             if (alreadyDestroyed.Value)
             {
+                DisableFlightEffects();
                 shipsSpriteRenderer.sprite = destroyedImage;
+                enabled = false;
                 break;
             }
             yield return new WaitForSeconds(Time.fixedDeltaTime);
@@ -166,7 +168,10 @@ public class ShipGameStats : NetworkBehaviour
                 {
                     RotateShip();
                     Accelerate();
-                    ApplyFriction();
+                    if (AccelerationPower > 0.01f)
+                    {
+                        ApplyFriction();
+                    }
                 }
                 else
                 {
@@ -396,7 +401,7 @@ public class ShipGameStats : NetworkBehaviour
     void ApplyFriction()
     {
         Vector3 velocity = myRigidbody2D.velocity;
-        float maxSpeed = AccelerationPower * MaxSpeedMod / Mass;
+        float maxSpeed = Mathf.Pow(AccelerationPower / Mass, 1f / 2) * MaxSpeedMod;
 
         if (velocity.magnitude > maxSpeed)
         {
@@ -484,8 +489,7 @@ public class ShipGameStats : NetworkBehaviour
         }
     }
 
-    [Rpc(SendTo.Everyone)]
-    void DisableFlightEffectsRpc()
+    void DisableFlightEffects()
     {
         foreach (SpriteRenderer engineLight in enginesLights)
         {
@@ -496,7 +500,12 @@ public class ShipGameStats : NetworkBehaviour
         {
             trail.emitting = false;
         }
+    }
 
+    [Rpc(SendTo.Everyone)]
+    void DisableFlightEffectsRpc()
+    {
+        DisableFlightEffects();
         enabled = false;
     }
 

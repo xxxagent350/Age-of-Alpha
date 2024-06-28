@@ -214,11 +214,11 @@ public struct DurabilityStruct
     public float maxDurability;
 
     [Tooltip("”стойчивость к тепловому урону(0 == без защиты от теплового урона, 1 == неу€звим дл€ теплового урона)")]
-    public float resistanceToFireDamage;
+    [Range(0f, 1f)] public float resistanceToFireDamage;
     [Tooltip("”стойчивость к энерго урону(0 == без защиты от энерго урона, 1 == неу€звим дл€ энерго урона)")]
-    public float resistanceToEnergyDamage;
+    [Range(0f, 1f)] public float resistanceToEnergyDamage;
     [Tooltip("”стойчивость к физическому урону(0 == без защиты от физического урона, 1 == неу€звим дл€ физического урона)")]
-    public float resistanceToPhysicalDamage;
+    [Range(0f, 1f)] public float resistanceToPhysicalDamage;
 
     [Tooltip("“екуща€ прочность (не трогать)")]
     public float currentDurability;
