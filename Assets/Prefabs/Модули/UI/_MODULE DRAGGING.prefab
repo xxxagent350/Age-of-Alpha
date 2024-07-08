@@ -50,6 +50,9 @@ SpriteRenderer:
   m_ReflectionProbeUsage: 1
   m_RayTracingMode: 0
   m_RayTraceProcedural: 0
+  m_RayTracingAccelStructBuildFlagsOverride: 0
+  m_RayTracingAccelStructBuildFlags: 1
+  m_SmallMeshCulling: 1
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -97,21 +100,25 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ebe0375447b47534e855a21eeda76550, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  greenSlot: {fileID: 6937352971062761732, guid: 9b7d50e3c187d2b4089748ba8de75913, type: 3}
-  redSlot: {fileID: 6937352971062761732, guid: ec22bfe8fd728494cbbeb84ef927342b, type: 3}
-  errorSound: {fileID: 8300000, guid: 6682e6b3c91b2734586e7756accc4d4b, type: 3}
-  errorSoundVolume: 0.1
-  modulePutSounds:
+  _greenSlot: {fileID: 6937352971062761732, guid: 9b7d50e3c187d2b4089748ba8de75913, type: 3}
+  _redSlot: {fileID: 6937352971062761732, guid: ec22bfe8fd728494cbbeb84ef927342b, type: 3}
+  _errorSound: {fileID: 8300000, guid: 6682e6b3c91b2734586e7756accc4d4b, type: 3}
+  _errorSoundVolume: 1
+  _modulePutSounds:
   - {fileID: 8300000, guid: 98f8619c753d4c94aa9a23486722c2fa, type: 3}
   - {fileID: 8300000, guid: ba3f4cf38ff73bf4895f15ac8d1d3bd2, type: 3}
   - {fileID: 8300000, guid: 6a7d3f8abc4777e4f9f870b1683c5e93, type: 3}
   - {fileID: 8300000, guid: 434ad030c5b6d7c43bee7626212d7dc2, type: 3}
   - {fileID: 8300000, guid: b12a71ec2052055428bb25b149b93eb0, type: 3}
-  weldingEffect:
+  _weldingEffect:
     HighQualityEffects:
     - {fileID: 7711316227389586793, guid: 6742e3f7d3ceddc41992a925fdd2cb6b, type: 3}
     MediumQualityEffects:
     - {fileID: 3511368116322048737, guid: ca7dcf5ace127bd478a87cc27ff245a6, type: 3}
     LowQualityEffects:
     - {fileID: 6446297701061306515, guid: 4f09db3ef1c3f7e499088b4fcbfa365e, type: 3}
-  moduleDataName: 
+  MyModule:
+    moduleNum: 0
+    moduleUpgrades: []
+  LowResolutionSprite: {fileID: 0}
+  _menuStartLine: {fileID: 0}

@@ -2,69 +2,72 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using Unity.Netcode;
 
 public class PlayerInterface : MonoBehaviour
 {
     [Header("Настройка")]
     public EnergyBar energyBar;
 
-    [SerializeField] AttackButton[] attackButtons;
+    [SerializeField] private AttackButton[] _attackButtons;
 
-    [SerializeField] TextMeshProUGUI warningText;
-    [SerializeField] AudioClip warningSound;
-    [SerializeField] float warningSoundVolume = 0.7f;
-    [SerializeField] float warningLabelMaxTimer = 6;
-    [SerializeField] int warningLabelBlinkingTimes = 6;
+    [SerializeField] private TextMeshProUGUI _warningText;
+    [SerializeField] private AudioClip _warningSound;
+    [SerializeField] private float _warningSoundVolume = 0.7f;
+    [SerializeField] private float _warningLabelMaxTimer = 6;
+    [SerializeField] private int _warningLabelBlinkingTimes = 6;
 
-    [SerializeField] Joystick movementJoystick;
-    [SerializeField] Image movementJoystickIcon;
-    [SerializeField] float movementJoystickIconSleepingTime = 1;
-    [SerializeField] float movementJoystickIconAlphaChangingSpeed = 1;
+    [SerializeField] private Joystick _movementJoystick;
+    [SerializeField] private Image _movementJoystickIcon;
+    [SerializeField] private float _movementJoystickIconSleepingTime = 1;
+    [SerializeField] private float _movementJoystickIconAlphaChangingSpeed = 1;
 
-    [SerializeField] Image movementJoystickHandleLight;
-    [SerializeField] float movementJoystickHandleLightAlphaChangingSpeed = 2;
+    [SerializeField] private Image _movementJoystickHandleLight;
+    [SerializeField] private float _movementJoystickHandleLightAlphaChangingSpeed = 2;
 
-    [SerializeField] GameObject[] playerInterfaceGameObjects;
-    [SerializeField] Image[] playerInterfaceImages;
-    [SerializeField] bool[] playerInterfaceImagesToEnable;
-    [SerializeField] float playerInterfaceAlphaChangingSpeed = 5f;
+    [SerializeField] private Radar _radar;
+
+    [SerializeField] private GameObject[] _shipInterfaceGameObjects;
+    [SerializeField] private Image[] _shipInterfaceImages;
+    [SerializeField] private bool[] _shipInterfaceImagesToEnable;
+    [SerializeField] private float _shipInterfaceAlphaChangingSpeed = 5f;
 
     [Header("Отладка")]
-    [SerializeField] bool playerInterfaceEnabled;
-    [SerializeField] List<TranslatedText> warningMessagesList;
-    public Player localPlayer;
+    [SerializeField] private bool _shipInterfaceEnabled;
+    [SerializeField] private List<TranslatedText> _warningMessagesList;
+    public Player LocalPlayer;
 
-    public static PlayerInterface instance;
-    bool playerInterfaceGameObjectsEnabled;
-    float playerInterfaceAlpha;
+    public static PlayerInterface Instance;
+    private bool _shipInterfaceGameObjectsEnabled;
+    private float _shipInterfaceAlpha;
 
-    bool movementJoystickIconAlphaGrowingUp;
-    bool movementJoystickIconSleeping;
-    float movementJoystickIconTimerSleep;
-    float movementJoystickIconAlpha;
-    float movementJoystickHandleLightAlpha;
+    private bool _movementJoystickIconAlphaGrowingUp;
+    private bool _movementJoystickIconSleeping;
+    private float _movementJoystickIconTimerSleep;
+    private float _movementJoystickIconAlpha;
+    private float _movementJoystickHandleLightAlpha;
 
-    bool lastFrameMovementJoystickPressed;
-    float lastFrameMovementJoystickDirInDegrees;
-    float lastFrameMovementJoystickMagnitude;
+    private bool _lastFrameMovementJoystickPressed;
+    private float _lastFrameMovementJoystickDirInDegrees;
+    private float _lastFrameMovementJoystickMagnitude;
 
-    float[] playerInterfaceElementsAlphas;
+    private float[] _shipInterfaceElementsAlphas;
 
-    float warningLabelTimer;
-    int warningLabelBlinkedTimes;
-    float warningLabelBlinkingTimer;
+    private float _warningLabelTimer;
+    private int _warningLabelBlinkedTimes;
+    private float _warningLabelBlinkingTimer;
 
     private void Awake()
     {
-        if (instance != null)
+        if (Instance != null)
         {
             Debug.LogWarning("На сцене несколько PlayerInterface, чего быть не должно");
         }
         else
         {
-            instance = this;
+            Instance = this;
         }
-        foreach (AttackButton attackButton in attackButtons)
+        foreach (AttackButton attackButton in _attackButtons)
         {
             attackButton.pointerStateChangedMessage += SendAttackButtonStateChangedMessage;
         }
@@ -72,7 +75,7 @@ public class PlayerInterface : MonoBehaviour
 
     private void OnDestroy()
     {
-        foreach (AttackButton attackButton in attackButtons)
+        foreach (AttackButton attackButton in _attackButtons)
         {
             attackButton.pointerStateChangedMessage -= SendAttackButtonStateChangedMessage;
         }
@@ -80,20 +83,20 @@ public class PlayerInterface : MonoBehaviour
 
     private void Start()
     {
-        playerInterfaceElementsAlphas = new float[playerInterfaceImages.Length];
-        if (!playerInterfaceEnabled)
+        _shipInterfaceElementsAlphas = new float[_shipInterfaceImages.Length];
+        if (!_shipInterfaceEnabled)
         {
-            foreach (GameObject intefaceElement in playerInterfaceGameObjects)
+            foreach (GameObject intefaceElement in _shipInterfaceGameObjects)
             {
                 intefaceElement.SetActive(false);
             }
-            playerInterfaceGameObjectsEnabled = false;
-            foreach (Image intefaceElement in playerInterfaceImages)
+            _shipInterfaceGameObjectsEnabled = false;
+            foreach (Image intefaceElement in _shipInterfaceImages)
             {
                 Color oldColor = intefaceElement.color;
                 intefaceElement.color = new Color(oldColor.r, oldColor.g, oldColor.b, 0);
             }
-            playerInterfaceAlpha = 0;
+            _shipInterfaceAlpha = 0;
         }
     }
 
@@ -101,11 +104,11 @@ public class PlayerInterface : MonoBehaviour
     {
         UpdatePlayerInterfaceVisualState();
 
-        if (playerInterfaceEnabled)
+        if (_shipInterfaceEnabled)
         {
             AnimateMovementJoystickIcon();
             AnimateMovementJoystickHandleLight();
-            if (localPlayer != null)
+            if (LocalPlayer != null)
             {
                 ReceiveMovementJoystickValues();
             }
@@ -114,121 +117,131 @@ public class PlayerInterface : MonoBehaviour
 
     private void FixedUpdate()
     {
-        if (warningMessagesList.Count > 0)
+        if (_warningMessagesList.Count > 0)
         {
             ShowWarningsFromList();
         }
+
+        if (NetworkManager.Singleton.IsClient == false && _shipInterfaceEnabled)
+        {
+            SetActivePlayerInterface(false);
+        }
+    }
+
+    public void SetLocalPlayerToRadar(ShipGameStats shipGameStats)
+    {
+        _radar.PlayerShipGameStats = shipGameStats;
     }
 
     void ShowWarningsFromList()
     {
-        if (warningText.text == "")
+        if (_warningText.text == "")
         {
-            warningText.text = warningMessagesList[0].GetTranslatedString();
-            DataOperator.instance.PlayUISound(warningSound, warningSoundVolume);
+            _warningText.text = _warningMessagesList[0].GetTranslatedString();
+            DataOperator.instance.PlayUISound(_warningSound, _warningSoundVolume);
         }
         else
         {
-            warningLabelTimer += Time.deltaTime;
+            _warningLabelTimer += Time.deltaTime;
 
-            if (warningLabelBlinkedTimes < warningLabelBlinkingTimes)
+            if (_warningLabelBlinkedTimes < _warningLabelBlinkingTimes)
             {
-                warningLabelBlinkingTimer += Time.deltaTime;
+                _warningLabelBlinkingTimer += Time.deltaTime;
 
-                if (warningLabelBlinkingTimer < warningSound.length / 2)
+                if (_warningLabelBlinkingTimer < _warningSound.length / 2)
                 {
-                    warningText.enabled = true;
+                    _warningText.enabled = true;
                 }
                 else
                 {
-                    warningText.enabled = false;
+                    _warningText.enabled = false;
                 }
 
-                if (warningLabelBlinkingTimer > warningSound.length)
+                if (_warningLabelBlinkingTimer > _warningSound.length)
                 {
-                    warningText.enabled = true;
-                    DataOperator.instance.PlayUISound(warningSound, warningSoundVolume);
-                    warningLabelBlinkingTimer = 0;
-                    warningLabelBlinkedTimes++;
+                    _warningText.enabled = true;
+                    DataOperator.instance.PlayUISound(_warningSound, _warningSoundVolume);
+                    _warningLabelBlinkingTimer = 0;
+                    _warningLabelBlinkedTimes++;
                 }
             }
 
-            if (warningLabelTimer > warningLabelMaxTimer)
+            if (_warningLabelTimer > _warningLabelMaxTimer)
             {
-                warningLabelTimer = 0;
-                warningLabelBlinkedTimes = 0;
-                warningText.text = "";
-                warningMessagesList.RemoveAt(0);
+                _warningLabelTimer = 0;
+                _warningLabelBlinkedTimes = 0;
+                _warningText.text = "";
+                _warningMessagesList.RemoveAt(0);
             }
         }
     }
 
     public void SetActivePlayerInterface(bool state)
     {
-        playerInterfaceEnabled = state;
+        _shipInterfaceEnabled = state;
         if (state == false)
         {
-            movementJoystickIconAlphaGrowingUp = true;
-            movementJoystickIconSleeping = true;
-            movementJoystickIconTimerSleep = 0;
-            movementJoystickIconAlpha = 0;
-            movementJoystickHandleLightAlpha = 0;
+            _movementJoystickIconAlphaGrowingUp = true;
+            _movementJoystickIconSleeping = true;
+            _movementJoystickIconTimerSleep = 0;
+            _movementJoystickIconAlpha = 0;
+            _movementJoystickHandleLightAlpha = 0;
 
-            for (int intefaceElementNum = 0; intefaceElementNum < playerInterfaceImages.Length; intefaceElementNum++)
+            for (int intefaceElementNum = 0; intefaceElementNum < _shipInterfaceImages.Length; intefaceElementNum++)
             {
-                playerInterfaceElementsAlphas[intefaceElementNum] = playerInterfaceImages[intefaceElementNum].color.a;
+                _shipInterfaceElementsAlphas[intefaceElementNum] = _shipInterfaceImages[intefaceElementNum].color.a;
             }
         }
     }
 
     void UpdatePlayerInterfaceVisualState()
     {
-        if (playerInterfaceEnabled)
+        if (_shipInterfaceEnabled)
         {
-            if (!playerInterfaceGameObjectsEnabled)
+            if (!_shipInterfaceGameObjectsEnabled)
             {
-                playerInterfaceAlpha = 0;
-                foreach (GameObject intefaceElement in playerInterfaceGameObjects)
+                _shipInterfaceAlpha = 0;
+                foreach (GameObject intefaceElement in _shipInterfaceGameObjects)
                 {
                     intefaceElement.SetActive(true);
                 }
-                playerInterfaceGameObjectsEnabled = true;
+                _shipInterfaceGameObjectsEnabled = true;
             }
-            if (playerInterfaceAlpha < 1)
+            if (_shipInterfaceAlpha < 1)
             {
-                playerInterfaceAlpha += playerInterfaceAlphaChangingSpeed * Time.deltaTime;
-                if (playerInterfaceAlpha > 1)
+                _shipInterfaceAlpha += _shipInterfaceAlphaChangingSpeed * Time.deltaTime;
+                if (_shipInterfaceAlpha > 1)
                 {
-                    playerInterfaceAlpha = 1;
+                    _shipInterfaceAlpha = 1;
                 }
-                for (int intefaceElementNum = 0; intefaceElementNum < playerInterfaceImages.Length; intefaceElementNum++)
+                for (int intefaceElementNum = 0; intefaceElementNum < _shipInterfaceImages.Length; intefaceElementNum++)
                 {
-                    if (playerInterfaceImagesToEnable[intefaceElementNum])
+                    if (_shipInterfaceImagesToEnable[intefaceElementNum])
                     {
-                        Color oldColor = playerInterfaceImages[intefaceElementNum].color;
-                        playerInterfaceImages[intefaceElementNum].color = new Color(oldColor.r, oldColor.g, oldColor.b, playerInterfaceAlpha);
+                        Color oldColor = _shipInterfaceImages[intefaceElementNum].color;
+                        _shipInterfaceImages[intefaceElementNum].color = new Color(oldColor.r, oldColor.g, oldColor.b, _shipInterfaceAlpha);
                     }
                 }
             }
         }
         else
         {
-            if (playerInterfaceAlpha > 0)
+            if (_shipInterfaceAlpha > 0)
             {
-                playerInterfaceAlpha -= playerInterfaceAlphaChangingSpeed * Time.deltaTime;
-                if (playerInterfaceAlpha < 0)
+                _shipInterfaceAlpha -= _shipInterfaceAlphaChangingSpeed * Time.deltaTime;
+                if (_shipInterfaceAlpha < 0)
                 {
-                    playerInterfaceAlpha = 0;
-                    foreach (GameObject intefaceElement in playerInterfaceGameObjects)
+                    _shipInterfaceAlpha = 0;
+                    foreach (GameObject intefaceElement in _shipInterfaceGameObjects)
                     {
                         intefaceElement.SetActive(false);
                     }
-                    playerInterfaceGameObjectsEnabled = false;
+                    _shipInterfaceGameObjectsEnabled = false;
                 }
-                for (int intefaceElementNum = 0; intefaceElementNum < playerInterfaceImages.Length; intefaceElementNum++)
+                for (int intefaceElementNum = 0; intefaceElementNum < _shipInterfaceImages.Length; intefaceElementNum++)
                 {
-                    Color oldColor = playerInterfaceImages[intefaceElementNum].color;
-                    playerInterfaceImages[intefaceElementNum].color = new Color(oldColor.r, oldColor.g, oldColor.b, playerInterfaceAlpha * playerInterfaceElementsAlphas[intefaceElementNum]);
+                    Color oldColor = _shipInterfaceImages[intefaceElementNum].color;
+                    _shipInterfaceImages[intefaceElementNum].color = new Color(oldColor.r, oldColor.g, oldColor.b, _shipInterfaceAlpha * _shipInterfaceElementsAlphas[intefaceElementNum]);
                 }
             }
         }
@@ -236,86 +249,86 @@ public class PlayerInterface : MonoBehaviour
 
     void AnimateMovementJoystickIcon()
     {
-        if (!movementJoystick.pressedOnJoystick || !movementJoystickIconSleeping)
+        if (!_movementJoystick.pressedOnJoystick || !_movementJoystickIconSleeping)
         {
-            if (movementJoystickIconSleeping)
+            if (_movementJoystickIconSleeping)
             {
-                movementJoystickIconTimerSleep += Time.deltaTime;
-                if (movementJoystickIconTimerSleep > movementJoystickIconSleepingTime)
+                _movementJoystickIconTimerSleep += Time.deltaTime;
+                if (_movementJoystickIconTimerSleep > _movementJoystickIconSleepingTime)
                 {
-                    movementJoystickIconSleeping = false;
-                    movementJoystickIconTimerSleep = 0;
-                    movementJoystickIconAlphaGrowingUp = true;
+                    _movementJoystickIconSleeping = false;
+                    _movementJoystickIconTimerSleep = 0;
+                    _movementJoystickIconAlphaGrowingUp = true;
                 }
             }
             else
             {
-                if (movementJoystickIconAlphaGrowingUp)
+                if (_movementJoystickIconAlphaGrowingUp)
                 {
-                    movementJoystickIconAlpha += movementJoystickIconAlphaChangingSpeed * Time.deltaTime;
-                    if (movementJoystickIconAlpha > 1)
+                    _movementJoystickIconAlpha += _movementJoystickIconAlphaChangingSpeed * Time.deltaTime;
+                    if (_movementJoystickIconAlpha > 1)
                     {
-                        movementJoystickIconAlphaGrowingUp = false;
+                        _movementJoystickIconAlphaGrowingUp = false;
                     }
                 }
                 else
                 {
-                    movementJoystickIconAlpha -= movementJoystickIconAlphaChangingSpeed * Time.deltaTime;
-                    if (movementJoystickIconAlpha < 0)
+                    _movementJoystickIconAlpha -= _movementJoystickIconAlphaChangingSpeed * Time.deltaTime;
+                    if (_movementJoystickIconAlpha < 0)
                     {
-                        movementJoystickIconSleeping = true;
-                        movementJoystickIconAlpha = 0;
+                        _movementJoystickIconSleeping = true;
+                        _movementJoystickIconAlpha = 0;
                     }
                 }
-                Color oldColor = movementJoystickIcon.color;
-                movementJoystickIcon.color = new Color(oldColor.r, oldColor.g, oldColor.b, movementJoystickIconAlpha);
+                Color oldColor = _movementJoystickIcon.color;
+                _movementJoystickIcon.color = new Color(oldColor.r, oldColor.g, oldColor.b, _movementJoystickIconAlpha);
             }
         }
         else
         {
-            movementJoystickIconAlphaGrowingUp = true;
-            movementJoystickIconSleeping = true;
-            movementJoystickIconTimerSleep = 0;
-            movementJoystickIconAlpha = 0;
+            _movementJoystickIconAlphaGrowingUp = true;
+            _movementJoystickIconSleeping = true;
+            _movementJoystickIconTimerSleep = 0;
+            _movementJoystickIconAlpha = 0;
         }
     }
 
     void AnimateMovementJoystickHandleLight()
     {
-        if (movementJoystick.pressedOnJoystick)
+        if (_movementJoystick.pressedOnJoystick)
         {
-            if (movementJoystickHandleLightAlpha < 1)
+            if (_movementJoystickHandleLightAlpha < 1)
             {
-                movementJoystickHandleLightAlpha += movementJoystickHandleLightAlphaChangingSpeed * Time.deltaTime;
+                _movementJoystickHandleLightAlpha += _movementJoystickHandleLightAlphaChangingSpeed * Time.deltaTime;
             }
         }
-        if (!movementJoystick.pressedOnJoystick)
+        if (!_movementJoystick.pressedOnJoystick)
         {
-            if (movementJoystickHandleLightAlpha > 0)
+            if (_movementJoystickHandleLightAlpha > 0)
             {
-                movementJoystickHandleLightAlpha -= movementJoystickHandleLightAlphaChangingSpeed * Time.deltaTime;
+                _movementJoystickHandleLightAlpha -= _movementJoystickHandleLightAlphaChangingSpeed * Time.deltaTime;
             }
         }
 
-        Color oldColor = movementJoystickHandleLight.color;
-        movementJoystickHandleLight.color = new Color(oldColor.r, oldColor.g, oldColor.b, movementJoystickHandleLightAlpha);
+        Color oldColor = _movementJoystickHandleLight.color;
+        _movementJoystickHandleLight.color = new Color(oldColor.r, oldColor.g, oldColor.b, _movementJoystickHandleLightAlpha);
     }
 
     void ReceiveMovementJoystickValues()
     {
-        Vector3 movementJoystickPressPos = new Vector3(movementJoystick.Horizontal, movementJoystick.Vertical, 0);
+        Vector3 movementJoystickPressPos = new Vector3(_movementJoystick.Horizontal, _movementJoystick.Vertical, 0);
 
-        bool pressed_ = movementJoystick.pressedOnJoystick;
+        bool pressed_ = _movementJoystick.pressedOnJoystick;
         float direction_ = DataOperator.GetVector2DirInDegrees(movementJoystickPressPos);
         float magnitude_ = movementJoystickPressPos.magnitude;
 
-        if (lastFrameMovementJoystickPressed != pressed_ || lastFrameMovementJoystickDirInDegrees != direction_ || lastFrameMovementJoystickMagnitude != magnitude_)
+        if (_lastFrameMovementJoystickPressed != pressed_ || _lastFrameMovementJoystickDirInDegrees != direction_ || _lastFrameMovementJoystickMagnitude != magnitude_)
         {
-            localPlayer.SendMovementJoystickInputsDataToServerRpc(pressed_, direction_, magnitude_);
+            LocalPlayer.SendMovementJoystickInputsDataToServerRpc(pressed_, direction_, magnitude_);
 
-            lastFrameMovementJoystickPressed = pressed_;
-            lastFrameMovementJoystickDirInDegrees = direction_;
-            lastFrameMovementJoystickMagnitude = magnitude_;
+            _lastFrameMovementJoystickPressed = pressed_;
+            _lastFrameMovementJoystickDirInDegrees = direction_;
+            _lastFrameMovementJoystickMagnitude = magnitude_;
         }
     }
 
@@ -336,6 +349,6 @@ public class PlayerInterface : MonoBehaviour
 
     public void ShowWarningText(TranslatedText text_)
     {
-        warningMessagesList.Add(text_);
+        _warningMessagesList.Add(text_);
     }
 }

@@ -109,7 +109,7 @@ public class ModulesMenu : MonoBehaviour
         ModulesOnStorageData[] modulesOnStorageData = DataOperator.instance.GetModulesOnStorageDataClonedArray();
         foreach (ModulesOnStorageData moduleOnStorageData in modulesOnStorageData)
         {
-            modulesCategories category = modulesComponents[moduleOnStorageData.module.moduleNum].category;
+            modulesCategories category = modulesComponents[moduleOnStorageData.module.moduleNum].Category;
             if (category == modulesCategories.Weapon)
                 weaponCategoryExists = true;
             if (category == modulesCategories.DefenceModules)
@@ -218,7 +218,7 @@ public class ModulesMenu : MonoBehaviour
         foreach (ModulesOnStorageData moduleOnStorageData in modulesOnStorageData)
         {
             GameObject modulePrefab = DataOperator.instance.modulesPrefabs[moduleOnStorageData.module.moduleNum];
-            if (modulePrefab.GetComponent<ItemData>().category == category)
+            if (modulePrefab.GetComponent<ItemData>().Category == category)
             {
                 GameObject slot = AddSlot(moduleSlotPrefab);
                 slot.GetComponent<ModulesMenuSlot>().SetModuleData(moduleOnStorageData.module);
@@ -376,8 +376,8 @@ public class ModulesMenu : MonoBehaviour
             text.EnglishText += "\nPower consumption per second: " + DataOperator.instance.RoundFloat(engineComponent.powerConsumption);
         }
 
-        text.RussianText += "\n\n" + itemData.description.RussianText;
-        text.EnglishText += "\n\n" + itemData.description.EnglishText;
+        text.RussianText += "\n\n" + itemData.Description.RussianText;
+        text.EnglishText += "\n\n" + itemData.Description.EnglishText;
         return text;
     }
 
@@ -575,15 +575,15 @@ public class ModulesMenu : MonoBehaviour
         foreach (ModuleOnShipData moduleOnShip in shipStats.modulesOnShip)
         {
             //блок управления
-            if (DataOperator.instance.modulesPrefabs[moduleOnShip.module.moduleNum].GetComponent<ItemData>().type == modulesTypes.ControlModules)
+            if (DataOperator.instance.modulesPrefabs[moduleOnShip.module.moduleNum].GetComponent<ItemData>().Type == modulesTypes.ControlModules)
                 controlBlockExists = true;
 
             //двигатели
-            if (DataOperator.instance.modulesPrefabs[moduleOnShip.module.moduleNum].GetComponent<ItemData>().category == modulesCategories.Engines)
+            if (DataOperator.instance.modulesPrefabs[moduleOnShip.module.moduleNum].GetComponent<ItemData>().Category == modulesCategories.Engines)
                 engineExists = true;
 
             //оружие
-            if (DataOperator.instance.modulesPrefabs[moduleOnShip.module.moduleNum].GetComponent<ItemData>().category == modulesCategories.Weapon)
+            if (DataOperator.instance.modulesPrefabs[moduleOnShip.module.moduleNum].GetComponent<ItemData>().Category == modulesCategories.Weapon)
                 weaponExists = true;
         }
         if (!controlBlockExists)

@@ -198,7 +198,7 @@ CircleCollider2D:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2288871660798619471}
-  m_Enabled: 0
+  m_Enabled: 1
   serializedVersion: 3
   m_Density: 1
   m_Material: {fileID: 0}
@@ -226,7 +226,7 @@ CircleCollider2D:
   m_CompositeOperation: 0
   m_CompositeOrder: 0
   m_Offset: {x: 0, y: 0}
-  m_Radius: 0.003
+  m_Radius: 0.25
 --- !u!114 &490226573680517449
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -239,23 +239,24 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e75efaea636c89440a7f55200f5567f9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  damage:
+  Damage:
     fireDamage: 1
-    energyDamage: 1
-    physicalDamage: 1
-  raycastPosition: {x: 0, y: 0.33}
-  startSpeed: 100
-  lifetime: 2
-  damageType: 2
-  selfDestructAfterHit: 0
-  explodeOnLifetimeEnds: 0
-  rotateToVelocityVectorDir: 0
-  shipPenetrationEffects:
+    energyDamage: 1.5
+    physicalDamage: 0.5
+  _raycastPosition: {x: 0, y: 0.3}
+  StartSpeed: 100
+  Mass: 100
+  Lifetime: 2
+  _selfDestructAfterHit: 0
+  _explodeOnLifetimeEnds: 0
+  _rotateToVelocityVectorDir: 0
+  _shipPenetrationEffects:
   - small explode
   - sound_Very small explode
-  moduleHitEffects:
+  _moduleHitEffects:
   - very small explode
-  explodeEffects:
+  - sound_Very small explode
+  _explodeEffects:
   - small explode
   - sound_Very small explode
   teamID: 

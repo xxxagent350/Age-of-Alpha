@@ -10,7 +10,6 @@ GameObject:
   m_Component:
   - component: {fileID: 4238546952208583414}
   - component: {fileID: 5154598656245619316}
-  - component: {fileID: 7211946736977248881}
   m_Layer: 0
   m_Name: Image
   m_TagString: Untagged
@@ -50,6 +49,9 @@ SpriteRenderer:
   m_ReflectionProbeUsage: 1
   m_RayTracingMode: 0
   m_RayTraceProcedural: 0
+  m_RayTracingAccelStructBuildFlagsOverride: 0
+  m_RayTracingAccelStructBuildFlags: 1
+  m_SmallMeshCulling: 1
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -85,23 +87,6 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!114 &7211946736977248881
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 317823944658165026}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fffab13043219e54097d49c59958c69d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  sprite:
-    highQualitySprite: {fileID: 295264625717963223, guid: 3fbd5e722dc3fcf4eae4f807930a9f8f, type: 3}
-    mediumQualitySprite: {fileID: 295264625717963223, guid: e124b7b0409fcee4d9fd39068eaab795, type: 3}
-    lowQualitySprite: {fileID: 295264625717963223, guid: 3b119d6f8d8dda846ba019a890a0ba5a, type: 3}
-    graphicsPreset: 3
 --- !u!1 &358272118982130974
 GameObject:
   m_ObjectHideFlags: 0
@@ -152,6 +137,9 @@ TrailRenderer:
   m_ReflectionProbeUsage: 0
   m_RayTracingMode: 0
   m_RayTraceProcedural: 0
+  m_RayTracingAccelStructBuildFlagsOverride: 0
+  m_RayTracingAccelStructBuildFlags: 1
+  m_SmallMeshCulling: 1
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -297,6 +285,9 @@ TrailRenderer:
   m_ReflectionProbeUsage: 0
   m_RayTracingMode: 0
   m_RayTraceProcedural: 0
+  m_RayTracingAccelStructBuildFlagsOverride: 0
+  m_RayTracingAccelStructBuildFlags: 1
+  m_SmallMeshCulling: 1
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -722,73 +713,8 @@ MonoBehaviour:
   Size: 0.48
   Mass: 45
   cellsOffset: {x: 0, y: 0}
-  itemSlotsData:
-  - position: {x: 2, y: -2}
-    type: 3
-  - position: {x: -2, y: -2}
-    type: 3
-  - position: {x: -1, y: -3}
-    type: 2
-  - position: {x: 1, y: -3}
-    type: 2
-  - position: {x: 0, y: -3}
-    type: 2
-  - position: {x: -1, y: -2}
-    type: 1
-  - position: {x: 0, y: -2}
-    type: 1
-  - position: {x: 1, y: -2}
-    type: 1
-  - position: {x: -2, y: -1}
-    type: 1
-  - position: {x: -1, y: -1}
-    type: 1
-  - position: {x: 0, y: -1}
-    type: 1
-  - position: {x: 1, y: -1}
-    type: 1
-  - position: {x: 2, y: -1}
-    type: 1
-  - position: {x: 3, y: -1}
-    type: 1
-  - position: {x: 3, y: 0}
-    type: 1
-  - position: {x: -1, y: 2}
-    type: 1
-  - position: {x: -3, y: -1}
-    type: 1
-  - position: {x: -3, y: 0}
-    type: 1
-  - position: {x: 0, y: 3}
-    type: 1
-  - position: {x: -2, y: 0}
-    type: 1
-  - position: {x: -1, y: 0}
-    type: 1
-  - position: {x: 0, y: 0}
-    type: 1
-  - position: {x: 1, y: 0}
-    type: 1
-  - position: {x: 2, y: 0}
-    type: 1
-  - position: {x: 1, y: 1}
-    type: 1
-  - position: {x: 0, y: 1}
-    type: 1
-  - position: {x: -1, y: 1}
-    type: 1
-  - position: {x: -2, y: 1}
-    type: 1
-  - position: {x: 2, y: 1}
-    type: 1
-  - position: {x: 1, y: 2}
-    type: 1
-  - position: {x: 0, y: 2}
-    type: 1
-  - position: {x: -2, y: 2}
-    type: 1
-  - position: {x: 2, y: 2}
-    type: 1
+  itemCellsData: []
+  isModule: 0
 --- !u!114 &1177626933964686094
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -828,29 +754,39 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ff78f7028abc2e946ba31867f08e0a99, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  enginesLightsAlphaChangingSpeed: 2
-  enginesLights: []
-  trails: []
-  teamID: 
-  mass: 0
-  energyGeneration:
+  _enginesVisualPowerChangingSpeed: 2
+  _trails: []
+  _enginesLights: []
+  _enginesAudioSource: {fileID: 0}
+  _engineSoundVolumeMod: 1
+  _destroyEffects: []
+  _destroyedImage: {fileID: 0}
+  _timeToDisappearAfterDestroy: 0
+  _forceOnDestroy: 0
+  _rotationForceOnDestroy: 0
+  TeamID: {}
+  Mass: 0
+  EnergyGeneration:
     m_InternalValue: 0
-  energyMaxCapacity:
+  EnergyMaxCapacity:
     m_InternalValue: 0
-  energy:
+  Energy:
     m_InternalValue: 0
-  enginesConsumption:
+  EnginesConsumption:
     m_InternalValue: 0
-  accelerationPower: 0
-  angularAccelerationPower: 0
-  noEnergy:
+  AccelerationPower: 0
+  AngularAccelerationPower: 0
+  _noEnergy:
     m_InternalValue: 0
-  movementJoystickPressed:
+  MovementJoystickPressed:
     m_InternalValue: 0
-  movementJoystickDirInDegrees:
+  MovementJoystickDirInDegrees:
     m_InternalValue: 0
-  movementJoystickMagnitude:
+  MovementJoystickMagnitude:
     m_InternalValue: 0
+  Destroyed:
+    m_InternalValue: 0
+  MyPlayer: {fileID: 0}
 --- !u!1 &8166635181878687870
 GameObject:
   m_ObjectHideFlags: 0
@@ -901,6 +837,9 @@ TrailRenderer:
   m_ReflectionProbeUsage: 0
   m_RayTracingMode: 0
   m_RayTraceProcedural: 0
+  m_RayTracingAccelStructBuildFlagsOverride: 0
+  m_RayTracingAccelStructBuildFlags: 1
+  m_SmallMeshCulling: 1
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:

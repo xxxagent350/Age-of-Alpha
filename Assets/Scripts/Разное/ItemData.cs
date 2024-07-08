@@ -4,30 +4,31 @@ using UnityEngine;
 public class ItemData : MonoBehaviour
 {
     [Header("Настройка")]
-    public Transform image;
-
-    public modulesCategories category;
-    public modulesTypes type;
+    public Transform Image;
+    public modulesCategories Category;
+    public modulesTypes Type;
+    [Tooltip("Спрайт низкого разрешения. Обязательно задать для модулей. Нужен для определения позиции эффектов сварки при установке модуля")]
+    public Sprite LowResolutionSprite;
 
     public TranslatedText Name;
-    public TranslatedText description;
+    public TranslatedText Description;
     public float Size = 1;
     public float Mass;
-    public Vector2 cellsOffset;
-    public CellData[] itemCellsData;
+    public Vector2 CellsOffset;
+    public CellData[] ItemCellsData;
 
-    public bool isModule;
+    public bool IsModule;
 
     private void Start()
     {
         SetSize();
 
-        if (isModule)
+        if (IsModule)
         {
             Durability myDurability = GetComponent<Durability>();
             if (myDurability != null)
             {
-                myDurability.InitializeForModule(itemCellsData, cellsOffset);
+                myDurability.InitializeForModule(ItemCellsData, CellsOffset);
             }
             else
             {
@@ -38,7 +39,7 @@ public class ItemData : MonoBehaviour
 
     void SetSize()
     {
-        image.localScale = new Vector3(Size, Size, 0);
+        Image.localScale = new Vector3(Size, Size, 0);
     }
 
     //ниже для конфигурации корабля в редакторе
@@ -49,16 +50,16 @@ public class ItemData : MonoBehaviour
     }
     public void ChangeCellsShift(Vector2 shift)
     {
-        cellsOffset = shift;
+        CellsOffset = shift;
     }
 
 
     public Vector2 GetMinSlotsPosition()
     {
         Vector2 minPosition = new Vector2();
-        for (int cell = 0; cell < itemCellsData.Length; cell++)
+        for (int cell = 0; cell < ItemCellsData.Length; cell++)
         {
-            Vector2 position = itemCellsData[cell].position + cellsOffset;
+            Vector2 position = ItemCellsData[cell].position + CellsOffset;
             if (position.x < minPosition.x)
             {
                 minPosition = new Vector2(position.x, minPosition.y);
@@ -75,9 +76,9 @@ public class ItemData : MonoBehaviour
     public Vector2 GetMaxSlotsPosition()
     {
         Vector2 maxPosition = new Vector2();
-        for (int cell = 0; cell < itemCellsData.Length; cell++)
+        for (int cell = 0; cell < ItemCellsData.Length; cell++)
         {
-            Vector2 position = itemCellsData[cell].position + cellsOffset;
+            Vector2 position = ItemCellsData[cell].position + CellsOffset;
             if (position.x > maxPosition.x)
             {
                 maxPosition = new Vector2(position.x, maxPosition.y);

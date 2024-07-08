@@ -203,7 +203,7 @@ public class ModulesMenuSlot : MonoBehaviour, IPointerDownHandler
 
         //проверка блока управления (он может быть только один на корабле)
         GameObject modulePrefab = DataOperator.instance.modulesPrefabs[myModule.moduleNum];
-        if (modulePrefab.GetComponent<ItemData>().type == modulesTypes.ControlModules)
+        if (modulePrefab.GetComponent<ItemData>().Type == modulesTypes.ControlModules)
         {
             SlotsPutter slotsPutter = (SlotsPutter)FindFirstObjectByType(typeof(SlotsPutter));
             ShipStats shipInstalledModulesData;
@@ -223,7 +223,7 @@ public class ModulesMenuSlot : MonoBehaviour, IPointerDownHandler
 
             foreach (ModuleOnShipData moduleOnShip in shipInstalledModulesData.modulesOnShip)
             {
-                if (DataOperator.instance.modulesPrefabs[moduleOnShip.module.moduleNum].GetComponent<ItemData>().type == modulesTypes.ControlModules)
+                if (DataOperator.instance.modulesPrefabs[moduleOnShip.module.moduleNum].GetComponent<ItemData>().Type == modulesTypes.ControlModules)
                 {
                     TranslatedText errorMessageText = new TranslatedText
                     {
@@ -250,6 +250,8 @@ public class ModulesMenuSlot : MonoBehaviour, IPointerDownHandler
         moduleDragging_.name = modulePrefab.name + " (перетаскивается)";
         moduleDragging_.GetComponent<SpriteRenderer>().sprite = modulePrefab.transform.Find("Image").GetComponent<SpriteRenderer>().sprite;
         moduleDragging_.transform.localScale = modulePrefab.transform.Find("Image").localScale;
-        moduleDragging_.GetComponent<DraggingModule>().myModule = myModule;
+        DraggingModule draggingModuleComponent = moduleDragging_.GetComponent<DraggingModule>();
+        draggingModuleComponent.MyModule = myModule;
+        draggingModuleComponent.LowResolutionSprite = modulePrefab.GetComponent<ItemData>().LowResolutionSprite;
     }
 }

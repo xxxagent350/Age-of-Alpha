@@ -103,7 +103,7 @@ public class DataOperator : MonoBehaviour
 
     private void ChangedActiveScene(Scene current, Scene next)
     {
-        if (PlayerInterface.instance != null)
+        if (PlayerInterface.Instance != null)
         {
             gameScene = true;
         }

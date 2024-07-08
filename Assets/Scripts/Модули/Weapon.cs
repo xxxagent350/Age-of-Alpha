@@ -36,7 +36,7 @@ public abstract class Weapon : MonoBehaviour
         serverUpdateDeltaTime = Time.fixedDeltaTime;
         myShipGameStats = GetComponentInParent<ShipGameStats>();
         myShipGameStats.attackButtonStateChangedMessage += ChangeFiringState;
-        teamID = myShipGameStats.TeamID;
+        teamID = myShipGameStats.TeamID.Value.GetString();
         RandomUpdate();
     }
 

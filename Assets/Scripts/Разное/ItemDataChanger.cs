@@ -30,7 +30,7 @@ public class ItemDataChanger : MonoBehaviour
             sizeInput.text = shipSize + "";
             bodyMassInput.text = itemData.Mass + "";
             nameInput.text = itemData.Name.EnglishText;
-            cellsOffset = itemData.cellsOffset;
+            cellsOffset = itemData.CellsOffset;
             shiftXInput.text = cellsOffset.x + "";
             shiftYInput.text = cellsOffset.y + "";
             dontUpdateUI = false;//

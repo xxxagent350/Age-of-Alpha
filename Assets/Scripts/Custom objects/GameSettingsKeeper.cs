@@ -1,13 +1,16 @@
 using UnityEngine;
+using System;
 
 public class GameSettingsKeeper : MonoBehaviour
 {
     public static GameSettingsKeeper instance;
 
+    public Volume volume = new Volume();
     public SupportedLanguages userLanguage;
     public GraphicsPresets userGraphics = GraphicsPresets.high;
     public HealthCellsShowPreset healthCellsShowPreset = HealthCellsShowPreset.onlyWhenZoomedIn;
     public float healthCellsShowTimeOnDurabilityChanged = 3;
+
 
     private void Awake()
     {
@@ -52,6 +55,13 @@ public class GameSettingsKeeper : MonoBehaviour
         if (PlayerPrefs.GetString("UserLanguage") == "English")
             userLanguage = SupportedLanguages.English;
     }
+}
+
+[Serializable]
+public class Volume
+{
+    public float MusicVolumeMod = 0.25f;
+    public float SoundVolumeMod = 1;
 }
 
 public enum SupportedLanguages

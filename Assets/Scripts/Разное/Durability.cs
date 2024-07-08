@@ -38,18 +38,17 @@ public class Durability : MonoBehaviour
     {
         if (NetworkManager.Singleton.IsServer)
         {
-            OnModuleDurabilityRatioChangedEvent += GetComponentInParent<ModulesCellsDurabilityShower>().OnHealthCellDurabilityChangedRpc;
-            durability.OnDurabilityRatioChanged += SendDurabilityChanged;
-            durability.OnNoDurability += Explode;
-
             SetCellsLocalPositionsInShip(cellsDatas, cellsOffset);
             _myShipsGameStats = GetComponentInParent<ShipGameStats>();
             _shipsRigidbody2D = GetComponentInParent<Rigidbody2D>();
             _destroyedModulesEffectsSpawner = GetComponentInParent<DestroyedModulesEffectsSpawner>();
             durability.SetMaxDurability();
+            OnModuleDurabilityRatioChangedEvent += GetComponentInParent<ModulesCellsDurabilityShower>().OnHealthCellDurabilityChangedRpc;
+            durability.OnDurabilityRatioChanged += SendDurabilityChanged;
+            durability.OnNoDurability += Explode;
         }
     }
-
+    /*
     private void OnDestroy()
     {
         if (NetworkManager.Singleton != null && NetworkManager.Singleton.IsServer)
@@ -59,7 +58,7 @@ public class Durability : MonoBehaviour
             durability.OnNoDurability -= Explode;
         }
     }
-
+    */
     private delegate void OnModuleDurabilityRatioChangedContainer(float durabilityToMaxDurability, Vector2Serializable[] cellsLocalPositionsInShip);
 
     private event OnModuleDurabilityRatioChangedContainer OnModuleDurabilityRatioChangedEvent;
@@ -160,6 +159,11 @@ public class Damage
     public bool AllDamageUsed()
     {
         return allDamageUsed;
+    }
+
+    public float GetAllDamage()
+    {
+        return fireDamage + energyDamage + physicalDamage;
     }
 
     public void UseDamage(float usedFireDamage, float usedEnergyDamage, float usedPhysicalDamage)

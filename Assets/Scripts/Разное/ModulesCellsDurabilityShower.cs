@@ -24,6 +24,11 @@ public class ModulesCellsDurabilityShower : NetworkBehaviour
 
     private void Start()
     {
+        if (DataOperator.gameScene == false)
+        {
+            enabled = false;
+            return;
+        }
         _maxCellAlpha = healthCellPrefab.GetComponent<SpriteRenderer>().color.a;
         Update();
     }
@@ -271,11 +276,11 @@ public class ModulesCellsDurabilityShower : NetworkBehaviour
         ItemData[] modulesDatas = GetComponentsInChildren<ItemData>();
         foreach (ItemData moduleData in modulesDatas)
         {
-            if (moduleData.isModule)
+            if (moduleData.IsModule)
             {
-                foreach (CellData cellData in moduleData.itemCellsData)
+                foreach (CellData cellData in moduleData.ItemCellsData)
                 {
-                    RenderHealthCellRpc((Vector2)moduleData.transform.localPosition + moduleData.cellsOffset + cellData.position);
+                    RenderHealthCellRpc((Vector2)moduleData.transform.localPosition + moduleData.CellsOffset + cellData.position);
                 }
             }
         }

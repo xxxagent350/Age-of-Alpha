@@ -6,56 +6,77 @@ public class Projectile : MonoBehaviour
 {
     [Header("Настройка")]
     [Tooltip("Урон")]
-    public Damage damage;
+    public Damage Damage;
     [Tooltip("Позиция выхода луча для поиска целей, расположить чуть выше коллайдера снаряда")]
-    [SerializeField] Vector2 raycastPosition;
+    [SerializeField] private Vector2 _raycastPosition;
     [Tooltip("Стартовая скорость")]
-    public float startSpeed;
+    public float StartSpeed;
+    [Tooltip("Масса. От неё зависит импульс при выстреле и попадании")]
+    public float Mass;
     [Tooltip("Максимальное время существования снаряда")]
-    public float lifetime;
-    [Tooltip("Тип урона")]
-    [SerializeField] DamageTypes damageType;
+    public float Lifetime;
     [Tooltip("Обязательно ли снаряд уничтожится после первого попадания? Если вЫключено, снаряд будет лететь, попутно разрушая модули и вражеские снаряды, пока у него не кончится урон")]
-    [SerializeField] bool selfDestructAfterHit;
+    [SerializeField] private bool _selfDestructAfterHit;
     [Tooltip("Взрываться ли когда заканчивается время жизни снаряда? Если выключено, снаряд просто пропадёт")]
-    [SerializeField] bool explodeOnLifetimeEnds = false;
+    [SerializeField] private bool _explodeOnLifetimeEnds = false;
     [Tooltip("Если включено, будет поворачивать картинку в сторону движения")]
-    [SerializeField] bool rotateToVelocityVectorDir = false;
+    [SerializeField] private bool _rotateToVelocityVectorDir = false;
 
     [Tooltip("Эффекты пробития обшивки корабля (укажите названия эффектов из префаба RpcHandlerForEffects)")]
-    [SerializeField] List<string> shipPenetrationEffects;
+    [SerializeField] private List<string> _shipPenetrationEffects;
     [Tooltip("Эффекты попадания в модули корабля, снаряды, астероиды и прочие игровые объекты (укажите названия эффектов из префаба RpcHandlerForEffects)")]
-    [SerializeField] List<string> moduleHitEffects;
+    [SerializeField] private List<string> _moduleHitEffects;
     [Tooltip("Эффекты взрыва снаряда (укажите названия эффектов из префаба RpcHandlerForEffects)")]
-    [SerializeField] List<string> explodeEffects;
+    [SerializeField] private List<string> _explodeEffects;
 
     [Header("Отладка")]
     [Tooltip("Команда корабля, который выпустил снаряд")]
     public string teamID = "none";
 
-    Rigidbody2D myRigidbody2D;
-    bool insideEnemyShip;
+    private Rigidbody2D _myRigidbody2D;
+    private bool _insideEnemyShip;
+    private float _startFullDamage;
 
     [Tooltip("Последняя точка, в которой был нанесён урон (нужно для определения положения эффекта взрыва)")]
-    Vector3 lastHitPoint;
+    private Vector3 _lastHitPoint;
     [Tooltip("Скорость последнего объекта, в который врезался снаряд (нужно для скорости эффектов при взрыве снаряда)")]
-    Vector3 lastHitCollidersSpeed = Vector3.one;
+    private Vector3 _lastHitCollidersSpeed = Vector3.one;
 
     private void Start()
     {
         if (NetworkManager.Singleton.IsServer)
         {
-            if (explodeOnLifetimeEnds)
+            if (_explodeOnLifetimeEnds)
             {
-                Invoke(nameof(Explode), lifetime);
+                Invoke(nameof(Explode), Lifetime);
             }
             else
             {
-                Destroy(gameObject, lifetime);
+                Destroy(gameObject, Lifetime);
             }
-            
-            myRigidbody2D = GetComponent<Rigidbody2D>();
-            myRigidbody2D.velocity += DataOperator.RotateVector2(new Vector2(0, startSpeed), transform.eulerAngles.z);
+
+            _startFullDamage = Damage.GetAllDamage();
+            _myRigidbody2D = GetComponent<Rigidbody2D>();
+            _myRigidbody2D.velocity += DataOperator.RotateVector2(Vector2.up * StartSpeed, transform.eulerAngles.z);
+        }
+    }
+
+    public void ApplyImpulseToParentShip(Rigidbody2D parentShipRigidbody)
+    {
+        //импульс стреляющему кораблю
+        Vector2 force = DataOperator.RotateVector2(Vector2.down * StartSpeed * Mass, transform.eulerAngles.z);
+        Vector2 position = transform.position;
+        parentShipRigidbody.AddForceAtPosition(force, position);
+    }
+
+    public void ApplyImpulseToTargetShip(Rigidbody2D targetShipRigidbody, float damagePartUsed)
+    {
+        //импульс кораблю в которого попали
+        if (targetShipRigidbody != null)
+        {
+            Vector2 force = _myRigidbody2D.velocity * damagePartUsed * Mass;
+            Vector2 position = transform.position;
+            targetShipRigidbody.AddForceAtPosition(force, position);
         }
     }
 
@@ -63,11 +84,11 @@ public class Projectile : MonoBehaviour
     {
         if (NetworkManager.Singleton.IsServer)
         {
-            if (rotateToVelocityVectorDir)
+            if (_rotateToVelocityVectorDir)
             {
                 SetDirAtMovingDir();
             }
-            if (damage.AllDamageUsed())
+            if (Damage.AllDamageUsed())
             {
                 Explode();
             }
@@ -81,10 +102,10 @@ public class Projectile : MonoBehaviour
         {
             return;
         }
-        float distanceToCheck = myRigidbody2D.velocity.magnitude * Time.fixedDeltaTime;
+        float distanceToCheck = _myRigidbody2D.velocity.magnitude * Time.fixedDeltaTime;
 
-        Vector3 position = transform.position + (Vector3)DataOperator.RotateVector2(raycastPosition, transform.eulerAngles.z);
-        Vector3 direction = myRigidbody2D.velocity.normalized;
+        Vector3 position = transform.position + (Vector3)DataOperator.RotateVector2(_raycastPosition, transform.eulerAngles.z);
+        Vector3 direction = _myRigidbody2D.velocity.normalized;
 
         RaycastHit2D[] mainLayerHits = Physics2D.RaycastAll(position, direction, distanceToCheck);
 
@@ -102,19 +123,19 @@ public class Projectile : MonoBehaviour
                     if (collidersRigidbody2D != null)
                     {
                         collidersSpeed = collidersRigidbody2D.velocity;
-                        lastHitCollidersSpeed = collidersSpeed;
+                        _lastHitCollidersSpeed = collidersSpeed;
                     }
 
                     if (hitInfoLayer == LayerMask.NameToLayer("Ship"))
                     {
                         ShipGameStats shipGameStats = hitInfo.collider.GetComponent<ShipGameStats>();
-                        if (shipGameStats != null && shipGameStats.TeamID != teamID)
+                        if (shipGameStats != null && shipGameStats.TeamID.Value.GetString() != teamID)
                         {
-                            if (!insideEnemyShip)
+                            if (!_insideEnemyShip)
                             {
                                 SpawnEffect(EffectType.shipPenetration, hitInfo.point, transform.rotation, collidersSpeed);
                             }
-                            insideEnemyShip = true;
+                            _insideEnemyShip = true;
                             insideEnemyShipThisFrame = true;
                         }
                     }
@@ -126,8 +147,8 @@ public class Projectile : MonoBehaviour
                             if (hittedProjectile != null && hittedProjectile.teamID != teamID)
                             {
                                 SpawnEffect(EffectType.moduleHit, hitInfo.point, transform.rotation, collidersSpeed);
-                                hittedProjectile.damage.DamageOtherDamage(damage);
-                                lastHitPoint = hitInfo.point;
+                                hittedProjectile.Damage.DamageOtherDamage(Damage);
+                                _lastHitPoint = hitInfo.point;
                             }
                         }
                         if (hitInfoLayer == LayerMask.NameToLayer("Environment") || hitInfoLayer == LayerMask.NameToLayer("Module"))
@@ -136,11 +157,14 @@ public class Projectile : MonoBehaviour
                             if (hittedObject != null && hittedObject.teamID != teamID)
                             {
                                 SpawnEffect(EffectType.moduleHit, hitInfo.point, transform.rotation, collidersSpeed);
-                                hittedObject.durability.TakeDamage(damage);
-                                lastHitPoint = hitInfo.point;
+                                float previousDamage = Damage.GetAllDamage();
+                                hittedObject.durability.TakeDamage(Damage);
+                                float deltaDamage = previousDamage - Damage.GetAllDamage();
+                                ApplyImpulseToTargetShip(hitInfo.collider.GetComponentInParent<Rigidbody2D>(), deltaDamage / _startFullDamage);
+                                _lastHitPoint = hitInfo.point;
                             }
                         }
-                        if (selfDestructAfterHit)
+                        if (_selfDestructAfterHit)
                         {
                             Explode();
                         }
@@ -149,12 +173,12 @@ public class Projectile : MonoBehaviour
             }
             if (!insideEnemyShipThisFrame)
             {
-                insideEnemyShip = false;
+                _insideEnemyShip = false;
             }
         }
         else
         {
-            insideEnemyShip = false;
+            _insideEnemyShip = false;
         }
     }
 
@@ -164,13 +188,13 @@ public class Projectile : MonoBehaviour
     {
         if (!alreadyExploded)
         {
-            if (lastHitCollidersSpeed == Vector3.one)
+            if (_lastHitCollidersSpeed == Vector3.one)
             {
-                SpawnEffect(EffectType.explode, lastHitPoint, transform.rotation, myRigidbody2D.velocity);
+                SpawnEffect(EffectType.explode, _lastHitPoint, transform.rotation, _myRigidbody2D.velocity);
             }
             else
             {
-                SpawnEffect(EffectType.explode, lastHitPoint, transform.rotation, lastHitCollidersSpeed);
+                SpawnEffect(EffectType.explode, _lastHitPoint, transform.rotation, _lastHitCollidersSpeed);
             }
             alreadyExploded = true;
             Destroy(gameObject);
@@ -179,7 +203,7 @@ public class Projectile : MonoBehaviour
 
     void SetDirAtMovingDir()
     {
-        transform.eulerAngles = new Vector3(0, 0, DataOperator.GetVector2DirInDegrees(myRigidbody2D.velocity));
+        transform.eulerAngles = new Vector3(0, 0, DataOperator.GetVector2DirInDegrees(_myRigidbody2D.velocity));
     }
 
     void SpawnEffect(EffectType effectType, Vector3 position, Quaternion rotation, Vector3 speed)
@@ -187,13 +211,13 @@ public class Projectile : MonoBehaviour
         switch (effectType)
         {
             case EffectType.shipPenetration:
-                RpcHandlerForEffects.SpawnEffectsOnClients(shipPenetrationEffects, position, rotation, speed);
+                RpcHandlerForEffects.SpawnEffectsOnClients(_shipPenetrationEffects, position, rotation, speed);
                 break;
             case EffectType.moduleHit:
-                RpcHandlerForEffects.SpawnEffectsOnClients(moduleHitEffects, position, rotation, speed);
+                RpcHandlerForEffects.SpawnEffectsOnClients(_moduleHitEffects, position, rotation, speed);
                 break;
             case EffectType.explode:
-                RpcHandlerForEffects.SpawnEffectsOnClients(explodeEffects, position, rotation, speed);
+                RpcHandlerForEffects.SpawnEffectsOnClients(_explodeEffects, position, rotation, speed);
                 break;
         }
     }
@@ -213,7 +237,7 @@ public class Projectile : MonoBehaviour
         {
             //Gizmos.color = Color.black;
             Vector2 myPosition = transform.position;
-            Gizmos.DrawIcon(myPosition + raycastPosition, "Raycast icon.png", false);
+            Gizmos.DrawIcon(myPosition + _raycastPosition, "Raycast icon.png", false);
         }
     }
 #endif

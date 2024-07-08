@@ -251,7 +251,7 @@ public class SlotsPutter : MonoBehaviour
             Vector2 pointInUnits = point / pixelsPerUnit;
             pointInUnits -= new Vector2(Screen.width / 2 / pixelsPerUnit, Screen.height / 2 / pixelsPerUnit);
             pointInUnits += new Vector2(transform.position.x, transform.position.y);
-            Vector2 cellsShift = itemData.cellsOffset;
+            Vector2 cellsShift = itemData.CellsOffset;
             pointInUnits -= cellsShift;
 
             int slotPutSoundNum = UnityEngine.Random.Range(0, slotPutSounds.Length);
@@ -287,20 +287,20 @@ public class SlotsPutter : MonoBehaviour
                 Vector2 pointInUnits = pressPoint / pixelsPerUnit;
                 pointInUnits -= new Vector2(Screen.width / 2 / pixelsPerUnit, Screen.height / 2 / pixelsPerUnit);
                 pointInUnits += new Vector2(transform.position.x, transform.position.y);
-                Vector2 cellsShift = item.GetComponent<ItemData>().cellsOffset;
+                Vector2 cellsShift = item.GetComponent<ItemData>().CellsOffset;
                 pointInUnits -= cellsShift;
 
                 Vector2 roundedPointInUnits = new Vector2(Mathf.RoundToInt(pointInUnits.x), Mathf.RoundToInt(pointInUnits.y));
                 int xPos = Mathf.RoundToInt(roundedPointInUnits.x);
                 int yPos = Mathf.RoundToInt(roundedPointInUnits.y);
 
-                for (int cell = 0; cell < itemData.itemCellsData.Length; cell++)
+                for (int cell = 0; cell < itemData.ItemCellsData.Length; cell++)
                 {
-                    if (xPos == itemData.itemCellsData[cell].position.x && yPos == itemData.itemCellsData[cell].position.y)
+                    if (xPos == itemData.ItemCellsData[cell].position.x && yPos == itemData.ItemCellsData[cell].position.y)
                     {
-                        if (itemData.itemCellsData[cell].type != choosenSlotType)
+                        if (itemData.ItemCellsData[cell].type != choosenSlotType)
                         {
-                            itemData.itemCellsData[cell].type = choosenSlotType;
+                            itemData.ItemCellsData[cell].type = choosenSlotType;
                             ReloadCellsUI();
                         }
                         return;
@@ -317,17 +317,17 @@ public class SlotsPutter : MonoBehaviour
         {
             return;
         }
-        int allCellsNum = itemData.itemCellsData.Length;
+        int allCellsNum = itemData.ItemCellsData.Length;
         int mainCellsNum = 0;
         int universalNum = 0;
         int engineNum = 0;
         for (int cell = 0; cell < allCellsNum; cell++)
         {
-            if (itemData.itemCellsData[cell].type == slotsTypes.standart)
+            if (itemData.ItemCellsData[cell].type == slotsTypes.standart)
                 mainCellsNum++;
-            if (itemData.itemCellsData[cell].type == slotsTypes.universal)
+            if (itemData.ItemCellsData[cell].type == slotsTypes.universal)
                 universalNum++;
-            if (itemData.itemCellsData[cell].type == slotsTypes.engine)
+            if (itemData.ItemCellsData[cell].type == slotsTypes.engine)
                 engineNum++;
         }
         if (cellsNumInfo != null)
@@ -354,7 +354,7 @@ public class SlotsPutter : MonoBehaviour
         {
             allCellsDeleteAskTimer = 3;
         }
-        itemData.itemCellsData = new CellData[0];
+        itemData.ItemCellsData = new CellData[0];
         RemoveAllCellsUI();
         CountCellsNumber();
     }
@@ -375,12 +375,12 @@ public class SlotsPutter : MonoBehaviour
         {
             return;
         }
-        Vector2 offset = itemData.cellsOffset;
+        Vector2 offset = itemData.CellsOffset;
 
-        cellsUI = new GameObject[itemData.itemCellsData.Length];
-        for (int cell = 0; cell < itemData.itemCellsData.Length; cell++)
+        cellsUI = new GameObject[itemData.ItemCellsData.Length];
+        for (int cell = 0; cell < itemData.ItemCellsData.Length; cell++)
         {
-            Vector2 position = itemData.itemCellsData[cell].position + offset;
+            Vector2 position = itemData.ItemCellsData[cell].position + offset;
             if (position.x < minCellsPositions.x)
                 minCellsPositions = new Vector2(position.x, minCellsPositions.y);
             if (position.y < minCellsPositions.y)
@@ -390,15 +390,15 @@ public class SlotsPutter : MonoBehaviour
             if (position.y > maxCellsPositions.y)
                 maxCellsPositions = new Vector2(maxCellsPositions.x, position.y);
 
-            if (itemData.itemCellsData[cell].type == slotsTypes.standart)
+            if (itemData.ItemCellsData[cell].type == slotsTypes.standart)
             {
                 cellsUI[cell] = Instantiate(mainSlotPrefab, position, Quaternion.identity);
             }
-            if (itemData.itemCellsData[cell].type == slotsTypes.universal)
+            if (itemData.ItemCellsData[cell].type == slotsTypes.universal)
             {
                 cellsUI[cell] = Instantiate(universalSlotPrefab, position, Quaternion.identity);
             }
-            if (itemData.itemCellsData[cell].type == slotsTypes.engine)
+            if (itemData.ItemCellsData[cell].type == slotsTypes.engine)
             {
                 cellsUI[cell] = Instantiate(engineSlotPrefab, position, Quaternion.identity);
             }
@@ -411,7 +411,7 @@ public class SlotsPutter : MonoBehaviour
         {
             if (GameObject.Find("Сетка главная") != null)
             {
-                GameObject.Find("Сетка главная").transform.position = new Vector2(0.5f + itemData.cellsOffset.x, 0.5f + itemData.cellsOffset.y);
+                GameObject.Find("Сетка главная").transform.position = new Vector2(0.5f + itemData.CellsOffset.x, 0.5f + itemData.CellsOffset.y);
             }
             CameraScaler cameraScaler = GetComponent<CameraScaler>();
             cameraScaler.minPos = minCellsPositions - new Vector2(1, 1);
@@ -439,13 +439,13 @@ public class SlotsPutter : MonoBehaviour
 
     void AddCellDataInArray(CellData slotData)
     {
-        for (int cell = 0; cell < itemData.itemCellsData.Length; cell++)
+        for (int cell = 0; cell < itemData.ItemCellsData.Length; cell++)
         {
-            if (slotData.position.x == itemData.itemCellsData[cell].position.x && slotData.position.y == itemData.itemCellsData[cell].position.y)
+            if (slotData.position.x == itemData.ItemCellsData[cell].position.x && slotData.position.y == itemData.ItemCellsData[cell].position.y)
             {
-                if (itemData.itemCellsData[cell].type != slotData.type)
+                if (itemData.ItemCellsData[cell].type != slotData.type)
                 {
-                    itemData.itemCellsData[cell].type = slotData.type;
+                    itemData.ItemCellsData[cell].type = slotData.type;
                 }
                 else
                 {
@@ -455,21 +455,21 @@ public class SlotsPutter : MonoBehaviour
             }
         }
 
-        Array.Resize(ref itemData.itemCellsData, itemData.itemCellsData.Length + 1);
-        itemData.itemCellsData[itemData.itemCellsData.Length - 1] = slotData;
+        Array.Resize(ref itemData.ItemCellsData, itemData.ItemCellsData.Length + 1);
+        itemData.ItemCellsData[itemData.ItemCellsData.Length - 1] = slotData;
     }
 
     void DeleteCellDataInArray(int index)
     {
-        if (index == itemData.itemCellsData.Length - 1)
+        if (index == itemData.ItemCellsData.Length - 1)
         {
-            Array.Resize(ref itemData.itemCellsData, itemData.itemCellsData.Length - 1);
+            Array.Resize(ref itemData.ItemCellsData, itemData.ItemCellsData.Length - 1);
         }
         else
         {
-            CellData slotDataRezerve = itemData.itemCellsData[itemData.itemCellsData.Length - 1];
-            Array.Resize(ref itemData.itemCellsData, itemData.itemCellsData.Length - 1);
-            itemData.itemCellsData[index] = slotDataRezerve;
+            CellData slotDataRezerve = itemData.ItemCellsData[itemData.ItemCellsData.Length - 1];
+            Array.Resize(ref itemData.ItemCellsData, itemData.ItemCellsData.Length - 1);
+            itemData.ItemCellsData[index] = slotDataRezerve;
         }
     }
 

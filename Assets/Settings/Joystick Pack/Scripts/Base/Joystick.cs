@@ -149,6 +149,12 @@ public class Joystick : MonoBehaviour, IPointerDownHandler, IDragHandler, IPoint
         return 0;
     }
 
+    private void OnEnable()
+    {
+        OnPointerUp(null);
+        ResetHandlePos();
+    }
+
     public virtual void OnPointerUp(PointerEventData eventData)
     {
         pressedOnJoystick = false;
@@ -156,6 +162,11 @@ public class Joystick : MonoBehaviour, IPointerDownHandler, IDragHandler, IPoint
 
         if (handleVisualReturnType == HandleReturnTypes.TeleportToCenter)
             handle.anchoredPosition = Vector2.zero;
+    }
+
+    public virtual void ResetHandlePos()
+    {
+        handle.anchoredPosition = Vector2.zero;
     }
 
     protected Vector2 ScreenPointToAnchoredPosition(Vector2 screenPosition)

@@ -34,8 +34,8 @@ public class Player : NetworkBehaviour
         }
         if (IsOwner)
         {
-            PlayerInterface.instance.localPlayer = this;
-            PlayerInterface.instance.attackButtonStateChangedMessage += ReceiveAttackButtonStateChangedRpc;
+            PlayerInterface.Instance.LocalPlayer = this;
+            PlayerInterface.Instance.attackButtonStateChangedMessage += ReceiveAttackButtonStateChangedRpc;
             string playerShipName = DataOperator.instance.shipsPrefabs[playerShipNum].GetComponent<ItemData>().Name.EnglishText;
             ModuleOnShipData[] modulesOnPlayerShip = DataOperator.instance.LoadDataModulesOnShip("ModulesOnShipData(" + playerShipName + ")");
             Ship newPlayerShip = new Ship(playerShipNum, modulesOnPlayerShip);
@@ -47,7 +47,7 @@ public class Player : NetworkBehaviour
     {
         if (IsOwner)
         {
-            PlayerInterface.instance.attackButtonStateChangedMessage -= ReceiveAttackButtonStateChangedRpc;
+            PlayerInterface.Instance.attackButtonStateChangedMessage -= ReceiveAttackButtonStateChangedRpc;
         }   
     }
 
@@ -99,8 +99,8 @@ public class Player : NetworkBehaviour
 
             ShipGameStats shipGameStats = playerShipSpawned.GetComponent<ShipGameStats>();
             shipGameStats.ServerInitialize();
-            shipGameStats.TeamID = teamID.Value.GetString();
-            shipGameStats.myPlayer = this;
+            shipGameStats.TeamID.Value = teamID.Value;
+            shipGameStats.MyPlayer = this;
         }
     }
 

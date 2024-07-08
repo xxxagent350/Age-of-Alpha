@@ -112,6 +112,7 @@ public class BallisticWeapon : Weapon
 
         Projectile projectileComponent = projectile.GetComponent<Projectile>();
         projectileComponent.teamID = teamID;
+        projectileComponent.ApplyImpulseToParentShip(myShipRigidbody2D);
 
         projectile.GetComponent<NetworkObject>().Spawn();
     }

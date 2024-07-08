@@ -111,7 +111,7 @@ public class ShipStats : MonoBehaviour
         GameObject modulePrefab = DataOperator.instance.modulesPrefabs[module.moduleNum];
         GameObject UImoduleGO = Instantiate(UIModulePrefab, position, Quaternion.identity);
         UImoduleGO.name = modulePrefab.name + " (UI)";
-        UImoduleGO.GetComponent<SpriteChanger>().sprite = modulePrefab.transform.Find("Image").GetComponent<SpriteChanger>().sprite;
+        UImoduleGO.GetComponent<SpriteRenderer>().sprite = modulePrefab.transform.Find("Image").GetComponent<SpriteRenderer>().sprite;
         UImoduleGO.transform.localScale = modulePrefab.transform.Find("Image").localScale;
 
         Array.Resize(ref modulesUI, modulesUI.Length + 1);
@@ -264,7 +264,7 @@ public class ShipStats : MonoBehaviour
             int modulePrefabNum = modulesOnShip[moduleOnShipNum].module.moduleNum;
             GameObject modulePrefab = DataOperator.instance.modulesPrefabs[modulePrefabNum];
             ItemData moduleItemData = modulePrefab.GetComponent<ItemData>();
-            if (moduleItemData.type == modulesTypes.ControlModules)
+            if (moduleItemData.Type == modulesTypes.ControlModules)
             {
                 return true;
             }

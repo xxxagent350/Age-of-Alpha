@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1 &3311465877563407449
+--- !u!1 &1918197205442378303
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -8,12 +8,12 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 5958775618869167841}
-  - component: {fileID: 3240705843588657986}
-  - component: {fileID: 2930872500301714808}
-  - component: {fileID: 7809630577883955032}
-  - component: {fileID: 7621606241208873003}
-  - component: {fileID: 3939725931623971246}
+  - component: {fileID: 4377224537040312929}
+  - component: {fileID: 930836767154595707}
+  - component: {fileID: 7408648473962101345}
+  - component: {fileID: 1659883045210333168}
+  - component: {fileID: 3364378279840454845}
+  - component: {fileID: 4363448916749817557}
   m_Layer: 7
   m_Name: Control block C1
   m_TagString: Module
@@ -21,29 +21,29 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &5958775618869167841
+--- !u!4 &4377224537040312929
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3311465877563407449}
+  m_GameObject: {fileID: 1918197205442378303}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 560738671357278087}
+  - {fileID: 2468683432351327523}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!61 &3240705843588657986
+--- !u!61 &930836767154595707
 BoxCollider2D:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3311465877563407449}
+  m_GameObject: {fileID: 1918197205442378303}
   m_Enabled: 1
   serializedVersion: 3
   m_Density: 1
@@ -83,59 +83,51 @@ BoxCollider2D:
   m_AutoTiling: 0
   m_Size: {x: 0.999, y: 1.999}
   m_EdgeRadius: 0
---- !u!114 &2930872500301714808
+--- !u!114 &7408648473962101345
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3311465877563407449}
+  m_GameObject: {fileID: 1918197205442378303}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: a625874215b417d4aa8bb7410ce650d3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  image: {fileID: 560738671357278087}
-  category: 6
-  type: 11
+  Image: {fileID: 2468683432351327523}
+  Category: 6
+  Type: 11
+  LowResolutionSprite: {fileID: 3335716219264985208, guid: bea65f62b6898d84ea1df4359deb00a0, type: 3}
   Name:
     RussianText: "\u0411\u043B\u043E\u043A \u0443\u043F\u0440\u0430\u0432\u043B\u0435\u043D\u0438\u044F
       C1"
     EnglishText: Control block C1
-  description:
-    RussianText: "\u0411\u043B\u043E\u043A \u0443\u043F\u0440\u0430\u0432\u043B\u0435\u043D\u0438\u044F,
-      \"\u0433\u043E\u043B\u043E\u0432\u0430\" \u043A\u043E\u0440\u0430\u0431\u043B\u044F.
-      \u041E\u0431\u0435\u0441\u043F\u0435\u0447\u0438\u0432\u0430\u0435\u0442 \u0441\u0432\u044F\u0437\u044C
-      \u0438 \u0443\u043F\u0440\u0430\u0432\u043B\u0435\u043D\u0438\u0435, \u0438\u043C\u0435\u0435\u0442
-      \u0432\u0441\u0442\u0440\u043E\u0435\u043D\u043D\u044B\u0439 \u0440\u0430\u0434\u0430\u0440,
-      \u043D\u0435\u0431\u043E\u043B\u044C\u0448\u043E\u0439 \u0433\u0435\u043D\u0435\u0440\u0430\u0442\u043E\u0440
-      \u0438 \u0431\u0430\u0442\u0430\u0440\u0435\u044E. \u0415\u0441\u043B\u0438
-      \u043E\u043D \u0431\u0443\u0434\u0435\u0442 \u0443\u043D\u0438\u0447\u0442\u043E\u0436\u0435\u043D,
-      \u0442\u043E \u0432\u044B \u043F\u043E\u0442\u0435\u0440\u044F\u0435\u0442\u0435
-      \u043A\u043E\u043D\u0442\u0440\u043E\u043B\u044C \u043D\u0430\u0434 \u043A\u043E\u0440\u0430\u0431\u043B\u0451\u043C,
-      \u043F\u043E\u044D\u0442\u043E\u043C\u0443 \u0435\u0433\u043E \u0441\u0442\u043E\u0438\u0442
-      \u0441\u0442\u0430\u0432\u0438\u0442\u044C \u0432 \u0441\u0430\u043C\u043E\u0435
-      \u0437\u0430\u0449\u0438\u0449\u0451\u043D\u043D\u043E\u0435 \u043C\u0435\u0441\u0442\u043E"
-    EnglishText: The control unit, the "head" of the ship. It provides communication
-      and control, has a built-in radar, a small generator and a battery. If it is
-      destroyed, you will lose control of the ship, so it should be placed in the
-      most protected location
+  Description:
+    RussianText: "\u041E\u0431\u044F\u0437\u0430\u0442\u0435\u043B\u044C\u043D\u0430\u044F
+      \u0447\u0430\u0441\u0442\u044C \u043B\u044E\u0431\u043E\u0433\u043E \u043A\u043E\u0440\u0430\u0431\u043B\u044F.
+      \u041F\u0440\u0438 \u0435\u0433\u043E \u0443\u043D\u0438\u0447\u0442\u043E\u0436\u0435\u043D\u0438\u0438
+      \u0441\u0432\u044F\u0437\u044C \u0441 \u043A\u043E\u0440\u0430\u0431\u043B\u0451\u043C
+      \u0442\u0435\u0440\u044F\u0435\u0442\u0441\u044F \u0438 \u043A\u043E\u0440\u0430\u0431\u043B\u044C
+      \u0441\u0430\u043C\u043E\u0443\u043D\u0438\u0447\u0442\u043E\u0436\u0430\u0435\u0442\u0441\u044F"
+    EnglishText: An essential part of any ship. If it is destroyed, communication
+      with the ship is lost and the ship self-destructs
   Size: 0.08
   Mass: 2
-  cellsOffset: {x: 0, y: 0.5}
-  itemCellsData:
+  CellsOffset: {x: 0, y: 0.5}
+  ItemCellsData:
   - position: {x: 0, y: 0}
     type: 1
   - position: {x: 0, y: -1}
     type: 1
-  isModule: 1
---- !u!114 &7809630577883955032
+  IsModule: 1
+--- !u!114 &1659883045210333168
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3311465877563407449}
+  m_GameObject: {fileID: 1918197205442378303}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: b526bc281128517409016a80db5249a7, type: 3}
@@ -154,26 +146,26 @@ MonoBehaviour:
   _explodeStrengthOnDestroy: 0
   teamID: none
   _cellsLocalPositionsInShip: []
---- !u!114 &7621606241208873003
+--- !u!114 &3364378279840454845
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3311465877563407449}
+  m_GameObject: {fileID: 1918197205442378303}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ff6474a8d493621419660da746fb07a4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   power: 1.5
---- !u!114 &3939725931623971246
+--- !u!114 &4363448916749817557
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3311465877563407449}
+  m_GameObject: {fileID: 1918197205442378303}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 230bc3a0484ed3a478375e6eb77e8412, type: 3}
@@ -181,7 +173,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   maxCapacity: 3
   capacity: 0
---- !u!1 &4090167966661438403
+--- !u!1 &9049193232762533299
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -189,9 +181,8 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 560738671357278087}
-  - component: {fileID: 7485420939952858851}
-  - component: {fileID: 4503929289220131979}
+  - component: {fileID: 2468683432351327523}
+  - component: {fileID: 6663702612417399913}
   m_Layer: 0
   m_Name: Image
   m_TagString: Untagged
@@ -199,28 +190,28 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &560738671357278087
+--- !u!4 &2468683432351327523
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4090167966661438403}
+  m_GameObject: {fileID: 9049193232762533299}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 0.08, y: 0.08, z: 0}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 5958775618869167841}
+  m_Father: {fileID: 4377224537040312929}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!212 &7485420939952858851
+--- !u!212 &6663702612417399913
 SpriteRenderer:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4090167966661438403}
+  m_GameObject: {fileID: 9049193232762533299}
   m_Enabled: 1
   m_CastShadows: 0
   m_ReceiveShadows: 0
@@ -269,20 +260,3 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!114 &4503929289220131979
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4090167966661438403}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fffab13043219e54097d49c59958c69d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  sprite:
-    highQualitySprite: {fileID: 3335716219264985208, guid: d162dd0a7115ab346a43caeeb3f48b1b, type: 3}
-    mediumQualitySprite: {fileID: 3335716219264985208, guid: 1c96c57b4ac81c347a19ff3b07da509b, type: 3}
-    lowQualitySprite: {fileID: 3335716219264985208, guid: 585007390ef094a4fbd96030bd90eb50, type: 3}
-    graphicsPreset: 0

@@ -122,7 +122,7 @@ public class UImodulesOperator : MonoBehaviour
         moduleDragging_.name = modulePrefab.name + " (перетаскивается)";
         moduleDragging_.GetComponent<SpriteRenderer>().sprite = modulePrefab.transform.Find("Image").GetComponent<SpriteRenderer>().sprite;
         moduleDragging_.transform.localScale = modulePrefab.transform.Find("Image").localScale;
-        moduleDragging_.GetComponent<DraggingModule>().myModule = module;
+        moduleDragging_.GetComponent<DraggingModule>().MyModule = module;
 
         DataOperator.instance.PlayUISound(moduleTakeSound, moduleTakeSoundVolume);
     }
@@ -137,9 +137,9 @@ public class UImodulesOperator : MonoBehaviour
             //перебираем все установленные модули на корабле
             GameObject modulePrefab_ = DataOperator.instance.modulesPrefabs[moduleOnShip.module.moduleNum];
             ItemData moduleData_ = modulePrefab_.GetComponent<ItemData>();
-            for (int moduleSlot_ = 0; moduleSlot_ < moduleData_.itemCellsData.Length; moduleSlot_++)
+            for (int moduleSlot_ = 0; moduleSlot_ < moduleData_.ItemCellsData.Length; moduleSlot_++)
             {
-                Vector2 moduleSlotPos = new Vector2(moduleData_.itemCellsData[moduleSlot_].position.x + moduleOnShip.position.x, moduleData_.itemCellsData[moduleSlot_].position.y + moduleOnShip.position.y) + moduleData_.cellsOffset - shipData.cellsOffset;
+                Vector2 moduleSlotPos = new Vector2(moduleData_.ItemCellsData[moduleSlot_].position.x + moduleOnShip.position.x, moduleData_.ItemCellsData[moduleSlot_].position.y + moduleOnShip.position.y) + moduleData_.CellsOffset - shipData.CellsOffset;
                 if (Vector2.Distance(position, moduleSlotPos) < 0.01f)
                 {
                     clickedModuleOnShipPos = moduleOnShip.position.GetVector2();
@@ -161,7 +161,7 @@ public class UImodulesOperator : MonoBehaviour
         Vector2 pointInUnits = mousePos / pixelsPerUnit;
         pointInUnits -= new Vector2(Screen.width / 2 / pixelsPerUnit, Screen.height / 2 / pixelsPerUnit);
         pointInUnits += new Vector2(camera_.transform.position.x, camera_.transform.position.y);
-        Vector2 cellsShift = shipData.cellsOffset;
+        Vector2 cellsShift = shipData.CellsOffset;
         pointInUnits -= cellsShift;
         return pointInUnits;
     }

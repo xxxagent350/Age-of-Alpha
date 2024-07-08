@@ -19,11 +19,17 @@ public class PooledSound : PooledEffect
     AudioSource audioSource;
     float clipLength;
 
+    public const float MinDistance = 100;
+    public const float MaxDistance = 10000;
+
     public override void Initialize()
     {
         audioSource = GetComponent<AudioSource>();
         startVolume = audioSource.volume;
         startPitch = audioSource.pitch;
+
+        audioSource.minDistance = MinDistance;
+        audioSource.maxDistance = MaxDistance;
     }
 
     public override void OnSpawnedFromPool()

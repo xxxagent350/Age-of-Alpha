@@ -7,11 +7,13 @@ public class ShipRammer : MonoBehaviour
 {
     [Header("Настройка")]
     [SerializeField] private RamEffectsData _ramEffectsData;
+    public bool DamageAllies = false;
 
     private Rigidbody2D _rigidbody2D;
+    private ShipGameStats _myShipGameStats;
     private Vector2 _lastFrameVelocity;
 
-    private const float RamDamageMod = 0.0025f;
+    private const float RamDamageMod = 0.0015f;
     private const float MinDamageForLowDamageEffects = 0.5f;
     private const float MinDamageForMediumDamageEffects = 3f;
     private const float MinDamageForHighDamageEffects = 10f;
@@ -21,6 +23,7 @@ public class ShipRammer : MonoBehaviour
         if (NetworkManager.Singleton.IsServer)
         {
             _rigidbody2D = GetComponent<Rigidbody2D>();
+            _myShipGameStats = GetComponent<ShipGameStats>();
         }
         else
         {
@@ -37,7 +40,25 @@ public class ShipRammer : MonoBehaviour
     {
         if (NetworkManager.Singleton.IsServer)
         {
-            SpawnShockWave(collision);
+            if (DamageAllies)
+            {
+                SpawnShockWave(collision);
+            }
+            else
+            {
+                ShipGameStats shipGameStats = collision.collider.GetComponent<ShipGameStats>();
+                if (shipGameStats != null)
+                {
+                    if (shipGameStats.TeamID != _myShipGameStats.TeamID)
+                    {
+                        SpawnShockWave(collision);
+                    }
+                }
+                else
+                {
+                    SpawnShockWave(collision);
+                }
+            }
         }
     }
 

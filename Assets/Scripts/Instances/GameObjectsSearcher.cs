@@ -3,10 +3,11 @@ using UnityEngine;
 
 public class GameObjectsSearcher : MonoBehaviour
 {
-    private static GameObject[] _allModulesGameObjects;
+    private static GameObject[] _allModulesGameObjects = new GameObject[0];
+    private static GameObject[] _allShipsGameObjects = new GameObject[0];
     private static GameObjectsSearcher _instance;
-    private const float Frequency = 10;
     private const string ModulesLayerMask = "Module";
+    private const string ShipsLayerMask = "Ship";
 
     private void Awake()
     {
@@ -26,29 +27,50 @@ public class GameObjectsSearcher : MonoBehaviour
 
     public static GameObject[] GetAllModulesGameObjects()
     {
+
         foreach (GameObject gameObject in _allModulesGameObjects)
         {
             if (gameObject == null)
             {
-                LowUpdate();
+                SearchModulesGameObjects();
                 break;
             }
         }
         return _allModulesGameObjects;
     }
 
+    public static GameObject[] GetAllShipGameObjects()
+    {
+        foreach (GameObject gameObject in _allShipsGameObjects)
+        {
+            if (gameObject == null)
+            {
+                SearchShipsGameObjects();
+                break;
+            }
+        }
+        return _allShipsGameObjects;
+    }
+
     private IEnumerator LowUpdateCoroutine()
     {
+        const float Frequency = 10;
         while (true)
         {
-            LowUpdate();
+            SearchModulesGameObjects();
+            SearchShipsGameObjects();
             yield return new WaitForSeconds(1 / Frequency);
         }
     }
 
     //аналог FixedUpdate, но с пониженной частотой обновления для уменьшения нагрузки
-    private static void LowUpdate()
+    private static void SearchModulesGameObjects()
     {
         _allModulesGameObjects = GameObject.FindGameObjectsWithTag(ModulesLayerMask);
+    }
+
+    private static void SearchShipsGameObjects()
+    {
+        _allShipsGameObjects = GameObject.FindGameObjectsWithTag(ShipsLayerMask);
     }
 }
