@@ -636,7 +636,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   volume:
-    MusicVolumeMod: 0.15
+    MusicVolumeMod: 0.3
     SoundVolumeMod: 1
   userLanguage: 0
   userGraphics: 0

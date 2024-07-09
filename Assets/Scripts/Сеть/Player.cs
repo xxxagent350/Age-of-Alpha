@@ -6,7 +6,7 @@ using Random = UnityEngine.Random;
 public class Player : NetworkBehaviour
 {
     [Header("Настройка")]
-    [SerializeField] uint playerShipNum;
+    [SerializeField] uint playerShipNum; 
 
     [Header("Отладка")]
     [SerializeField] Ship playerShip;
