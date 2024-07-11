@@ -57,8 +57,16 @@ public class NetworkTransformByAlphaGames : NetworkBehaviour
             }
             if (syncType.Value == TransformSyncTypes.Interpolate)
             {
-                InterpolatingTransform();
+                InterpolatingTransformServer();
             }
+        }
+    }
+
+    private void Update()
+    {
+        if (syncType.Value == TransformSyncTypes.Interpolate)
+        {
+            InterpolatingTransformClients();
         }
     }
 
@@ -104,24 +112,25 @@ public class NetworkTransformByAlphaGames : NetworkBehaviour
     [SerializeField] List<AlphaTransform> transformsInterpolating = new List<AlphaTransform>(0);
     [SerializeField] float clientsCount;
 
-    void InterpolatingTransform()
+    void InterpolatingTransformServer()
     {
         if (NetworkManager.Singleton.IsServer) //сервер
         {
             SendTransformForInterpolatingRpc(new AlphaTransform(transform));
         }
-        else
+    }
+
+    void InterpolatingTransformClients()
+    {
+        if (NetworkManager.Singleton.IsServer == false && NetworkManager.Singleton.IsClient) //все клиенты кроме сервера
         {
-            if (NetworkManager.Singleton.IsClient) //все клиенты кроме сервера
+            while (transformsInterpolating.Count > framesMaxBuffer)
             {
-                while (transformsInterpolating.Count > framesMaxBuffer)
-                {
-                    transformsInterpolating.RemoveAt(0);
-                }
-                if (transformsInterpolating.Count > 0)
-                {
-                    Interpolate();
-                }
+                transformsInterpolating.RemoveAt(0);
+            }
+            if (transformsInterpolating.Count > 0)
+            {
+                Interpolate();
             }
         }
     }
@@ -129,15 +138,18 @@ public class NetworkTransformByAlphaGames : NetworkBehaviour
     void Interpolate()
     {
         float targetPositionInOrder = transformsInterpolating.Count - 1 - framesBuffering;
+        float additiveFixedClientsCount;
         if (clientsCount >= targetPositionInOrder)
         {
-            clientsCount += Mathf.Pow((transformsInterpolating.Count - 1 - clientsCount) / framesBuffering, interpolatingTimeScaleMod);
+            additiveFixedClientsCount = Mathf.Pow((transformsInterpolating.Count - 1 - clientsCount) / framesBuffering, interpolatingTimeScaleMod);
         }
         else
         {
-            clientsCount += Mathf.Pow(1 + ((targetPositionInOrder - clientsCount) / framesBuffering), interpolatingTimeScaleMod);
+            additiveFixedClientsCount = Mathf.Pow(1 + ((targetPositionInOrder - clientsCount) / framesBuffering), interpolatingTimeScaleMod);
         }
-       
+
+        additiveFixedClientsCount *= Time.deltaTime / Time.fixedDeltaTime;
+        clientsCount += additiveFixedClientsCount;
 
         if (clientsCount < 0)
         {

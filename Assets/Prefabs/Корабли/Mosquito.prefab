@@ -226,8 +226,8 @@ MonoBehaviour:
   syncType:
     m_InternalValue: 2
   framesBuffering: 2
-  interpolatingTimeScaleMod: 0.5
-  framesMaxBuffer: 50
+  interpolatingTimeScaleMod: 0.25
+  framesMaxBuffer: 100
   transformsInterpolating: []
   clientsCount: 0
 --- !u!114 &4569814524474657162

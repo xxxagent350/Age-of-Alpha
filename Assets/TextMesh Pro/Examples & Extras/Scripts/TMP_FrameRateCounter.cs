@@ -30,8 +30,9 @@ namespace TMPro.Examples
                 return;
 
             m_camera = Camera.main;
+            /*
             Application.targetFrameRate = 9999;
-
+            */
             GameObject frameCounter = new GameObject("Frame Counter");
 
             m_TextMeshPro = frameCounter.AddComponent<TextMeshPro>();

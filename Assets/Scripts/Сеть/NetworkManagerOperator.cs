@@ -20,7 +20,7 @@ public class NetworkManagerOperator : MonoBehaviour
     {
         networkStatsMonitor = GameObject.Find("NETWORK MANAGER").GetComponent<RuntimeNetStatsMonitor>();
         if (!PlayerPrefs.HasKey("LastTimeConnectingIP"))
-            SetIP("10.147.17.74");
+            SetIP("10.147.17.63");
         ipEnterField.text = PlayerPrefs.GetString("LastTimeConnectingIP");
     }
 

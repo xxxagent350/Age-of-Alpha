@@ -27,9 +27,9 @@ namespace TMPro.Examples
         {
             if (!enabled)
                 return;
-
+            /*
             Application.targetFrameRate = 1000;
-
+            */
             GameObject frameCounter = new GameObject("Frame Counter");
             m_frameCounter_transform = frameCounter.AddComponent<RectTransform>();
 

@@ -1,15 +1,15 @@
 fileFormatVersion: 2
-guid: e124b7b0409fcee4d9fd39068eaab795
+guid: fca3e98960529284485b30fe57436516
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 295264625717963223
-    second: "\u0411\u0435\u0437 \u043D\u0430\u0437\u0432\u0430\u043D\u0438\u044F80_20230908215152_0"
+      213: -573275939795678501
+    second: "\u0411\u0435\u0437 \u043D\u0430\u0437\u0432\u0430\u043D\u0438\u044F18_20240710164003_0"
   externalObjects: {}
-  serializedVersion: 12
+  serializedVersion: 13
   mipmaps:
     mipMapMode: 0
-    enableMipMap: 0
+    enableMipMap: 1
     sRGBTexture: 1
     linearTexture: 0
     fadeOut: 0
@@ -70,19 +70,20 @@ TextureImporter:
   swizzle: 50462976
   cookieLightType: 0
   platformSettings:
-  - serializedVersion: 3
+  - serializedVersion: 4
     buildTarget: DefaultTexturePlatform
-    maxTextureSize: 1024
+    maxTextureSize: 512
     resizeAlgorithm: 0
     textureFormat: -1
     textureCompression: 1
     compressionQuality: 50
-    crunchedCompression: 0
+    crunchedCompression: 1
     allowsAlphaSplitting: 0
     overridden: 0
+    ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
-  - serializedVersion: 3
+  - serializedVersion: 4
     buildTarget: Standalone
     maxTextureSize: 2048
     resizeAlgorithm: 0
@@ -92,9 +93,10 @@ TextureImporter:
     crunchedCompression: 0
     allowsAlphaSplitting: 0
     overridden: 0
+    ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
-  - serializedVersion: 3
+  - serializedVersion: 4
     buildTarget: Android
     maxTextureSize: 2048
     resizeAlgorithm: 0
@@ -104,44 +106,49 @@ TextureImporter:
     crunchedCompression: 0
     allowsAlphaSplitting: 0
     overridden: 0
+    ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
   spriteSheet:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: "\u041C\u043E\u043B\u043B\u044E\u0441\u043A"
+      name: Fighter destroyed
       rect:
         serializedVersion: 2
-        x: 49
-        y: 326
-        width: 1438
-        height: 1621
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+        x: 376
+        y: 137
+        width: 1315
+        height: 1708
+      alignment: 9
+      pivot: {x: 0.4965967, y: 0.52632403}
       border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 7d968aadc9df81400800000000000000
-      internalID: 295264625717963223
+      spriteID: bda4332f1905b08f0800000000000000
+      internalID: -573275939795678501
       vertices: []
       indices: 
       edges: []
       weights: []
     outline: []
+    customData: 
     physicsShape: []
     bones: []
-    spriteID: 19c9caafc674fbe46890b99180315521
+    spriteID: 66f25594feae2ea46ac96cfcd0d67526
     internalID: 0
     vertices: []
     indices: 
     edges: []
     weights: []
     secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
     nameFileIdTable:
-      "\u041C\u043E\u043B\u043B\u044E\u0441\u043A": 295264625717963223
+      Fighter destroyed: -573275939795678501
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

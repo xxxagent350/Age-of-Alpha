@@ -96,7 +96,7 @@ public class ShipGameStats : NetworkBehaviour
                 enabled = false;
                 break;
             }
-            yield return new WaitForSeconds(Time.fixedDeltaTime);
+            yield return new WaitForSeconds(Time.deltaTime);
         }
     }
 
@@ -191,7 +191,7 @@ public class ShipGameStats : NetworkBehaviour
         }
         else
         {
-            if (Energy.Value + (EnergyGeneration.Value * Time.fixedDeltaTime) >= EnergyMaxCapacity.Value)
+            if (Energy.Value + (EnergyGeneration.Value * Time.deltaTime) >= EnergyMaxCapacity.Value)
             {
                 _energyBar.fillingValue = 1;
             }
@@ -211,13 +211,13 @@ public class ShipGameStats : NetworkBehaviour
 
     void FlightEffectsServer(bool accelerating)
     {
-        float enginesLightsAlphaFrameChange = _enginesVisualPowerChangingSpeed * Time.fixedDeltaTime;
+        float enginesLightsAlphaFrameChange = _enginesVisualPowerChangingSpeed * Time.deltaTime;
 
         if (AccelerationPower > 0.01f && !_noControl && accelerating && Mathf.Abs(Mathf.DeltaAngle(transform.eulerAngles.z, MovementJoystickDirInDegrees.Value)) < IgnoredDirDifferenceDegrees)
         {
             float enginesLightsMod;
 
-            if (CheckEnergy(((EnginesConsumption.Value * MovementJoystickMagnitude.Value) + EnergyGeneration.Value) * Time.fixedDeltaTime))
+            if (CheckEnergy(((EnginesConsumption.Value * MovementJoystickMagnitude.Value) + EnergyGeneration.Value) * Time.deltaTime))
             {
                 enginesLightsMod = MovementJoystickMagnitude.Value;
             }
@@ -226,7 +226,7 @@ public class ShipGameStats : NetworkBehaviour
                 enginesLightsMod = MovementJoystickMagnitude.Value * (EnergyGeneration.Value / (EnginesConsumption.Value * MovementJoystickMagnitude.Value));
             }
 
-            if (CheckEnergy(EnginesConsumption.Value * MovementJoystickMagnitude.Value * Time.fixedDeltaTime))
+            if (CheckEnergy(EnginesConsumption.Value * MovementJoystickMagnitude.Value * Time.deltaTime))
             {
                 _trailsEmitting.Value = true;
             }
@@ -282,7 +282,7 @@ public class ShipGameStats : NetworkBehaviour
 
     void GenerateEnergy()
     {
-        if (Energy.Value <= EnergyGeneration.Value * Time.fixedDeltaTime || EnergyMaxCapacity.Value < 0.01f)
+        if (Energy.Value <= EnergyGeneration.Value * Time.deltaTime || EnergyMaxCapacity.Value < 0.01f)
         {
             _noEnergy.Value = true;
         }
@@ -292,7 +292,7 @@ public class ShipGameStats : NetworkBehaviour
         }
         if (Energy.Value < EnergyMaxCapacity.Value)
         {
-            Energy.Value += EnergyGeneration.Value * Time.fixedDeltaTime;
+            Energy.Value += EnergyGeneration.Value * Time.deltaTime;
         }
         if (Energy.Value > EnergyMaxCapacity.Value)
         {
@@ -347,26 +347,26 @@ public class ShipGameStats : NetworkBehaviour
 
         //Debug.Log($"S: {S}; v2: {v2}; a: {a}; 2as: {2 * a * S}");
 
-        float ignoredDir = a * Mathf.Pow(Time.fixedDeltaTime * 2, 2);
+        float ignoredDir = a * Mathf.Pow(Time.deltaTime * 2, 2) * 2;
 
-        if (Mathf.Abs(S) < ignoredDir && Mathf.Abs(_myRigidbody2D.angularVelocity) < a * 0.1f)
+        if (Mathf.Abs(S) < ignoredDir && Mathf.Abs(_myRigidbody2D.angularVelocity) < a * 0.2f)
         {
             transform.eulerAngles = new Vector3(0, 0, MovementJoystickDirInDegrees.Value);
             _myRigidbody2D.angularVelocity = 0;
         }
         else
         {
-            if (TrySpendEnergy(EnginesConsumption.Value * 0.3f * Time.fixedDeltaTime))
+            if (TrySpendEnergy(EnginesConsumption.Value * 0.3f * Time.deltaTime))
             {
-                if (v2 < 2 * a * S) //ещё не разогнались достаточно, продолжаем ускоряться
+                if (v2 * 1.2f < 2 * a * S) //ещё не разогнались достаточно, продолжаем ускоряться
                 {
                     //Debug.Log("S < 0, ускоряемся");
-                    _myRigidbody2D.AddTorque(F * Time.fixedDeltaTime);
+                    _myRigidbody2D.AddTorque(F * Time.deltaTime);
                 }
                 else //тормозим дабы не возникло колебаний
                 {
                     //Debug.Log("S < 0, тормозим");
-                    _myRigidbody2D.AddTorque(-F * Time.fixedDeltaTime);
+                    _myRigidbody2D.AddTorque(-F * Time.deltaTime * 1.2f);
                 }
             }
         }
@@ -381,7 +381,7 @@ public class ShipGameStats : NetworkBehaviour
         {
             if (Mathf.Abs(Mathf.DeltaAngle(transform.eulerAngles.z, MovementJoystickDirInDegrees.Value)) < IgnoredDirDifferenceDegrees)
             {
-                if (TrySpendEnergy(EnginesConsumption.Value * MovementJoystickMagnitude.Value * Time.fixedDeltaTime))
+                if (TrySpendEnergy(EnginesConsumption.Value * MovementJoystickMagnitude.Value * Time.deltaTime))
                 {
                     _myRigidbody2D.AddForce(DataOperator.RotateVector2(new Vector2(0, AccelerationPower * AccelerationPowerMod * MovementJoystickMagnitude.Value), MovementJoystickDirInDegrees.Value));
                 }
@@ -497,8 +497,8 @@ public class ShipGameStats : NetworkBehaviour
         while (_shipsSpriteRenderer.color.a > 0)
         {
             Color oldColor = _shipsSpriteRenderer.color;
-            _shipsSpriteRenderer.color = new Color(oldColor.r, oldColor.g, oldColor.b, oldColor.a - Time.fixedDeltaTime);
-            yield return new WaitForSeconds(Time.fixedDeltaTime);
+            _shipsSpriteRenderer.color = new Color(oldColor.r, oldColor.g, oldColor.b, oldColor.a - Time.deltaTime);
+            yield return new WaitForSeconds(Time.deltaTime);
         }
         if (NetworkManager.Singleton.IsServer)
         {

@@ -113,7 +113,7 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: "\u041A\u043E\u043C\u0430\u0440 1024"
+      name: Mosquito
       rect:
         serializedVersion: 2
         x: 27
@@ -145,8 +145,10 @@ TextureImporter:
     edges: []
     weights: []
     secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
     nameFileIdTable:
-      "\u041A\u043E\u043C\u0430\u0440 1024": 743124314411544437
+      Mosquito: 743124314411544437
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

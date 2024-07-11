@@ -72,3 +72,6 @@ MonoBehaviour:
     modulesOnShipData: []
   ownerClientID: 0
   teamID: {}
+  movementJoystickPressed: 0
+  movementJoystickDirInDegrees: 0
+  movementJoystickMagnitude: 0

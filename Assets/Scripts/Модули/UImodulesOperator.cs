@@ -1,3 +1,4 @@
+using System.Reflection;
 using UnityEngine;
 
 public class UImodulesOperator : MonoBehaviour
@@ -122,7 +123,9 @@ public class UImodulesOperator : MonoBehaviour
         moduleDragging_.name = modulePrefab.name + " (перетаскивается)";
         moduleDragging_.GetComponent<SpriteRenderer>().sprite = modulePrefab.transform.Find("Image").GetComponent<SpriteRenderer>().sprite;
         moduleDragging_.transform.localScale = modulePrefab.transform.Find("Image").localScale;
-        moduleDragging_.GetComponent<DraggingModule>().MyModule = module;
+        DraggingModule draggingModuleComponent = moduleDragging_.GetComponent<DraggingModule>();
+        draggingModuleComponent.MyModule = module;
+        draggingModuleComponent.LowResolutionSprite = modulePrefab.GetComponent<ItemData>().LowResolutionSprite;
 
         DataOperator.instance.PlayUISound(moduleTakeSound, moduleTakeSoundVolume);
     }
