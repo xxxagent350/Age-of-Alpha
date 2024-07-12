@@ -3,8 +3,9 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using Unity.Netcode;
+using System;
 
-public class PlayerInterface : MonoBehaviour
+public class ShipInterfaceManager : MonoBehaviour
 {
     [Header("Настройка")]
     public EnergyBar energyBar;
@@ -27,19 +28,18 @@ public class PlayerInterface : MonoBehaviour
 
     [SerializeField] private Radar _radar;
 
-    [SerializeField] private GameObject[] _shipInterfaceGameObjects;
-    [SerializeField] private Image[] _shipInterfaceImages;
-    [SerializeField] private bool[] _shipInterfaceImagesToEnable;
-    [SerializeField] private float _shipInterfaceAlphaChangingSpeed = 5f;
+    [SerializeField] private List<InterfaceElement> _interfaceElements;
+    private const float ShipInterfaceAlphaChangingSpeed = 5f;
 
     [Header("Отладка")]
-    [SerializeField] private bool _shipInterfaceEnabled;
+    public bool ShipInterfaceEnabled;
     [SerializeField] private List<TranslatedText> _warningMessagesList;
     public Player LocalPlayer;
 
-    public static PlayerInterface Instance;
+    public static ShipInterfaceManager Instance;
+
     private bool _shipInterfaceGameObjectsEnabled;
-    private float _shipInterfaceAlpha;
+    [SerializeField] private float _shipInterfaceAlpha;
 
     private bool _movementJoystickIconAlphaGrowingUp;
     private bool _movementJoystickIconSleeping;
@@ -62,6 +62,8 @@ public class PlayerInterface : MonoBehaviour
         if (Instance != null)
         {
             Debug.LogWarning("На сцене несколько PlayerInterface, чего быть не должно");
+            Destroy(gameObject);
+            return;
         }
         else
         {
@@ -71,6 +73,56 @@ public class PlayerInterface : MonoBehaviour
         {
             attackButton.pointerStateChangedMessage += SendAttackButtonStateChangedMessage;
         }
+        SetAutoDefaultOpacities();
+        SetActiveInterfaceElements(ShipInterfaceEnabled);
+    }
+
+    void SetAutoDefaultOpacities()
+    {
+        foreach (InterfaceElement interfaceElement in _interfaceElements)
+        {
+            if (interfaceElement.DefaultOpacity < 0)
+            {
+                if (interfaceElement.Image != null)
+                {
+                    interfaceElement.DefaultOpacity = interfaceElement.Image.color.a;
+                }
+                if (interfaceElement.TextMeshProUI != null)
+                {
+                    interfaceElement.DefaultOpacity = interfaceElement.TextMeshProUI.color.a;
+                }
+            }
+        }
+    }
+
+    void SetActiveInterfaceElements(bool state)
+    {
+        if (state == false)
+        {
+            ResetJoystickAnimation();
+        }
+
+        foreach (InterfaceElement interfaceElement in _interfaceElements)
+        {
+            if (interfaceElement.Image != null)
+            {
+                interfaceElement.Image.gameObject.SetActive(state);
+            }
+            if (interfaceElement.TextMeshProUI != null)
+            {
+                interfaceElement.TextMeshProUI.gameObject.SetActive(state);
+            }
+        }
+        _shipInterfaceGameObjectsEnabled = state;
+    }
+
+    void ResetJoystickAnimation()
+    {
+        _movementJoystickIconAlphaGrowingUp = true;
+        _movementJoystickIconSleeping = true;
+        _movementJoystickIconTimerSleep = 0;
+        _movementJoystickIconAlpha = 0;
+        _movementJoystickHandleLightAlpha = 0;
     }
 
     private void OnDestroy()
@@ -81,30 +133,11 @@ public class PlayerInterface : MonoBehaviour
         }
     }
 
-    private void Start()
-    {
-        _shipInterfaceElementsAlphas = new float[_shipInterfaceImages.Length];
-        if (!_shipInterfaceEnabled)
-        {
-            foreach (GameObject intefaceElement in _shipInterfaceGameObjects)
-            {
-                intefaceElement.SetActive(false);
-            }
-            _shipInterfaceGameObjectsEnabled = false;
-            foreach (Image intefaceElement in _shipInterfaceImages)
-            {
-                Color oldColor = intefaceElement.color;
-                intefaceElement.color = new Color(oldColor.r, oldColor.g, oldColor.b, 0);
-            }
-            _shipInterfaceAlpha = 0;
-        }
-    }
-
     void Update()
     {
         UpdatePlayerInterfaceVisualState();
 
-        if (_shipInterfaceEnabled)
+        if (ShipInterfaceEnabled)
         {
             AnimateMovementJoystickIcon();
             AnimateMovementJoystickHandleLight();
@@ -122,9 +155,9 @@ public class PlayerInterface : MonoBehaviour
             ShowWarningsFromList();
         }
 
-        if (NetworkManager.Singleton.IsClient == false && _shipInterfaceEnabled)
+        if (NetworkManager.Singleton.IsClient == false && ShipInterfaceEnabled)
         {
-            SetActivePlayerInterface(false);
+            ShipInterfaceEnabled = false;
         }
     }
 
@@ -176,73 +209,53 @@ public class PlayerInterface : MonoBehaviour
         }
     }
 
-    public void SetActivePlayerInterface(bool state)
-    {
-        _shipInterfaceEnabled = state;
-        if (state == false)
-        {
-            _movementJoystickIconAlphaGrowingUp = true;
-            _movementJoystickIconSleeping = true;
-            _movementJoystickIconTimerSleep = 0;
-            _movementJoystickIconAlpha = 0;
-            _movementJoystickHandleLightAlpha = 0;
-
-            for (int intefaceElementNum = 0; intefaceElementNum < _shipInterfaceImages.Length; intefaceElementNum++)
-            {
-                _shipInterfaceElementsAlphas[intefaceElementNum] = _shipInterfaceImages[intefaceElementNum].color.a;
-            }
-        }
-    }
-
     void UpdatePlayerInterfaceVisualState()
     {
-        if (_shipInterfaceEnabled)
+        if (ShipInterfaceEnabled)
         {
             if (!_shipInterfaceGameObjectsEnabled)
             {
                 _shipInterfaceAlpha = 0;
-                foreach (GameObject intefaceElement in _shipInterfaceGameObjects)
-                {
-                    intefaceElement.SetActive(true);
-                }
-                _shipInterfaceGameObjectsEnabled = true;
+                SetActiveInterfaceElements(true);
             }
             if (_shipInterfaceAlpha < 1)
             {
-                _shipInterfaceAlpha += _shipInterfaceAlphaChangingSpeed * Time.deltaTime;
+                _shipInterfaceAlpha += ShipInterfaceAlphaChangingSpeed * Time.deltaTime;
                 if (_shipInterfaceAlpha > 1)
                 {
                     _shipInterfaceAlpha = 1;
                 }
-                for (int intefaceElementNum = 0; intefaceElementNum < _shipInterfaceImages.Length; intefaceElementNum++)
-                {
-                    if (_shipInterfaceImagesToEnable[intefaceElementNum])
-                    {
-                        Color oldColor = _shipInterfaceImages[intefaceElementNum].color;
-                        _shipInterfaceImages[intefaceElementNum].color = new Color(oldColor.r, oldColor.g, oldColor.b, _shipInterfaceAlpha);
-                    }
-                }
+                SetAlphaToInterfaceElements(_shipInterfaceAlpha);
             }
         }
         else
         {
             if (_shipInterfaceAlpha > 0)
             {
-                _shipInterfaceAlpha -= _shipInterfaceAlphaChangingSpeed * Time.deltaTime;
+                _shipInterfaceAlpha -= ShipInterfaceAlphaChangingSpeed * Time.deltaTime;
                 if (_shipInterfaceAlpha < 0)
                 {
                     _shipInterfaceAlpha = 0;
-                    foreach (GameObject intefaceElement in _shipInterfaceGameObjects)
-                    {
-                        intefaceElement.SetActive(false);
-                    }
-                    _shipInterfaceGameObjectsEnabled = false;
+                    SetActiveInterfaceElements(false);
                 }
-                for (int intefaceElementNum = 0; intefaceElementNum < _shipInterfaceImages.Length; intefaceElementNum++)
-                {
-                    Color oldColor = _shipInterfaceImages[intefaceElementNum].color;
-                    _shipInterfaceImages[intefaceElementNum].color = new Color(oldColor.r, oldColor.g, oldColor.b, _shipInterfaceAlpha * _shipInterfaceElementsAlphas[intefaceElementNum]);
-                }
+                SetAlphaToInterfaceElements(_shipInterfaceAlpha);
+            }
+        }
+    }
+
+    void SetAlphaToInterfaceElements(float alpha)
+    {
+        foreach (InterfaceElement interfaceElement in _interfaceElements)
+        {
+            if (interfaceElement.Image != null)
+            {
+                Color oldColor = interfaceElement.Image.color;
+                interfaceElement.Image.color = new Color(oldColor.r, oldColor.g, oldColor.b, alpha * interfaceElement.DefaultOpacity);
+            }
+            if (interfaceElement.TextMeshProUI != null)
+            {
+                Color oldColor = interfaceElement.TextMeshProUI.color;
+                interfaceElement.TextMeshProUI.color = new Color(oldColor.r, oldColor.g, oldColor.b, alpha * interfaceElement.DefaultOpacity);
             }
         }
     }
@@ -350,5 +363,16 @@ public class PlayerInterface : MonoBehaviour
     public void ShowWarningText(TranslatedText text_)
     {
         _warningMessagesList.Add(text_);
+    }
+
+    [Serializable]
+    class InterfaceElement
+    {
+        public Image Image;
+        public TextMeshProUGUI TextMeshProUI;
+        [Tooltip("Не изменять прозрачность при включении интерфейса")]
+        public bool DontEnableOpacityOnSetActive;
+        [Tooltip("Непрозрачность объекта, которая будет установлена при включении интерфейса (менее 0 = авто)")]
+        [Range(-1, 1)] public float DefaultOpacity = -1;
     }
 }

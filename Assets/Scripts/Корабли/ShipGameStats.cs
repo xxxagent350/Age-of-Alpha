@@ -71,7 +71,7 @@ public class ShipGameStats : NetworkBehaviour
         }
         if (IsOwner)
         {
-            _energyBar = PlayerInterface.Instance.energyBar;
+            _energyBar = ShipInterfaceManager.Instance.energyBar;
             CameraMover.instance.SetPlayerShip(transform);
         }
         foreach (SpriteRenderer engineLight in _enginesLights)
@@ -557,20 +557,20 @@ public class ShipGameStats : NetworkBehaviour
         float shipSize = extremePoints.magnitude;
         GameCameraScaler.instance.SetCameraLimits(shipSize);
 
-        PlayerInterface.Instance.SetLocalPlayerToRadar(this);
+        ShipInterfaceManager.Instance.SetLocalPlayerToRadar(this);
     }
 
     [Rpc(SendTo.Owner)]
     void SendMessageToOwnerRpc(TranslatedNetworkText networkMessage)
     {
         TranslatedText message = networkMessage.GetTranslatedText();
-        PlayerInterface.Instance.ShowWarningText(message);
+        ShipInterfaceManager.Instance.ShowWarningText(message);
     }
 
     [Rpc(SendTo.Owner)]
     void ChangeOwnersInterfaceStateRpc(bool state)
     {
-        PlayerInterface.Instance.SetActivePlayerInterface(state);
+        ShipInterfaceManager.Instance.ShipInterfaceEnabled = state;
     }
 
 

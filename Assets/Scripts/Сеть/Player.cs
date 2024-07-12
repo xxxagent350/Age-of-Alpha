@@ -36,8 +36,8 @@ public class Player : NetworkBehaviour
         }
         if (IsOwner)
         {
-            PlayerInterface.Instance.LocalPlayer = this;
-            PlayerInterface.Instance.attackButtonStateChangedMessage += ReceiveAttackButtonStateChangedRpc;
+            ShipInterfaceManager.Instance.LocalPlayer = this;
+            ShipInterfaceManager.Instance.attackButtonStateChangedMessage += ReceiveAttackButtonStateChangedRpc;
             string playerShipName = DataOperator.instance.shipsPrefabs[playerShipNum].GetComponent<ItemData>().Name.EnglishText;
             ModuleOnShipData[] modulesOnPlayerShip = DataOperator.instance.LoadDataModulesOnShip("ModulesOnShipData(" + playerShipName + ")");
             Ship newPlayerShip = new Ship(playerShipNum, modulesOnPlayerShip);
@@ -49,7 +49,7 @@ public class Player : NetworkBehaviour
     {
         if (IsOwner)
         {
-            PlayerInterface.Instance.attackButtonStateChangedMessage -= ReceiveAttackButtonStateChangedRpc;
+            ShipInterfaceManager.Instance.attackButtonStateChangedMessage -= ReceiveAttackButtonStateChangedRpc;
         }   
     }
 
