@@ -497,9 +497,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   targetFrameRate_: 60
   shipsPrefabs:
-  - {fileID: 2635389954598171621, guid: a366571ed6f267d469c0414017387469, type: 3}
-  - {fileID: 4635037893194338003, guid: 48a3cc2654b13664d85d93cc41aff89a, type: 3}
-  - {fileID: 920481142507257362, guid: 27bcfb9a9b929854ca91eb3967c9badf, type: 3}
+  - {fileID: 7745446731627448160, guid: 27bcfb9a9b929854ca91eb3967c9badf, type: 3}
+  - {fileID: 16158875558872638, guid: a366571ed6f267d469c0414017387469, type: 3}
+  - {fileID: 2466329934498713305, guid: 48a3cc2654b13664d85d93cc41aff89a, type: 3}
   modulesPrefabs:
   - {fileID: 3221555419619218397, guid: af3cabf146fcc4c44af7a8dbc0e570b1, type: 3}
   - {fileID: 4244011045991937344, guid: 43008a637ca34d146b99cea2a068aba2, type: 3}
@@ -522,7 +522,7 @@ AudioSource:
   m_GameObject: {fileID: 5292908563983817125}
   m_Enabled: 1
   serializedVersion: 4
-  OutputAudioMixerGroup: {fileID: 0}
+  OutputAudioMixerGroup: {fileID: 2762078354956320626, guid: 1479b519d8301e94d929ecd204b1fcf9, type: 2}
   m_audioClip: {fileID: 0}
   m_Resource: {fileID: 0}
   m_PlayOnAwake: 0
@@ -635,9 +635,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2e76e069a2708d04b969d4a8d054e7e5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  volume:
-    MusicVolumeMod: 0.3
-    SoundVolumeMod: 1
   userLanguage: 0
   userGraphics: 0
   healthCellsShowPreset: 0

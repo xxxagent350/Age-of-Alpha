@@ -111,20 +111,20 @@ public class MusicController : MonoBehaviour
         
         if (turnOn)
         {
-            if (audioSource.volume < GameSettingsKeeper.instance.volume.MusicVolumeMod * channelMusicMod)
+            if (audioSource.volume < channelMusicMod)
             {
-                audioSource.volume += (Time.deltaTime / MusicFadeTime) * GameSettingsKeeper.instance.volume.MusicVolumeMod * channelMusicMod;
+                audioSource.volume += (Time.deltaTime / MusicFadeTime) * channelMusicMod;
             }
             else
             {
-                audioSource.volume = GameSettingsKeeper.instance.volume.MusicVolumeMod * channelMusicMod;
+                audioSource.volume = channelMusicMod;
             }
         }
         else
         {
             if (audioSource.volume > 0)
             {
-                audioSource.volume -= (Time.deltaTime / MusicFadeTime) * GameSettingsKeeper.instance.volume.MusicVolumeMod * channelMusicMod;
+                audioSource.volume -= (Time.deltaTime / MusicFadeTime) * channelMusicMod;
             }
             else
             {

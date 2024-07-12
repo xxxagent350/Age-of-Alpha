@@ -209,7 +209,7 @@ public class ModulesMenuSlot : MonoBehaviour, IPointerDownHandler
             ShipStats shipInstalledModulesData;
             if (slotsPutter != null)
             {
-                shipInstalledModulesData = slotsPutter.itemData.GetComponent<ShipStats>();
+                shipInstalledModulesData = slotsPutter.ItemData.GetComponent<ShipStats>();
             }
             else
             {

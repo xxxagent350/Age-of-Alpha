@@ -25,6 +25,8 @@ public class Player : NetworkBehaviour
     
     private void Start()
     {
+        playerShipNum = (uint)DataOperator.instance.LoadDataInt(ShipChanger.playerShipNumDataName);
+
         myNetworkObject = GetComponent<NetworkObject>();
         ownerClientID = myNetworkObject.OwnerClientId;
         if (NetworkManager.Singleton.IsServer)

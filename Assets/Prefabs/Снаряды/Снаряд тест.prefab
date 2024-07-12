@@ -246,7 +246,7 @@ MonoBehaviour:
   _raycastPosition: {x: 0, y: 0.3}
   StartSpeed: 100
   Mass: 100
-  Lifetime: 2
+  Lifetime: 1.5
   _selfDestructAfterHit: 0
   _explodeOnLifetimeEnds: 0
   _rotateToVelocityVectorDir: 0

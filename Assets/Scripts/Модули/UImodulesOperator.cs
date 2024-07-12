@@ -180,7 +180,7 @@ public class UImodulesOperator : MonoBehaviour
     {
         if (shipData == null)
         {
-            shipData = slotsPutter.itemData;
+            shipData = slotsPutter.ItemData;
         }
         if (shipData != null && shipInstalledModulesData == null)
         {

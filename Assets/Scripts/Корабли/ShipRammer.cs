@@ -33,7 +33,10 @@ public class ShipRammer : MonoBehaviour
 
     private void FixedUpdate()
     {
-        _lastFrameVelocity = _rigidbody2D.velocity;
+        if (NetworkManager.Singleton.IsServer)
+        {
+            _lastFrameVelocity = _rigidbody2D.velocity;
+        } 
     }
 
     private void OnCollisionEnter2D(Collision2D collision)

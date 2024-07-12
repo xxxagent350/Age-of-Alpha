@@ -14,7 +14,6 @@ public class ShipGameStats : NetworkBehaviour
 
     [SerializeField] private List<Effect> _destroyEffects;
     [SerializeField] private Sprite _destroyedImage;
-    [SerializeField] private float _timeToDisappearAfterDestroy;
     [Tooltip("Импульс при уничтожении корабля")]
     [SerializeField] private float _forceOnDestroy;
     [Tooltip("Вращательный импульс при уничтожении корабля")]
@@ -44,7 +43,7 @@ public class ShipGameStats : NetworkBehaviour
     //модификаторы полёта
     private const float IgnoredDirDifferenceDegrees = 60;
     private const float MinDrag = 0;
-    private const float MaxSpeedMod = 150;
+    private const float MaxSpeedMod = 200;
     private const float LinearDragMod = 0.3f;
     private const float AccelerationPowerMod = 1600;
     private const float RotationForceMod = 75000;
@@ -59,6 +58,8 @@ public class ShipGameStats : NetworkBehaviour
 
     private NetworkVariable<float> _enginesVisualPowerMod = new NetworkVariable<float>();
     private NetworkVariable<bool> _trailsEmitting = new NetworkVariable<bool>();
+
+    private const float TimeToDisappearAfterDestroy = 60;
 
     private void Start()
     {
@@ -482,7 +483,7 @@ public class ShipGameStats : NetworkBehaviour
             DisableFlightEffectsRpc();
             ShowDestroyEffectsRpc(_myRigidbody2D.velocity);
 
-            Invoke(nameof(DissapearRpc), _timeToDisappearAfterDestroy);
+            Invoke(nameof(DissapearRpc), TimeToDisappearAfterDestroy);
         }
     }
 
@@ -522,7 +523,7 @@ public class ShipGameStats : NetworkBehaviour
             Color oldColor = engineLight.color;
             engineLight.color = new Color(oldColor.r, oldColor.g, oldColor.b, visualPowerMod);
         }
-        _enginesAudioSource.volume = visualPowerMod * _engineSoundVolumeMod * GameSettingsKeeper.instance.volume.SoundVolumeMod;
+        _enginesAudioSource.volume = visualPowerMod * _engineSoundVolumeMod;
     }
 
     [Rpc(SendTo.Everyone)]

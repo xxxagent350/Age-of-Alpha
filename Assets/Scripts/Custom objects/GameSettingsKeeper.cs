@@ -5,7 +5,6 @@ public class GameSettingsKeeper : MonoBehaviour
 {
     public static GameSettingsKeeper instance;
 
-    public Volume volume = new Volume();
     public SupportedLanguages userLanguage;
     public GraphicsPresets userGraphics = GraphicsPresets.high;
     public HealthCellsShowPreset healthCellsShowPreset = HealthCellsShowPreset.onlyWhenZoomedIn;

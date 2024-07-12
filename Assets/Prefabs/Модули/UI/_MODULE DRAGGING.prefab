@@ -103,7 +103,7 @@ MonoBehaviour:
   _greenSlot: {fileID: 6937352971062761732, guid: 9b7d50e3c187d2b4089748ba8de75913, type: 3}
   _redSlot: {fileID: 6937352971062761732, guid: ec22bfe8fd728494cbbeb84ef927342b, type: 3}
   _errorSound: {fileID: 8300000, guid: 6682e6b3c91b2734586e7756accc4d4b, type: 3}
-  _errorSoundVolume: 1
+  _errorSoundVolume: 0.2
   _modulePutSounds:
   - {fileID: 8300000, guid: 98f8619c753d4c94aa9a23486722c2fa, type: 3}
   - {fileID: 8300000, guid: ba3f4cf38ff73bf4895f15ac8d1d3bd2, type: 3}

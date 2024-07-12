@@ -1,67 +1,65 @@
-using UnityEngine;
-using UnityEngine.UI;
-using UnityEngine.SceneManagement;
 using System;
 using TMPro;
 using Unity.Netcode;
+using UnityEngine;
+using UnityEngine.UI;
 
 public class ModulesMenu : MonoBehaviour
 {
     [Header("Настройка")]
     //public GameObject[] DataOperator.instance.modulesPrefabs;
-    [SerializeField] GameObject moduleSlotPrefab;
-    [SerializeField] RectTransform scrollingContent;
+    [SerializeField] private GameObject moduleSlotPrefab;
+    [SerializeField] private RectTransform scrollingContent;
 
-    [SerializeField] GameObject modulesList;
-    [SerializeField] GameObject moduleParametres;
-    [SerializeField] RectTransform moduleInfoContent;
-    [SerializeField] Image moduleParametresImage;
-    [SerializeField] Text moduleParametresName;
-    [SerializeField] TextMeshProUGUI moduleParametresInfo;
+    [SerializeField] private GameObject modulesList;
+    [SerializeField] private GameObject moduleParametres;
+    [SerializeField] private RectTransform moduleInfoContent;
+    [SerializeField] private Image moduleParametresImage;
+    [SerializeField] private Text moduleParametresName;
+    [SerializeField] private TextMeshProUGUI moduleParametresInfo;
     public ModuleInstallationErrorMessage moduleInstallationErrorMessageComponent;
-    [SerializeField] GameObject noModulesOnStorageText;
-    [SerializeField] TextMeshProUGUI shipStatsText;
+    [SerializeField] private GameObject noModulesOnStorageText;
+    [SerializeField] private TextMeshProUGUI shipStatsText;
 
-    [SerializeField] Image revertButton;
-    [SerializeField] Image repeatButton;
+    [SerializeField] private Image revertButton;
+    [SerializeField] private Image repeatButton;
 
-    [SerializeField] GameObject infoButton;
-    [SerializeField] Sprite infoButtonEnabledSprite;
-    [SerializeField] Sprite infoButtonDisabledSprite;
+    [SerializeField] private GameObject infoButton;
+    [SerializeField] private Sprite infoButtonEnabledSprite;
+    [SerializeField] private Sprite infoButtonDisabledSprite;
 
-    [SerializeField] GameObject applyingWarningPanel;
-    [SerializeField] string OKSceneName;
+    [SerializeField] private GameObject applyingWarningPanel;
+    [SerializeField] private string OKSceneName;
 
-    [SerializeField] AudioClip clickSound;
-    [SerializeField] float clickSoundVolume = 1;
+    [SerializeField] private AudioClip clickSound;
+    [SerializeField] private float clickSoundVolume = 1;
 
     //слоты категорий модулей
-    [SerializeField] GameObject weaponSlot;
-    [SerializeField] GameObject defenseSlot;
-    [SerializeField] GameObject energySlot;
-    [SerializeField] GameObject enginesSlot;
-    [SerializeField] GameObject dronesSlot;
-    [SerializeField] GameObject specialSlot;
+    [SerializeField] private GameObject weaponSlot;
+    [SerializeField] private GameObject defenseSlot;
+    [SerializeField] private GameObject energySlot;
+    [SerializeField] private GameObject enginesSlot;
+    [SerializeField] private GameObject dronesSlot;
+    [SerializeField] private GameObject specialSlot;
 
     [Header("Отладка")]
-    [SerializeField] bool give999Modules;
-    [SerializeField] GameObject[] menuSlots;
+    [SerializeField] private bool give999Modules;
+    [SerializeField] private GameObject[] menuSlots;
+    private ItemData[] modulesComponents;
+    private modulesCategories categoryFilter = modulesCategories.None;
+    private float moduleInfoContentStartYPos;
 
-    ItemData[] modulesComponents;
-    modulesCategories categoryFilter = modulesCategories.None;
-    float moduleInfoContentStartYPos;
     //ModuleData.types typeFilter = ModuleData.types.None;
 
     //какие типы модулей имеются на складе
-    bool weaponCategoryExists;
-    bool defenseCategoryExists;
-    bool energyCategoryExists;
-    bool enginesCategoryExists;
-    bool dronesCategoryExists;
-    bool specialCategoryExists;
-
-    ShipStats shipStats;
-    bool shipStatsButtonEnabled;
+    private bool weaponCategoryExists;
+    private bool defenseCategoryExists;
+    private bool energyCategoryExists;
+    private bool enginesCategoryExists;
+    private bool dronesCategoryExists;
+    private bool specialCategoryExists;
+    [HideInInspector] public ShipStats shipStats;
+    private bool shipStatsButtonEnabled;
 
     private void Start()
     {
@@ -89,7 +87,7 @@ public class ModulesMenu : MonoBehaviour
         BackFromModuleParametres();
     }
 
-    void TryFoundShipStats()
+    private void TryFoundShipStats()
     {
         if (shipStats == null)
         {
@@ -97,7 +95,7 @@ public class ModulesMenu : MonoBehaviour
         }
     }
 
-    void CalculateModulesCategoriesAndTypes() //хочешь развить свой мозг? попробуй в этом разобраться
+    private void CalculateModulesCategoriesAndTypes() //хочешь развить свой мозг? попробуй в этом разобраться
     {
         weaponCategoryExists = false;
         defenseCategoryExists = false;
@@ -111,17 +109,34 @@ public class ModulesMenu : MonoBehaviour
         {
             modulesCategories category = modulesComponents[moduleOnStorageData.module.moduleNum].Category;
             if (category == modulesCategories.Weapon)
+            {
                 weaponCategoryExists = true;
+            }
+
             if (category == modulesCategories.DefenceModules)
+            {
                 defenseCategoryExists = true;
+            }
+
             if (category == modulesCategories.EnergyBlocks)
+            {
                 energyCategoryExists = true;
+            }
+
             if (category == modulesCategories.Engines)
+            {
                 enginesCategoryExists = true;
+            }
+
             if (category == modulesCategories.Drones)
+            {
                 dronesCategoryExists = true;
+            }
+
             if (category == modulesCategories.SpecialModules)
+            {
                 specialCategoryExists = true;
+            }
         }
     }
 
@@ -149,17 +164,34 @@ public class ModulesMenu : MonoBehaviour
                 noModulesOnStorageText.SetActive(false);
                 CalculateModulesCategoriesAndTypes();
                 if (weaponCategoryExists)
-                    AddSlot(weaponSlot);
+                {
+                    _ = AddSlot(weaponSlot);
+                }
+
                 if (defenseCategoryExists)
-                    AddSlot(defenseSlot);
+                {
+                    _ = AddSlot(defenseSlot);
+                }
+
                 if (energyCategoryExists)
-                    AddSlot(energySlot);
+                {
+                    _ = AddSlot(energySlot);
+                }
+
                 if (enginesCategoryExists)
-                    AddSlot(enginesSlot);
+                {
+                    _ = AddSlot(enginesSlot);
+                }
+
                 if (dronesCategoryExists)
-                    AddSlot(dronesSlot);
+                {
+                    _ = AddSlot(dronesSlot);
+                }
+
                 if (specialCategoryExists)
-                    AddSlot(specialSlot);
+                {
+                    _ = AddSlot(specialSlot);
+                }
             }
         }
         if (categoryFilter == modulesCategories.Weapon)
@@ -212,7 +244,7 @@ public class ModulesMenu : MonoBehaviour
         menuSlots = new GameObject[0];
     }
 
-    void AddSlotsOfCategory(modulesCategories category)
+    private void AddSlotsOfCategory(modulesCategories category)
     {
         ModulesOnStorageData[] modulesOnStorageData = DataOperator.instance.GetModulesOnStorageDataClonedArray();
         foreach (ModulesOnStorageData moduleOnStorageData in modulesOnStorageData)
@@ -226,12 +258,12 @@ public class ModulesMenu : MonoBehaviour
         }
     }
 
-    GameObject AddSlot(GameObject slot)
+    private GameObject AddSlot(GameObject slot)
     {
         Array.Resize(ref menuSlots, menuSlots.Length + 1);
         GameObject slot_ = Instantiate(slot, scrollingContent);
         slot_.GetComponent<RectTransform>().anchoredPosition = new Vector3(0, -5 - ((menuSlots.Length - 1) * 85), 0);
-        menuSlots[menuSlots.Length - 1] = slot_;
+        menuSlots[^1] = slot_;
         return slot_;
     }
 
@@ -244,7 +276,7 @@ public class ModulesMenu : MonoBehaviour
         }
     }
 
-    void Give999Modules()
+    private void Give999Modules()
     {
         for (int module = 0; module < DataOperator.instance.modulesPrefabs.Length; module++)
         {
@@ -311,15 +343,15 @@ public class ModulesMenu : MonoBehaviour
         modulesList.SetActive(true);
     }
 
-    TranslatedText GetModuleParametresInfo(Module module)
+    private TranslatedText GetModuleParametresInfo(Module module)
     {
-        TranslatedText text = new TranslatedText();
+        TranslatedText text = new();
 
         GameObject modulePrefab = DataOperator.instance.modulesPrefabs[module.moduleNum];
         ItemData itemData = modulePrefab.GetComponent<ItemData>();
         Durability durabilityComponent = modulePrefab.GetComponent<Durability>();
         Engine engineComponent = modulePrefab.GetComponent<Engine>();
-        Weapon weaponComponent = modulePrefab.GetComponent<Weapon>();
+        _ = modulePrefab.GetComponent<Weapon>();
         EnergyGenerator generatorComponent = modulePrefab.GetComponent<EnergyGenerator>();
         Battery batteryComponent = modulePrefab.GetComponent<Battery>();
 
@@ -344,13 +376,15 @@ public class ModulesMenu : MonoBehaviour
             {
                 text.RussianText += "\nСопротивление к энерго урону: " + DataOperator.instance.RoundFloat(durabilityComponent.durability.resistanceToEnergyDamage * 100) + "%";
                 text.EnglishText += "\nResistance to energy damage: " + DataOperator.instance.RoundFloat(durabilityComponent.durability.resistanceToEnergyDamage * 100) + "%";
-            } 
+            }
         }
         else
         {
-            TranslatedText debugText = new TranslatedText();
-            debugText.RussianText = "На префабе модуля " + modulePrefab.name + " отсутствует компонент Durability, который должен быть на всех модулях (он отвечает за прочность модуля)";
-            debugText.EnglishText = "On the module's prefab " + modulePrefab.name + " is missing Durability component, which should be on all modules (it is responsible for the maxHP of the module)";
+            TranslatedText debugText = new()
+            {
+                RussianText = "На префабе модуля " + modulePrefab.name + " отсутствует компонент Durability, который должен быть на всех модулях (он отвечает за прочность модуля)",
+                EnglishText = "On the module's prefab " + modulePrefab.name + " is missing Durability component, which should be on all modules (it is responsible for the maxHP of the module)"
+            };
             Debug.LogError(debugText.GetTranslatedString());
             return debugText;
         }
@@ -386,11 +420,18 @@ public class ModulesMenu : MonoBehaviour
         SlotsPutter slotsPutter = (SlotsPutter)FindFirstObjectByType(typeof(SlotsPutter));
         ShipStats shipInstalledModulesData;
         if (slotsPutter != null)
-            shipInstalledModulesData = slotsPutter.itemData.GetComponent<ShipStats>();
+        {
+            shipInstalledModulesData = slotsPutter.ItemData.GetComponent<ShipStats>();
+        }
         else
+        {
             return;
+        }
+
         if (shipInstalledModulesData == null)
+        {
             return;
+        }
 
         shipInstalledModulesData.RemoveAllModules();
     }
@@ -403,7 +444,7 @@ public class ModulesMenu : MonoBehaviour
         {
             shipStats.CalculateShipStats();
 
-            TranslatedText shipStatsTranslatedText = new TranslatedText();
+            TranslatedText shipStatsTranslatedText = new();
             shipStatsTranslatedText.RussianText += "Масса: " + DataOperator.instance.RoundFloat(shipStats.totalMass);
             shipStatsTranslatedText.EnglishText += "Mass: " + DataOperator.instance.RoundFloat(shipStats.totalMass);
 
@@ -470,7 +511,8 @@ public class ModulesMenu : MonoBehaviour
             EnableShipStats();
         }
     }
-    void EnableShipStats()
+
+    private void EnableShipStats()
     {
         shipStatsButtonEnabled = true;
         shipStatsText.gameObject.SetActive(true);
@@ -482,7 +524,8 @@ public class ModulesMenu : MonoBehaviour
         Color oldImageColor = image.color;
         image.color = new Color(oldImageColor.r, oldImageColor.g, oldImageColor.b, 1f);
     }
-    void DisableShipStats()
+
+    private void DisableShipStats()
     {
         shipStatsButtonEnabled = false;
         shipStatsText.gameObject.SetActive(false);
@@ -505,7 +548,7 @@ public class ModulesMenu : MonoBehaviour
             {
                 DataOperator.instance.PlayUISound(clickSound, clickSoundVolume);
                 shipStats.BackInTime();
-            } 
+            }
         }
     }
 
@@ -518,11 +561,11 @@ public class ModulesMenu : MonoBehaviour
             {
                 DataOperator.instance.PlayUISound(clickSound, clickSoundVolume);
                 shipStats.ForwardInTime();
-            } 
+            }
         }
     }
 
-    void ChangeTimeButtonsVisualState()
+    private void ChangeTimeButtonsVisualState()
     {
         TryFoundShipStats();
         if (shipStats != null)
@@ -576,39 +619,51 @@ public class ModulesMenu : MonoBehaviour
         {
             //блок управления
             if (DataOperator.instance.modulesPrefabs[moduleOnShip.module.moduleNum].GetComponent<ItemData>().Type == modulesTypes.ControlModules)
+            {
                 controlBlockExists = true;
+            }
 
             //двигатели
             if (DataOperator.instance.modulesPrefabs[moduleOnShip.module.moduleNum].GetComponent<ItemData>().Category == modulesCategories.Engines)
+            {
                 engineExists = true;
+            }
 
             //оружие
             if (DataOperator.instance.modulesPrefabs[moduleOnShip.module.moduleNum].GetComponent<ItemData>().Category == modulesCategories.Weapon)
+            {
                 weaponExists = true;
+            }
         }
         if (!controlBlockExists)
         {
-            TranslatedText warningMessageText = new TranslatedText();
-            warningMessageText.RussianText = "Не установлен блок управления - вы не сможете управлять кораблём, всё равно продолжить?";
-            warningMessageText.EnglishText = "No control block installed - you won't be able to control the ship, still continue?";
+            TranslatedText warningMessageText = new()
+            {
+                RussianText = "Не установлен блок управления - вы не сможете управлять кораблём, всё равно продолжить?",
+                EnglishText = "No control block installed - you won't be able to control the ship, still continue?"
+            };
             applyingWarningPanel.transform.Find("Text").GetComponent<Text>().text = warningMessageText.GetTranslatedString();
             applyingWarningPanel.SetActive(true);
             return;
         }
         if (!engineExists)
         {
-            TranslatedText warningMessageText = new TranslatedText();
-            warningMessageText.RussianText = "Не установлено ни одного двигателя, всё равно продолжить?";
-            warningMessageText.EnglishText = "No engine installed, still continue?";
+            TranslatedText warningMessageText = new()
+            {
+                RussianText = "Не установлено ни одного двигателя, всё равно продолжить?",
+                EnglishText = "No engine installed, still continue?"
+            };
             applyingWarningPanel.transform.Find("Text").GetComponent<Text>().text = warningMessageText.GetTranslatedString();
             applyingWarningPanel.SetActive(true);
             return;
         }
         if (!weaponExists)
         {
-            TranslatedText warningMessageText = new TranslatedText();
-            warningMessageText.RussianText = "На корабле нет оружия - вы сможете нанести урон только тараном, всё равно продолжить?";
-            warningMessageText.EnglishText = "There are no weapons on the ship - you can only do damage with a battering ram, still continue?";
+            TranslatedText warningMessageText = new()
+            {
+                RussianText = "На корабле нет оружия - вы сможете нанести урон только тараном, всё равно продолжить?",
+                EnglishText = "There are no weapons on the ship - you can only do damage with a battering ram, still continue?"
+            };
             applyingWarningPanel.transform.Find("Text").GetComponent<Text>().text = warningMessageText.GetTranslatedString();
             applyingWarningPanel.SetActive(true);
             return;
@@ -617,9 +672,11 @@ public class ModulesMenu : MonoBehaviour
         //проверка хватает ли энергии на двигатели
         if (shipStats.totalEnginesConsumption > shipStats.totalEnergyGeneration)
         {
-            TranslatedText warningMessageText = new TranslatedText();
-            warningMessageText.RussianText = "Недостаточно генераторов энергии для непрерывной работы двигателей, всё равно продолжить?";
-            warningMessageText.EnglishText = "Not enough power generators to keep the engines running continuously, still continue?";
+            TranslatedText warningMessageText = new()
+            {
+                RussianText = "Недостаточно генераторов энергии для непрерывной работы двигателей, всё равно продолжить?",
+                EnglishText = "Not enough power generators to keep the engines running continuously, still continue?"
+            };
             applyingWarningPanel.transform.Find("Text").GetComponent<Text>().text = warningMessageText.GetTranslatedString();
             applyingWarningPanel.SetActive(true);
             return;

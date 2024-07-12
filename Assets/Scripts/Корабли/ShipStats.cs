@@ -1,11 +1,11 @@
 using System;
-using UnityEngine;
 using Unity.Netcode;
+using UnityEngine;
 
 public class ShipStats : MonoBehaviour
 {
     [Header("Настройка")]
-    [SerializeField] GameObject UIModulePrefab;
+    [SerializeField] private GameObject UIModulePrefab;
 
     [Header("Отладка")]
     //ниже параметры корабля вместе с модулями
@@ -27,15 +27,18 @@ public class ShipStats : MonoBehaviour
     public ModulesInstallingHistory[] futureHistory;
 
     [HideInInspector] public string teamID; //ID команды. Одинаковый - союзники, разный - враги
-    string shipName;
-    GameObject[] modulesUI;
-    ItemData myItemData;
-    ModulesMenu modulesMenu;
+    private string shipName;
+    private GameObject[] modulesUI;
+    private ItemData myItemData;
+    private ModulesMenu modulesMenu;
+    private bool _shipBuildingScene;
 
-    private void Start()
+    private void Awake()
     {
+        _shipBuildingScene = GameObject.Find("ModulesMenu") != null;
+
         Initialize();
-        if (GameObject.Find("ModulesMenu") != null)
+        if (_shipBuildingScene)
         {
             InitializeForShipBuildingScene();
         }
@@ -47,7 +50,7 @@ public class ShipStats : MonoBehaviour
         TryFoundItemData();
     }
 
-    void TryFoundItemData()
+    private void TryFoundItemData()
     {
         if (myItemData == null)
         {
@@ -55,14 +58,11 @@ public class ShipStats : MonoBehaviour
         }
     }
 
-    void InitializeForShipBuildingScene()
+    private void InitializeForShipBuildingScene()
     {
         modulesOnShip = DataOperator.instance.LoadDataModulesOnShip("ModulesOnShipData(" + shipName + ")");
         //Debug.Log("1: " + modulesOnShip.Length);
-        if (modulesOnShip == null)
-        {
-            modulesOnShip = new ModuleOnShipData[0];
-        }
+        modulesOnShip ??= new ModuleOnShipData[0];
         pastHistory = new ModulesInstallingHistory[0];
         futureHistory = new ModulesInstallingHistory[0];
         TryFoundModulesMenu();
@@ -70,7 +70,7 @@ public class ShipStats : MonoBehaviour
         RenderAllModulesOnShip();
     }
 
-    void RenderAllModulesOnShip()
+    private void RenderAllModulesOnShip()
     {
         for (int moduleNum = 0; moduleNum < modulesOnShip.Length; moduleNum++)
         {
@@ -83,24 +83,24 @@ public class ShipStats : MonoBehaviour
         Array.Resize(ref modulesOnShip, modulesOnShip.Length + 1);
         ModulesOnStorageData modulesOnStorageData = DataOperator.instance.LoadDataModulesOnStorage(moduleAdding);
         Module module = modulesOnStorageData.module;
-        modulesOnShip[modulesOnShip.Length - 1] = new ModuleOnShipData(module, position);
+        modulesOnShip[^1] = new ModuleOnShipData(module, position);
         if (time == Times.Past)
         {
             Array.Resize(ref pastHistory, pastHistory.Length - 1);
             Array.Resize(ref futureHistory, futureHistory.Length + 1);
-            futureHistory[futureHistory.Length - 1] = new ModulesInstallingHistory(module, position, true);
+            futureHistory[^1] = new ModulesInstallingHistory(module, position, true);
         }
         if (time == Times.Present)
         {
             futureHistory = new ModulesInstallingHistory[0];
             Array.Resize(ref pastHistory, pastHistory.Length + 1);
-            pastHistory[pastHistory.Length - 1] = new ModulesInstallingHistory(module, position, true);
+            pastHistory[^1] = new ModulesInstallingHistory(module, position, true);
         }
         if (time == Times.Future)
         {
             Array.Resize(ref pastHistory, pastHistory.Length + 1);
             Array.Resize(ref futureHistory, futureHistory.Length - 1);
-            pastHistory[pastHistory.Length - 1] = new ModulesInstallingHistory(module, position, true);
+            pastHistory[^1] = new ModulesInstallingHistory(module, position, true);
         }
         RenderModuleUI(module, position);
         DataOperator.instance.SaveData("ModulesOnShipData(" + shipName + ")", modulesOnShip);
@@ -115,7 +115,24 @@ public class ShipStats : MonoBehaviour
         UImoduleGO.transform.localScale = modulePrefab.transform.Find("Image").localScale;
 
         Array.Resize(ref modulesUI, modulesUI.Length + 1);
-        modulesUI[modulesUI.Length - 1] = UImoduleGO;
+        modulesUI[^1] = UImoduleGO;
+    }
+
+    private void OnDisable()
+    {
+        if (_shipBuildingScene)
+        {
+            DestroyAllUIModules();
+        }
+    }
+
+    public void DestroyAllUIModules()
+    {
+        foreach (GameObject moduleUI in modulesUI)
+        {
+            Destroy(moduleUI);
+        }
+        modulesUI = new GameObject[0];
     }
 
     public void RemoveAllModules()
@@ -126,13 +143,12 @@ public class ShipStats : MonoBehaviour
             ModulesOnStorageData modulesOnStorageData = DataOperator.instance.LoadDataModulesOnStorage(modulesOnShip[moduleNum].module);
             modulesOnStorageData.amount += 1;
             DataOperator.instance.SaveData(modulesOnStorageData);
-            Destroy(modulesUI[moduleNum]);
         }
         modulesOnShip = new ModuleOnShipData[0];
         pastHistory = new ModulesInstallingHistory[0];
         futureHistory = new ModulesInstallingHistory[0];
         DataOperator.instance.SaveData("ModulesOnShipData(" + shipName + ")", modulesOnShip);
-        modulesUI = new GameObject[0];
+        DestroyAllUIModules();
         modulesMenu.RenderMenuSlosts();
     }
 
@@ -146,19 +162,19 @@ public class ShipStats : MonoBehaviour
                 {
                     Array.Resize(ref pastHistory, pastHistory.Length - 1);
                     Array.Resize(ref futureHistory, futureHistory.Length + 1);
-                    futureHistory[futureHistory.Length - 1] = new ModulesInstallingHistory(modulesOnShip[moduleNum].module, position, false);
+                    futureHistory[^1] = new ModulesInstallingHistory(modulesOnShip[moduleNum].module, position, false);
                 }
                 if (time == Times.Present)
                 {
                     futureHistory = new ModulesInstallingHistory[0];
                     Array.Resize(ref pastHistory, pastHistory.Length + 1);
-                    pastHistory[pastHistory.Length - 1] = new ModulesInstallingHistory(modulesOnShip[moduleNum].module, position, false);
+                    pastHistory[^1] = new ModulesInstallingHistory(modulesOnShip[moduleNum].module, position, false);
                 }
                 if (time == Times.Future)
                 {
                     Array.Resize(ref pastHistory, pastHistory.Length + 1);
                     Array.Resize(ref futureHistory, futureHistory.Length - 1);
-                    pastHistory[pastHistory.Length - 1] = new ModulesInstallingHistory(modulesOnShip[moduleNum].module, position, false);
+                    pastHistory[^1] = new ModulesInstallingHistory(modulesOnShip[moduleNum].module, position, false);
                 }
 
                 if (moduleNum != modulesOnShip.Length - 1)
@@ -190,7 +206,7 @@ public class ShipStats : MonoBehaviour
         Array.Resize(ref modulesUI, modulesUI.Length - 1);
     }
 
-    void TryFoundModulesMenu()
+    private void TryFoundModulesMenu()
     {
         if (modulesMenu == null)
         {
@@ -223,7 +239,7 @@ public class ShipStats : MonoBehaviour
             Battery moduleBattery = modulePrefab.GetComponent<Battery>();
             EnergyGenerator moduleEnergyGenerator = modulePrefab.GetComponent<EnergyGenerator>();
             Engine moduleEngine = modulePrefab.GetComponent<Engine>();
-            Weapon moduleWeapon = modulePrefab.GetComponent<Weapon>();
+            _ = modulePrefab.GetComponent<Weapon>();
 
             if (moduleItemData != null)
             {
@@ -278,7 +294,7 @@ public class ShipStats : MonoBehaviour
     {
         if (pastHistory.Length > 0)
         {
-            ModulesInstallingHistory targetModuleInstallingHistory = pastHistory[pastHistory.Length - 1];
+            ModulesInstallingHistory targetModuleInstallingHistory = pastHistory[^1];
             if (targetModuleInstallingHistory.moduleInstalled == true) //модуль был установлен, снимаем
             {
                 //добавляем одну штуку на склад
@@ -310,7 +326,7 @@ public class ShipStats : MonoBehaviour
     {
         if (futureHistory.Length > 0)
         {
-            ModulesInstallingHistory targetModuleInstallingHistory = futureHistory[futureHistory.Length - 1];
+            ModulesInstallingHistory targetModuleInstallingHistory = futureHistory[^1];
             if (targetModuleInstallingHistory.moduleInstalled == true) //модуль был установлен, снимаем
             {
                 //добавляем одну штуку на склад

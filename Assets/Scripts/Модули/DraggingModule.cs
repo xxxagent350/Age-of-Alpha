@@ -55,11 +55,11 @@ public class DraggingModule : MonoBehaviour
     {
         if (_shipData == null)
         {
-            _shipData = _slotsPutter.itemData;
+            _shipData = _slotsPutter.ItemData;
         }
         if (_shipInstalledModulesData == null)
         {
-            _shipInstalledModulesData = _slotsPutter.itemData.GetComponent<ShipStats>();
+            _shipInstalledModulesData = _slotsPutter.ItemData.GetComponent<ShipStats>();
         }
     }
 

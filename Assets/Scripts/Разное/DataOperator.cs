@@ -183,6 +183,7 @@ public class DataOperator : MonoBehaviour
 
     public void PlayUISound(AudioClip sound, float volume)
     {
+        Debug.Log(sound);
         if (sound != null)
         {
             UIAudioSource.clip = sound;
