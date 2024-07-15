@@ -1,5 +1,7 @@
+using System;
 using System.Collections.Generic;
 using Unity.Netcode;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class ModulesCellsDurabilityShower : NetworkBehaviour
@@ -393,20 +395,27 @@ public class ModulesCellsDurabilityShower : NetworkBehaviour
     }
 }
 
-public struct LowAccuracyVector2
+[Serializable]
+public struct LowAccuracyVector2 : INetworkSerializable
 {
-    readonly long xCompressed; //домноженный на 100 и округлённый до целого X
-    readonly long yCompressed; //домноженный на 100 и округлённый до целого Y
-    const int accuracy = 100; //точность (больше == выше)
+    private long _xCompressed; //домноженный на accuracy и округлённый до целого X
+    private long _yCompressed; //домноженный на accuracy и округлённый до целого Y
+    private const int Accuracy = 100; //точность (больше == выше)
 
     public LowAccuracyVector2(Vector2 _vector2)
     {
-        xCompressed = Mathf.RoundToInt(_vector2.x * accuracy);
-        yCompressed = Mathf.RoundToInt(_vector2.y * accuracy);
+        _xCompressed = Mathf.RoundToInt(_vector2.x * Accuracy);
+        _yCompressed = Mathf.RoundToInt(_vector2.y * Accuracy);
     }
 
     public Vector2 GetVector2()
     {
-        return new Vector2((float)xCompressed / accuracy, (float)yCompressed / accuracy);
+        return new Vector2((float)_xCompressed / Accuracy, (float)_yCompressed / Accuracy);
+    }
+
+    public void NetworkSerialize<T>(BufferSerializer<T> serializer) where T : IReaderWriter
+    {
+        serializer.SerializeValue(ref _xCompressed);
+        serializer.SerializeValue(ref _yCompressed);
     }
 }

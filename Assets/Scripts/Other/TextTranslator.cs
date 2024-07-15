@@ -87,8 +87,8 @@ public struct TranslatedNetworkText : INetworkSerializable
     public TranslatedText GetTranslatedText()
     {
         TranslatedText translatedText = new TranslatedText();
-        translatedText.RussianText = RussianText.GetString();
-        translatedText.EnglishText = EnglishText.GetString();
+        translatedText.RussianText = RussianText.String;
+        translatedText.EnglishText = EnglishText.String;
         return translatedText;
     }
 

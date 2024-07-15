@@ -188,7 +188,7 @@ public class ShipInterfaceManager : MonoBehaviour
 
         if (NetworkManager.Singleton.IsClient == false && _shipInterfaceEnabled)
         {
-            _shipInterfaceEnabled = false;
+            SetActiveInterface(false);
         }
     }
 

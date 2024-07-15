@@ -85,9 +85,12 @@ public class RpcHandlerForEffects : NetworkBehaviour
             if (effectsDictionary.TryGetValue(effectName, out effect))
             {
                 List<GameObject> effectGOs = effect.SpawnEffectsFromPool(position, rotation);
-                foreach (GameObject effectGO in effectGOs)
+                if (speed != Vector3.zero)
                 {
-                    effectGO.GetComponent<PooledEffect>().speed = speed;
+                    foreach (GameObject effectGO in effectGOs)
+                    {
+                        effectGO.GetComponent<PooledEffect>().speed = speed;
+                    }
                 }
                 return effectGOs;
             }

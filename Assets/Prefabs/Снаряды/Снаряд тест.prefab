@@ -240,9 +240,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Damage:
-    fireDamage: 1
-    energyDamage: 1.5
-    physicalDamage: 0.5
+    fireDamage: 0
+    energyDamage: 1
+    physicalDamage: 2
   _raycastPosition: {x: 0, y: 0.3}
   StartSpeed: 100
   Mass: 100

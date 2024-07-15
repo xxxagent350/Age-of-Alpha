@@ -235,3 +235,11 @@ MonoBehaviour:
       - {fileID: 8108717132085797788, guid: 369ed329f6435d2429b490d68c26e34e, type: 3}
       LowQualityEffects:
       - {fileID: 8108717132085797788, guid: 369ed329f6435d2429b490d68c26e34e, type: 3}
+  - effectName: Small laser
+    effect:
+      HighQualityEffects:
+      - {fileID: 6014609462268279273, guid: a43a2fb23ebd0824f8fbab94c9fa8fa2, type: 3}
+      MediumQualityEffects:
+      - {fileID: 6014609462268279273, guid: a43a2fb23ebd0824f8fbab94c9fa8fa2, type: 3}
+      LowQualityEffects:
+      - {fileID: 6014609462268279273, guid: a43a2fb23ebd0824f8fbab94c9fa8fa2, type: 3}

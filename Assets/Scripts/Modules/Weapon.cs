@@ -6,7 +6,7 @@ public abstract class Weapon : MonoBehaviour
 {
     [Header("Отладка(менять не нужно)")]
     [Tooltip("Ведётся ли стрельба из орудия")]
-    public bool FIRE;
+    public bool isFiring;
     [Tooltip("В рабочем ли состоянии орудие")]
     public bool isWorking = true;
     [Tooltip("Номер орудия (например если игрок хочет выстрелить из орудий обозначенных номером 2, то стреляют орудия у которых этот параметр равен 2), выставляется автоматически")]
@@ -16,7 +16,7 @@ public abstract class Weapon : MonoBehaviour
     protected float _сurrentReloadTime = 0;
 
     [HideInInspector] public ShipGameStats myShipGameStats;
-    [HideInInspector] public string teamID;
+    public string teamID { get; private set; }
     bool noControl = false;
     float serverUpdateDeltaTime;
     
@@ -36,8 +36,7 @@ public abstract class Weapon : MonoBehaviour
         serverUpdateDeltaTime = Time.fixedDeltaTime;
         myShipGameStats = GetComponentInParent<ShipGameStats>();
         myShipGameStats.attackButtonStateChangedMessage += ChangeFiringState;
-        teamID = myShipGameStats.TeamID.Value.GetString();
-        RandomUpdate();
+        teamID = myShipGameStats.TeamID.Value.String;
     }
 
     public void Disconnect()
@@ -63,7 +62,7 @@ public abstract class Weapon : MonoBehaviour
     {
         if (index == weaponNum)
         {
-            FIRE = fire;
+            isFiring = fire;
         }
     }
 
@@ -78,13 +77,21 @@ public abstract class Weapon : MonoBehaviour
         }
     }
 
-    public void RandomUpdate()
+    private void OnEnable()
     {
-        if (!noControl)
+        StartCoroutine(RandomServerUpdateCoroutine());
+    }
+
+    private IEnumerator RandomServerUpdateCoroutine()
+    {
+        while (!noControl)
         {
-            RandomizedServerUpdate();
+            if (NetworkManager.Singleton.IsServer)
+            {
+                RandomizedServerUpdate();
+            }
+            yield return new WaitForSeconds(Random.Range(serverUpdateDeltaTime * 0.5f, serverUpdateDeltaTime * 1.5f));
         }
-        Invoke(nameof(RandomUpdate), Random.Range(serverUpdateDeltaTime * 0.5f, serverUpdateDeltaTime * 1.5f));
     }
 
     public virtual void Initialize()

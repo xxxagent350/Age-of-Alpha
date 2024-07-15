@@ -6,23 +6,22 @@ using Random = UnityEngine.Random;
 public class Player : NetworkBehaviour
 {
     [Header("Настройка")]
-    [SerializeField] uint playerShipNum; 
+    [SerializeField] private uint playerShipNum;
 
     [Header("Отладка")]
-    [SerializeField] Ship playerShip;
-    [SerializeField] ulong ownerClientID;
-    [SerializeField] NetworkVariable<NetworkString> teamID = new NetworkVariable<NetworkString>();
+    [SerializeField] private Ship playerShip;
+    [SerializeField] private ulong ownerClientID;
+    [SerializeField] private NetworkVariable<NetworkString> teamID = new();
 
     [Header("Отображается на сервере")]
-    [SerializeField] bool movementJoystickPressed;
-    [SerializeField] float movementJoystickDirInDegrees;
-    [SerializeField] float movementJoystickMagnitude;
+    [SerializeField] private bool movementJoystickPressed;
+    [SerializeField] private float movementJoystickDirInDegrees;
+    [SerializeField] private float movementJoystickMagnitude;
+    private GameObject playerShipGO;
+    private ShipGameStats playerShipGameStats;
+    private NetworkObject myNetworkObject;
+    private bool readyToSpawn; //true когда данные о корабле игрока получены и можно его спавнить
 
-    GameObject playerShipGO;
-    ShipGameStats playerShipGameStats;
-    NetworkObject myNetworkObject;
-    bool readyToSpawn; //true когда данные о корабле игрока получены и можно его спавнить
-    
     private void Start()
     {
         playerShipNum = (uint)DataOperator.instance.LoadDataInt(ShipChanger.playerShipNumDataName);
@@ -40,7 +39,7 @@ public class Player : NetworkBehaviour
             ShipInterfaceManager.Instance.attackButtonStateChangedMessage += ReceiveAttackButtonStateChangedRpc;
             string playerShipName = DataOperator.instance.shipsPrefabs[playerShipNum].GetComponent<ItemData>().Name.EnglishText;
             ModuleOnShipData[] modulesOnPlayerShip = DataOperator.instance.LoadDataModulesOnShip("ModulesOnShipData(" + playerShipName + ")");
-            Ship newPlayerShip = new Ship(playerShipNum, modulesOnPlayerShip);
+            Ship newPlayerShip = new(playerShipNum, modulesOnPlayerShip);
             SendPlayerShipDataToServerRpc(newPlayerShip);
         }
     }
@@ -50,10 +49,10 @@ public class Player : NetworkBehaviour
         if (IsOwner)
         {
             ShipInterfaceManager.Instance.attackButtonStateChangedMessage -= ReceiveAttackButtonStateChangedRpc;
-        }   
+        }
     }
 
-    void WaitingToSpawnPlayerShip()
+    private void WaitingToSpawnPlayerShip()
     {
         if (readyToSpawn)
         {
@@ -65,7 +64,7 @@ public class Player : NetworkBehaviour
         }
     }
 
-    void SpawnPlayerShip()
+    private void SpawnPlayerShip()
     {
         if (playerShipGO != null)
         {
@@ -79,13 +78,10 @@ public class Player : NetworkBehaviour
             playerShipGameStats = playerShipSpawned.GetComponent<ShipGameStats>();
 
             ModuleOnShipData[] modulesOnPlayerShipData = playerShip.modulesOnShipData;
-            if (modulesOnPlayerShipData == null)
-            {
-                modulesOnPlayerShipData = new ModuleOnShipData[0];
-            }
+            modulesOnPlayerShipData ??= new ModuleOnShipData[0];
             ShipGameModulesCreator shipGameModulesCreator = playerShipSpawned.GetComponent<ShipGameModulesCreator>();
             shipGameModulesCreator.modulesOnShip = modulesOnPlayerShipData;
-            shipGameModulesCreator.teamID = teamID.Value.GetString();
+            shipGameModulesCreator.teamID = teamID.Value.String;
             shipGameModulesCreator.CreateShipModules();
 
             ShipStats playerShipStats = playerShipSpawned.GetComponent<ShipStats>();
@@ -107,7 +103,7 @@ public class Player : NetworkBehaviour
     }
 
     [Rpc(SendTo.Server)]
-    void SendPlayerShipDataToServerRpc(Ship newPlayerShip)
+    private void SendPlayerShipDataToServerRpc(Ship newPlayerShip)
     {
         playerShip = newPlayerShip;
         readyToSpawn = true;
@@ -133,7 +129,7 @@ public class Player : NetworkBehaviour
 
             movementJoystickMagnitude = magnitude_;
         }
-        
+
         if (playerShipGameStats != null)
         {
             playerShipGameStats.MovementJoystickPressed.Value = movementJoystickPressed;
@@ -143,7 +139,7 @@ public class Player : NetworkBehaviour
     }
 
     [Rpc(SendTo.Server)]
-    void ReceiveAttackButtonStateChangedRpc(uint index, bool pressed)
+    private void ReceiveAttackButtonStateChangedRpc(uint index, bool pressed)
     {
         playerShipGameStats.SendFireStateChange(index, pressed);
     }
@@ -191,44 +187,47 @@ public struct Ship : INetworkSerializable
 [Serializable]
 public struct NetworkString : INetworkSerializable
 {
-    char[] symbols;
+    public char[] Symbols { get; private set; }
 
     public NetworkString(string inputString)
     {
         if (inputString == null)
         {
             Debug.LogWarning("Не задана inputString для NetworkString");
-            symbols = new char[0];
+            Symbols = new char[0];
             return;
-        }    
-        symbols = new char[inputString.Length];
+        }
+        Symbols = new char[inputString.Length];
         for (int symbolNum = 0; symbolNum < inputString.Length; symbolNum++)
         {
-            symbols[symbolNum] = inputString[symbolNum];
+            Symbols[symbolNum] = inputString[symbolNum];
         }
     }
 
-    public string GetString()
+    public string String
     {
-        string outoutString = "";
-        if (symbols == null)
+        get
         {
-            Debug.LogWarning("Попытка получить не заданную string из NetworkString");
+            string outputString = "";
+            if (Symbols == null)
+            {
+                Debug.LogWarning("Попытка получить не заданную string из NetworkString");
+            }
+            foreach (char symbol in Symbols)
+            {
+                outputString += symbol;
+            }
+            return outputString;
         }
-        for (int symbolNum = 0; symbolNum < symbols.Length; symbolNum++)
-        {
-            outoutString += symbols[symbolNum];
-        }
-        return outoutString;
     }
 
     public void NetworkSerialize<T>(BufferSerializer<T> serializer) where T : IReaderWriter
     {
         // Length
         int length = 0;
-        if (symbols != null && !serializer.IsReader)
+        if (Symbols != null && !serializer.IsReader)
         {
-            length = symbols.Length;
+            length = Symbols.Length;
         }
 
         serializer.SerializeValue(ref length);
@@ -236,14 +235,14 @@ public struct NetworkString : INetworkSerializable
         // Array
         if (serializer.IsReader)
         {
-            symbols = new char[length];
+            Symbols = new char[length];
         }
 
-        if (symbols != null)
+        if (Symbols != null)
         {
             for (int n = 0; n < length; ++n)
             {
-                serializer.SerializeValue(ref symbols[n]);
+                serializer.SerializeValue(ref Symbols[n]);
             }
         }
     }

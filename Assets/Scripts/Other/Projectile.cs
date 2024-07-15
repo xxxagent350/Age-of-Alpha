@@ -129,7 +129,7 @@ public class Projectile : MonoBehaviour
                     if (hitInfoLayer == LayerMask.NameToLayer("Ship"))
                     {
                         ShipGameStats shipGameStats = hitInfo.collider.GetComponent<ShipGameStats>();
-                        if (shipGameStats != null && shipGameStats.TeamID.Value.GetString() != teamID)
+                        if (shipGameStats != null && shipGameStats.TeamID.Value.String != teamID)
                         {
                             if (!_insideEnemyShip)
                             {

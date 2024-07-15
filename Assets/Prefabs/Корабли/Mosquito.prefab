@@ -1059,6 +1059,7 @@ GameObject:
   - component: {fileID: 3546278048782120513}
   - component: {fileID: 1218646809974974622}
   - component: {fileID: 4040453327439477306}
+  - component: {fileID: 2952308156068006858}
   - component: {fileID: 2432220087295496015}
   - component: {fileID: 3666674793819445206}
   - component: {fileID: 8556905443401645706}
@@ -1259,6 +1260,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _kamikadzingShipColor: {r: 1, g: 0.18564281, b: 0, a: 1}
   _timeToExplode: 1.5
+--- !u!114 &2952308156068006858
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7745446731627448160}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c328f577ef8ac3249a40f12b8b0091a3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &2432220087295496015
 MonoBehaviour:
   m_ObjectHideFlags: 0

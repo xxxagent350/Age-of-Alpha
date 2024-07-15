@@ -24,7 +24,6 @@ public abstract class NetworkAuthorityChecker : NetworkBehaviour
         {
             if (NetworkManager.Singleton.IsServer)
             {
-                Debug.Log("Server");
                 if (_myPlayer == null)
                 {
                     return false;

@@ -10,7 +10,7 @@ public class DestroyedModulesEffectsSpawner : NetworkBehaviour
         List<string> effectsNamesList = new List<string>(0);
         foreach (NetworkString effectsNameNetworkString in effectsNamesNetworkStringArray)
         {
-            effectsNamesList.Add(effectsNameNetworkString.GetString());
+            effectsNamesList.Add(effectsNameNetworkString.String);
         }
 
         List<GameObject> effectsGOs = RpcHandlerForEffects.SpawnEffectsLocal(effectsNamesList, Vector3.zero, Quaternion.identity, Vector3.zero);

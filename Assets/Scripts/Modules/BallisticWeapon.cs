@@ -50,7 +50,7 @@ public class BallisticWeapon : Weapon
     {
         if (isWorking)
         {
-            if (FIRE)
+            if (isFiring)
             {
                 Fire();
             }
