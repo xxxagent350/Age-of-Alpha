@@ -76,12 +76,12 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 50
-  m_Sprite: {fileID: -689790936, guid: 33c3d0e57909ab443908aeeb1fc6429d, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 37c7f20982f79364b9ca492e644b9f1f, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
-  m_Size: {x: 19.11, y: 18.39}
+  m_Size: {x: 20.48, y: 20.48}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
@@ -184,7 +184,7 @@ MonoBehaviour:
   Image: {fileID: 1252752957442409977}
   Category: 3
   Type: 7
-  LowResolutionSprite: {fileID: -689790936, guid: 607f79088cf106a4188c9c0bed713809, type: 3}
+  LowResolutionSprite: {fileID: 21300000, guid: 6c0cbf79e6e416c418dd80d40556c4e8, type: 3}
   Name:
     RussianText: "\u0413\u0435\u043D\u0435\u0440\u0430\u0442\u043E\u0440 \u0432\u043D\u0443\u0442\u0440\u0435\u043D\u043D\u0435\u0433\u043E
       \u0441\u0433\u043E\u0440\u0430\u043D\u0438\u044F"

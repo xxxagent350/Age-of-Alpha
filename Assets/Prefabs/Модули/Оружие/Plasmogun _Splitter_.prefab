@@ -244,7 +244,7 @@ MonoBehaviour:
   FIRE: 0
   isWorking: 1
   weaponNum: 0
-  Cooldown: 0.3
+  "_\u0441ooldown": 0.3
   myShipGameStats: {fileID: 0}
   teamID: 
   projectilePrefab: {fileID: 2288871660798619471, guid: b2e6515e7e7ba5c4aaad7541b8331a23, type: 3}

@@ -27,12 +27,13 @@ public class ShipInterfaceManager : MonoBehaviour
     [SerializeField] private float _movementJoystickHandleLightAlphaChangingSpeed = 2;
 
     [SerializeField] private Radar _radar;
+    public KamikadzeButton KamikadzeButton;
 
     [SerializeField] private List<InterfaceElement> _interfaceElements;
     private const float ShipInterfaceAlphaChangingSpeed = 5f;
 
     [Header("Отладка")]
-    public bool ShipInterfaceEnabled;
+    [SerializeField] private bool _shipInterfaceEnabled;
     [SerializeField] private List<TranslatedText> _warningMessagesList;
     public Player LocalPlayer;
 
@@ -57,6 +58,8 @@ public class ShipInterfaceManager : MonoBehaviour
     private int _warningLabelBlinkedTimes;
     private float _warningLabelBlinkingTimer;
 
+    private bool interfaceOpacityIsGrowingDown;
+
     private void Awake()
     {
         if (Instance != null)
@@ -74,7 +77,23 @@ public class ShipInterfaceManager : MonoBehaviour
             attackButton.pointerStateChangedMessage += SendAttackButtonStateChangedMessage;
         }
         SetAutoDefaultOpacities();
-        SetActiveInterfaceElements(ShipInterfaceEnabled);
+        ResetJoystickAnimation();
+        SetActiveInterfaceElements(_shipInterfaceEnabled);
+    }
+
+    public void SetActiveInterface(bool enableInterface)
+    {
+        _shipInterfaceEnabled = enableInterface;
+        if (enableInterface)
+        {
+            KamikadzeButton.ResetAnimationsAndDelay();
+            _radar.enabled = true;
+        }
+        else
+        {
+            _radar.ClearRegisteredObjects();
+            _radar.enabled = false;
+        }
     }
 
     void SetAutoDefaultOpacities()
@@ -123,6 +142,9 @@ public class ShipInterfaceManager : MonoBehaviour
         _movementJoystickIconTimerSleep = 0;
         _movementJoystickIconAlpha = 0;
         _movementJoystickHandleLightAlpha = 0;
+
+        _movementJoystickIcon.color = new Color(_movementJoystickIcon.color.r, _movementJoystickIcon.color.g, _movementJoystickIcon.color.b, 0);
+        _movementJoystickHandleLight.color = new Color(_movementJoystickHandleLight.color.r, _movementJoystickHandleLight.color.g, _movementJoystickHandleLight.color.b, 0);
     }
 
     private void OnDestroy()
@@ -135,9 +157,18 @@ public class ShipInterfaceManager : MonoBehaviour
 
     void Update()
     {
+        if (_shipInterfaceEnabled && _shipInterfaceAlpha >= 1)
+        {
+            KamikadzeButton.enabled = true;
+        }
+        else
+        {
+            KamikadzeButton.enabled = false;
+        }
+
         UpdatePlayerInterfaceVisualState();
 
-        if (ShipInterfaceEnabled)
+        if (_shipInterfaceEnabled)
         {
             AnimateMovementJoystickIcon();
             AnimateMovementJoystickHandleLight();
@@ -155,9 +186,9 @@ public class ShipInterfaceManager : MonoBehaviour
             ShowWarningsFromList();
         }
 
-        if (NetworkManager.Singleton.IsClient == false && ShipInterfaceEnabled)
+        if (NetworkManager.Singleton.IsClient == false && _shipInterfaceEnabled)
         {
-            ShipInterfaceEnabled = false;
+            _shipInterfaceEnabled = false;
         }
     }
 
@@ -211,8 +242,9 @@ public class ShipInterfaceManager : MonoBehaviour
 
     void UpdatePlayerInterfaceVisualState()
     {
-        if (ShipInterfaceEnabled)
+        if (_shipInterfaceEnabled)
         {
+            interfaceOpacityIsGrowingDown = false;
             if (!_shipInterfaceGameObjectsEnabled)
             {
                 _shipInterfaceAlpha = 0;
@@ -225,37 +257,76 @@ public class ShipInterfaceManager : MonoBehaviour
                 {
                     _shipInterfaceAlpha = 1;
                 }
-                SetAlphaToInterfaceElements(_shipInterfaceAlpha);
+                SetAlphaToInterfaceElements(_shipInterfaceAlpha, true);
             }
         }
         else
         {
             if (_shipInterfaceAlpha > 0)
             {
+                if (interfaceOpacityIsGrowingDown == false)
+                {
+                    interfaceOpacityIsGrowingDown = true;
+                    SetInterfaceOpacitiesBeforeStartedToGrowingDown();
+                }
                 _shipInterfaceAlpha -= ShipInterfaceAlphaChangingSpeed * Time.deltaTime;
                 if (_shipInterfaceAlpha < 0)
                 {
                     _shipInterfaceAlpha = 0;
                     SetActiveInterfaceElements(false);
                 }
-                SetAlphaToInterfaceElements(_shipInterfaceAlpha);
+                SetAlphaToInterfaceElements(_shipInterfaceAlpha, false);
             }
         }
     }
 
-    void SetAlphaToInterfaceElements(float alpha)
+    void SetInterfaceOpacitiesBeforeStartedToGrowingDown()
     {
         foreach (InterfaceElement interfaceElement in _interfaceElements)
         {
             if (interfaceElement.Image != null)
             {
-                Color oldColor = interfaceElement.Image.color;
-                interfaceElement.Image.color = new Color(oldColor.r, oldColor.g, oldColor.b, alpha * interfaceElement.DefaultOpacity);
+                interfaceElement.opacityBeforeStartedToGrowingDown = interfaceElement.Image.color.a;
             }
             if (interfaceElement.TextMeshProUI != null)
             {
-                Color oldColor = interfaceElement.TextMeshProUI.color;
-                interfaceElement.TextMeshProUI.color = new Color(oldColor.r, oldColor.g, oldColor.b, alpha * interfaceElement.DefaultOpacity);
+                interfaceElement.opacityBeforeStartedToGrowingDown = interfaceElement.TextMeshProUI.color.a;
+            }
+        }
+    }
+
+    void SetAlphaToInterfaceElements(float alpha, bool interfaceEnabling)
+    {
+        foreach (InterfaceElement interfaceElement in _interfaceElements)
+        {
+            if (interfaceEnabling)
+            {
+                if (interfaceElement.DontEnableOpacityOnSetActive == false)
+                {
+                    if (interfaceElement.Image != null)
+                    {
+                        Color oldColor = interfaceElement.Image.color;
+                        interfaceElement.Image.color = new Color(oldColor.r, oldColor.g, oldColor.b, alpha * interfaceElement.DefaultOpacity);
+                    }
+                    if (interfaceElement.TextMeshProUI != null)
+                    {
+                        Color oldColor = interfaceElement.TextMeshProUI.color;
+                        interfaceElement.TextMeshProUI.color = new Color(oldColor.r, oldColor.g, oldColor.b, alpha * interfaceElement.DefaultOpacity);
+                    }
+                }
+            }
+            else
+            {
+                if (interfaceElement.Image != null)
+                {
+                    Color oldColor = interfaceElement.Image.color;
+                    interfaceElement.Image.color = new Color(oldColor.r, oldColor.g, oldColor.b, alpha * interfaceElement.opacityBeforeStartedToGrowingDown);
+                }
+                if (interfaceElement.TextMeshProUI != null)
+                {
+                    Color oldColor = interfaceElement.TextMeshProUI.color;
+                    interfaceElement.TextMeshProUI.color = new Color(oldColor.r, oldColor.g, oldColor.b, alpha * interfaceElement.opacityBeforeStartedToGrowingDown);
+                }
             }
         }
     }
@@ -374,5 +445,7 @@ public class ShipInterfaceManager : MonoBehaviour
         public bool DontEnableOpacityOnSetActive;
         [Tooltip("Непрозрачность объекта, которая будет установлена при включении интерфейса (менее 0 = авто)")]
         [Range(-1, 1)] public float DefaultOpacity = -1;
+
+        public float opacityBeforeStartedToGrowingDown;
     }
 }

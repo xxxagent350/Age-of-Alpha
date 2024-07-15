@@ -1058,6 +1058,7 @@ GameObject:
   - component: {fileID: 7470172466254851086}
   - component: {fileID: 3546278048782120513}
   - component: {fileID: 1218646809974974622}
+  - component: {fileID: 4040453327439477306}
   - component: {fileID: 2432220087295496015}
   - component: {fileID: 3666674793819445206}
   - component: {fileID: 8556905443401645706}
@@ -1216,7 +1217,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GlobalObjectIdHash: 2716429804
+  GlobalObjectIdHash: 3485373183
   InScenePlacedSourceGlobalObjectIdHash: 0
   AlwaysReplicateAsRoot: 0
   SynchronizeTransform: 1
@@ -1244,6 +1245,20 @@ MonoBehaviour:
   framesMaxBuffer: 100
   transformsInterpolating: []
   clientsCount: 0
+--- !u!114 &4040453327439477306
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7745446731627448160}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bae1b72956d08a54d8074caa1a766b82, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _kamikadzingShipColor: {r: 1, g: 0.18564281, b: 0, a: 1}
+  _timeToExplode: 1.5
 --- !u!114 &2432220087295496015
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1495,6 +1510,7 @@ MonoBehaviour:
   _forceOnDestroy: 1000
   _rotationForceOnDestroy: 2000
   TeamID: {}
+  ControlBlock: {fileID: 0}
   Mass: 0
   EnergyGeneration:
     m_InternalValue: 0

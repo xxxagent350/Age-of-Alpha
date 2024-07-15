@@ -3,33 +3,39 @@ using UnityEngine;
 public class GameInterfaceManager : MonoBehaviour
 {
     [Header("Настройка")]
-    [SerializeField] private GameObject NetworkInterface;
-    [SerializeField] private GameObject PauseInterface;
-    [SerializeField] private GameObject ShipInterface;
+    [SerializeField] private PauseInterfaceManager _pauseInterfaceManager;
+    [SerializeField] private ShipInterfaceManager _shipInterfaceManager;
 
-    public void EnableMetworkInterface()
+    public static GameInterfaceManager Instance;
+
+    private void Start()
     {
-        DisableAllInterfaces();
-        NetworkInterface.SetActive(true);
+        if (Instance == null)
+        {
+            Instance = this;
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
     }
 
     public void EnablePauseInterface()
     {
         DisableAllInterfaces();
-        PauseInterface.SetActive(true);
+        _pauseInterfaceManager.EnableInterface();
     }
 
     public void EnableShipInterface()
     {
         DisableAllInterfaces();
-        ShipInterface.SetActive(true);
+        _shipInterfaceManager.SetActiveInterface(true);
     }
 
-
-    private void DisableAllInterfaces()
+        
+    public void DisableAllInterfaces()
     {
-        NetworkInterface.SetActive(false);
-        PauseInterface.SetActive(false);
-        ShipInterface.SetActive(false);
+        _pauseInterfaceManager.DisableInterface();
+        _shipInterfaceManager.SetActiveInterface(false);
     }
 }
