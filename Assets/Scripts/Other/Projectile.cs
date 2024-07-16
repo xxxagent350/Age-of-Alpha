@@ -154,7 +154,7 @@ public class Projectile : MonoBehaviour
                         if (hitInfoLayer == LayerMask.NameToLayer("Environment") || hitInfoLayer == LayerMask.NameToLayer("Module"))
                         {
                             Durability hittedObject = hitInfo.collider.GetComponent<Durability>();
-                            if (hittedObject != null && hittedObject.teamID != teamID)
+                            if (hittedObject != null && hittedObject.TeamID != teamID)
                             {
                                 SpawnEffect(EffectType.moduleHit, hitInfo.point, transform.rotation, collidersSpeed);
                                 float previousDamage = Damage.GetAllDamage();

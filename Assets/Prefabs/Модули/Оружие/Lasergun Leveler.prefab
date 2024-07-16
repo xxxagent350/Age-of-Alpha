@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 8692466642476413909}
   - component: {fileID: 6996377433661902555}
   m_Layer: 7
-  m_Name: Lasergun
+  m_Name: Lasergun Leveler
   m_TagString: Module
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -136,7 +136,7 @@ MonoBehaviour:
   - small module destroyed
   _moduleDestroyOnShipEffects: []
   _explodeStrengthOnDestroy: 0
-  teamID: none
+  TeamID: none
   _cellsLocalPositionsInShip: []
 --- !u!114 &6996377433661902555
 MonoBehaviour:
@@ -156,14 +156,23 @@ MonoBehaviour:
   "_\u0441ooldown": 0
   myShipGameStats: {fileID: 0}
   _laserMainEffectName: Small laser
-  barrelPosition: {x: 0, y: 0.12}
-  _damagePerSecond: 15
+  _barrelPosition: {x: 0, y: 0.76}
+  _damagePerSecond:
+    fireDamage: 5
+    energyDamage: 0
+    physicalDamage: 0
   _energyPerSecond: 10
-  _maxLaserDistance: 15
-  _laserEnablingTime: 0.5
-  _laserPowerDataAmount: 1
+  _maxLaserDistance: 50
+  _modulesLayer:
+    serializedVersion: 2
+    m_Bits: 128
+  _laserEnablingTime: 0.1
+  _laserPowerDataAmount: 0.5
   _laserPowerData: 
   _laserGlobalAlpha: 0
+  _lasersEffectsNetworkSynchronizer: {fileID: 0}
+  _myShipGameStats: {fileID: 0}
+  _laserVisualDistance: 0
 --- !u!1 &7597412589461293852
 GameObject:
   m_ObjectHideFlags: 0

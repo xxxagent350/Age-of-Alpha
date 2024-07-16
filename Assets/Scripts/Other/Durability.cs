@@ -15,7 +15,7 @@ public class Durability : MonoBehaviour
     [SerializeField] private float _explodeStrengthOnDestroy = 0;
 
     [Header("Отладка")]
-    public string teamID = "none";
+    public string TeamID = "none";
     [SerializeField] private Vector2Serializable[] _cellsLocalPositionsInShip;
 
     private Rigidbody2D _shipsRigidbody2D;

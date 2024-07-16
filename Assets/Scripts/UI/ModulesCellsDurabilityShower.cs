@@ -137,7 +137,7 @@ public class ModulesCellsDurabilityShower : NetworkBehaviour
                     switch (healthCell.healthCellState)
                     {
                         case HealthCellState.showingUp:
-                            if (healthCell.damageAlpha < 1)
+                            if (healthCell.damageAlpha < 0.5f)
                             {
                                 healthCell.damageAlpha += alphaChangingSpeed * 2;
                             }
@@ -153,7 +153,7 @@ public class ModulesCellsDurabilityShower : NetworkBehaviour
                             break;
 
                         case HealthCellState.showingDown:
-                            if (healthCell.damageAlpha > 0)
+                            if (healthCell.damageAlpha > 0f)
                             {
                                 healthCell.damageAlpha -= alphaChangingSpeed;
                             }

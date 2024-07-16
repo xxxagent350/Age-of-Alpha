@@ -101,7 +101,7 @@ GameObject:
   - component: {fileID: 5458981685236833804}
   - component: {fileID: 1733610693317418674}
   m_Layer: 7
-  m_Name: Plasmogun _Splitter_
+  m_Name: Plasmogun Splitter
   m_TagString: Module
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

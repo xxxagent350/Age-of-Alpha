@@ -26,7 +26,7 @@ public class ShipGameModulesCreator : NetworkBehaviour
             Durability modulesDurability = moduleSpawned.GetComponent<Durability>();
             if (modulesDurability != null)
             {
-                modulesDurability.teamID = teamID;
+                modulesDurability.TeamID = teamID;
             }
         }
     }

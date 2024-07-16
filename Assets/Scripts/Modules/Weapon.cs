@@ -56,6 +56,10 @@ public abstract class Weapon : MonoBehaviour
         {
             myShipGameStats.attackButtonStateChangedMessage -= ChangeFiringState;
         }
+        if (NetworkManager.Singleton.IsServer)
+        {
+            OnDestroyServer();
+        }
     }
 
     public void ChangeFiringState(uint index, bool fire)
@@ -86,11 +90,11 @@ public abstract class Weapon : MonoBehaviour
     {
         while (!noControl)
         {
+            yield return new WaitForSeconds(Random.Range(serverUpdateDeltaTime * 0.5f, serverUpdateDeltaTime * 1.5f));
             if (NetworkManager.Singleton.IsServer)
             {
                 RandomizedServerUpdate();
             }
-            yield return new WaitForSeconds(Random.Range(serverUpdateDeltaTime * 0.5f, serverUpdateDeltaTime * 1.5f));
         }
     }
 
@@ -107,5 +111,10 @@ public abstract class Weapon : MonoBehaviour
     public virtual void FixedServerUpdate()
     {
         //для переопределения наследуемыми классами
+    }
+
+    public virtual void OnDestroyServer()
+    {
+        
     }
 }
