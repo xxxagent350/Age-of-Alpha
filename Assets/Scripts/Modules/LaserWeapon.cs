@@ -7,9 +7,13 @@ public class LaserWeapon : Weapon
     [SerializeField] private string _laserMainEffectName;
     [Tooltip("Позиция откуда будет 'вылетать' лазер (обозначена значком прицела в редакторе)")]
     [SerializeField] private Vector2 _barrelPosition;
-    [SerializeField] private Damage _damagePerSecond;
-    [SerializeField] private float _energyPerSecond = 10;
-    [SerializeField] private float _maxLaserDistance = 100;
+    public Damage DamagePerSecond;
+    public float EnergyPerSecond = 15;
+    public float MaxLaserDistance = 50;
+    [SerializeField] private List<string> _flashEffectsAtStartNames;
+    [SerializeField] private List<string> _flashEffectsAtEndNames;
+    [SerializeField] private string _laserSoundEffectName;
+    [SerializeField] private float _laserSoundVolumeMod = 1;
     [SerializeField] private LayerMask _modulesLayer;
     [SerializeField] private float _laserEnablingTime = 0.5f;
     [Tooltip("Сколько секунд хранится информация о том, хватало ли энергии лазеру. Чем этот параметр больше, тем плавнее лазер будет подстраивать прозрачность под нехватку энергии")]
@@ -20,6 +24,8 @@ public class LaserWeapon : Weapon
     [SerializeField] private float _laserGlobalAlpha;
     [SerializeField] private LasersEffectsNetworkSynchronizer _lasersEffectsNetworkSynchronizer;
     [SerializeField] private ShipGameStats _myShipGameStats;
+    [SerializeField] private AttachedToShipEffectsSpawner _attachedToShipEffectsSpawner;
+    [SerializeField] private Rigidbody2D _myShipRigidbody2D;
     [SerializeField] private float _laserVisualDistance;
 
     [Tooltip("Модификатор прозрачности лазера, зависящий от того включается или выключается ли он")]
@@ -32,6 +38,9 @@ public class LaserWeapon : Weapon
     {
         _myShipGameStats = GetComponentInParent<ShipGameStats>();
         _lasersEffectsNetworkSynchronizer = _myShipGameStats.GetComponent<LasersEffectsNetworkSynchronizer>();
+        _myShipRigidbody2D = _myShipGameStats.GetComponent<Rigidbody2D>();
+        _attachedToShipEffectsSpawner = _myShipGameStats.GetComponent<AttachedToShipEffectsSpawner>();
+
         int laserPowerDataListLength = Mathf.RoundToInt(_laserPowerDataAmount / Time.fixedDeltaTime);
         for (int laserPowerDataElementNum = 0; laserPowerDataElementNum < laserPowerDataListLength; laserPowerDataElementNum++)
         {
@@ -39,12 +48,12 @@ public class LaserWeapon : Weapon
         }
     }
 
-    public override void RandomizedServerUpdate()
+    public override void RandomizedServerUpdate(float deltaTime)
     {
         ManageLaserEnablingAlpha();
         if (_laserEnablingProgress > 0)
         {
-            RaycastLaser();
+            RaycastLaser(deltaTime);
             ManageLaserPowerData();
             ManageLaserPowerAlphaMod();
             ManageLaserGlobalAlpha();
@@ -107,14 +116,21 @@ public class LaserWeapon : Weapon
         _laserGlobalAlpha = _laserEnablingProgress * _laserPowerAlphaMod;
     }
 
-    private void RaycastLaser()
+    private void RaycastLaser(float deltaTime)
     {
-        bool enoughEnergy = _myShipGameStats.TrySpendEnergy(_energyPerSecond * Time.deltaTime);
+        bool enoughEnergy = _myShipGameStats.TrySpendEnergy(EnergyPerSecond * deltaTime);
         _lastLaserPowerData = enoughEnergy;
-        Vector2 origin = (Vector2)transform.position + DataOperator.RotateVector2(_barrelPosition, transform.eulerAngles.z);
+        Vector2 globalBarrelPosition = (Vector2)transform.position + DataOperator.RotateVector2(_barrelPosition, transform.eulerAngles.z);
+        Vector2 localBarrelPosition = (Vector2)transform.localPosition + _barrelPosition;
+        if (enoughEnergy)
+        {
+            _attachedToShipEffectsSpawner.SpawnAndAttachEffects(_flashEffectsAtStartNames, localBarrelPosition, Quaternion.identity);
+        }
+
+        Vector2 origin = globalBarrelPosition;
         Vector2 direction = DataOperator.RotateVector2(Vector2.up, transform.eulerAngles.z);
-        RaycastHit2D[] laserHitsInfos = Physics2D.RaycastAll(origin, direction, _maxLaserDistance, _modulesLayer);
-        float newLaserVisualDistance = _maxLaserDistance;
+        RaycastHit2D[] laserHitsInfos = Physics2D.RaycastAll(origin, direction, MaxLaserDistance, _modulesLayer);
+        float newLaserVisualDistance = MaxLaserDistance;
         foreach (RaycastHit2D laserHitInfo in laserHitsInfos)
         {
             Durability hittedModulesDurability = laserHitInfo.collider.GetComponent<Durability>();
@@ -124,7 +140,12 @@ public class LaserWeapon : Weapon
                 newLaserVisualDistance = laserHitInfo.distance;
                 if (isFiring && enoughEnergy)
                 {
-                    DamageModule(hittedModulesDurability);
+                    DamageModule(hittedModulesDurability, deltaTime);
+                    if (hittedModulesDurability.MyShipsGameStats != null)
+                    {
+                        hittedModulesDurability.MyShipsGameStats.GetComponent<AttachedToShipEffectsSpawner>().SpawnAndAttachEffects(_flashEffectsAtEndNames, hittedModulesDurability.MyShipsGameStats.transform.InverseTransformPoint(laserHitInfo.point), Quaternion.identity);
+                    }
+                    //RpcHandlerForEffects.SpawnEffectsOnClients(_flashEffectsAtStartNames, laserHitInfo.point, Quaternion.identity, _myShipRigidbody2D.velocity);
                 }
                 break;
             }
@@ -132,9 +153,9 @@ public class LaserWeapon : Weapon
         _laserVisualDistance = newLaserVisualDistance;
     }
 
-    private void DamageModule(Durability modulesDurability)
+    private void DamageModule(Durability modulesDurability, float deltaTime)
     {
-        Damage oneFrameDamage = new(_damagePerSecond.fireDamage * Time.deltaTime, _damagePerSecond.energyDamage * Time.deltaTime, _damagePerSecond.physicalDamage * Time.deltaTime);
+        Damage oneFrameDamage = new(DamagePerSecond.fireDamage * deltaTime, DamagePerSecond.energyDamage * deltaTime, DamagePerSecond.physicalDamage * deltaTime);
         modulesDurability.durability.TakeDamage(oneFrameDamage);
     }
 
@@ -143,7 +164,7 @@ public class LaserWeapon : Weapon
         _visualLaserAlreadyTurnedOff = false;
         Vector3 localLaserPosition = transform.localPosition + (Vector3)_barrelPosition;
         NetworkString laserEffectNetworkName = new(_laserMainEffectName);
-        _lasersEffectsNetworkSynchronizer.VisualizeLaserRpc(new LowAccuracyVector2(localLaserPosition), transform.localEulerAngles.z, laserEffectNetworkName, _laserVisualDistance, _laserGlobalAlpha);
+        _lasersEffectsNetworkSynchronizer.UpdateLaserEffectsRpc(new LowAccuracyVector2(localLaserPosition), transform.localEulerAngles.z, laserEffectNetworkName, _laserVisualDistance, _laserGlobalAlpha, new NetworkString(_laserSoundEffectName), _laserSoundVolumeMod);
     }
 
     public override void OnDestroyServer()

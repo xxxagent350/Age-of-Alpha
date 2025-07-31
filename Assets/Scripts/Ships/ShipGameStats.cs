@@ -3,9 +3,9 @@ using System.Collections;
 using Unity.Netcode;
 using UnityEngine;
 
-public class ShipGameStats : NetworkBehaviour
+public class ShipGameStats : NetworkAuthorityChecker
 {
-    [Header("Настройка")]
+    [Header("пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ")]
     [SerializeField] private float _enginesVisualPowerChangingSpeed = 2;
     [SerializeField] private List<TrailRenderer> _trails;
     [SerializeField] private List<SpriteRenderer> _enginesLights;
@@ -14,21 +14,21 @@ public class ShipGameStats : NetworkBehaviour
 
     [SerializeField] private List<Effect> _destroyEffects;
     [SerializeField] private Sprite _destroyedImage;
-    [Tooltip("Импульс при уничтожении корабля")]
+    [Tooltip("пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ")]
     [SerializeField] private float _forceOnDestroy;
-    [Tooltip("Вращательный импульс при уничтожении корабля")]
+    [Tooltip("пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ")]
     [SerializeField] private float _rotationForceOnDestroy;
 
-    [Header("Отладка")]
+    [Header("пїЅпїЅпїЅпїЅпїЅпїЅпїЅ")]
     public NetworkVariable<NetworkString> TeamID = new(new());
     [HideInInspector] public Durability ControlBlock;
-    public float Mass; //масса корпуса с модулями
-    public NetworkVariable<float> EnergyGeneration = new(); //суммарная генерация энергии со всех модулей
-    public NetworkVariable<float> EnergyMaxCapacity = new(); //максимальное количество запасаемой энергии во всех модулях
-    public NetworkVariable<float> Energy = new(); //текущее количество энергии в батареях
-    public NetworkVariable<float> EnginesConsumption = new(); //макс. потребление двигателями при полёте
-    public float AccelerationPower; //общая ускорительная мощь двигателей
-    public float AngularAccelerationPower; //общая вращательная мощь двигателей
+    public float Mass; //пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
+    public NetworkVariable<float> EnergyGeneration = new(); //пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ
+    public NetworkVariable<float> EnergyMaxCapacity = new(); //пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ
+    public NetworkVariable<float> Energy = new(); //пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
+    public NetworkVariable<float> EnginesConsumption = new(); //пїЅпїЅпїЅпїЅ. пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ
+    public float AccelerationPower; //пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
+    public float AngularAccelerationPower; //пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
 
     private ShipStats _myShipStats;
     private ItemData _myItemData;
@@ -36,12 +36,12 @@ public class ShipGameStats : NetworkBehaviour
     private Rigidbody2D _myRigidbody2D;
     [SerializeField] private NetworkVariable<bool> _noEnergy = new();
 
-    //данные с джойстика игрока
+    //пїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ
     [HideInInspector] public NetworkVariable<bool> MovementJoystickPressed = new NetworkVariable<bool>();
     [HideInInspector] public NetworkVariable<float> MovementJoystickDirInDegrees = new NetworkVariable<float>();
     [HideInInspector] public NetworkVariable<float> MovementJoystickMagnitude = new NetworkVariable<float>();
 
-    //модификаторы полёта
+    //пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ
     private const float IgnoredDirDifferenceDegrees = 60;
     private const float MinDrag = 0;
     private const float MaxSpeedMod = 200;
@@ -51,9 +51,10 @@ public class ShipGameStats : NetworkBehaviour
 
     private const float MinJoystickMagnitudeToAccelerate = 0.7f;
 
-    private bool _noControl; //true когда нету блока управления
+    private bool _noControl; //true пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
     public NetworkVariable<bool> Destroyed = new NetworkVariable<bool>();
-    private SpriteRenderer _shipsSpriteRenderer;
+    private SpriteRenderer _mySpriteRenderer;
+    [HideInInspector] public bool isControlledByAI = false;
 
     [HideInInspector] public Player MyPlayer;
 
@@ -62,15 +63,21 @@ public class ShipGameStats : NetworkBehaviour
 
     private const float TimeToDisappearAfterDestroy = 60;
 
+    //пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ/пїЅпїЅпїЅпїЅпїЅпїЅ
+    [HideInInspector] public int numOfEngines = 0;
+    [HideInInspector] public int numOfWeapons = 0;
+
+
     private void Start()
     {
         _myItemData = GetComponent<ItemData>();
+        ActivateNetworkAuthorityChecker(MyPlayer);
 
         if (!DataOperator.gameScene)
         {
             return;
         }
-        if (IsOwner)
+        if (OnOwner())
         {
             _energyBar = ShipInterfaceManager.Instance.energyBar;
             CameraMover.instance.SetPlayerShip(transform);
@@ -79,7 +86,7 @@ public class ShipGameStats : NetworkBehaviour
         {
             engineLight.gameObject.SetActive(true);
         }
-        _shipsSpriteRenderer = _myItemData.Image.GetComponent<SpriteRenderer>();
+        _mySpriteRenderer = _myItemData.Image.GetComponent<SpriteRenderer>();
     }
 
     private void Awake()
@@ -94,7 +101,7 @@ public class ShipGameStats : NetworkBehaviour
             if (Destroyed.Value)
             {
                 DisableFlightEffects();
-                _shipsSpriteRenderer.sprite = _destroyedImage;
+                _mySpriteRenderer.sprite = _destroyedImage;
                 enabled = false;
                 break;
             }
@@ -126,22 +133,26 @@ public class ShipGameStats : NetworkBehaviour
     {
         if (IsSpawned)
         {
-            OwnerInitializeRpc();
-            if (_myShipStats.ControlBlockExists())
+            if (isControlledByAI == false)
             {
-                ChangeOwnersInterfaceStateRpc(true);
-            }
-            else
-            {
-                _noControl = true;
-                ChangeOwnersInterfaceStateRpc(false);
-                TranslatedText warningMessage = new TranslatedText
+                OwnerInitializeRpc();
+
+                if (_myShipStats.ControlBlockExists())
                 {
-                    RussianText = "Нет связи с кораблём: не установлен блок управления",
-                    EnglishText = "No communication with the ship: no control block installed"
-                };
-                SendMessageToOwnerRpc(new TranslatedNetworkText(warningMessage));
-                Invoke(nameof(ExplodeTheShipOnServer), 5f);
+                    ChangeOwnersInterfaceStateRpc(true);
+                }
+                else
+                {
+                    _noControl = true;
+                    ChangeOwnersInterfaceStateRpc(false);
+                    TranslatedText warningMessage = new TranslatedText
+                    {
+                        RussianText = "пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ: пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ",
+                        EnglishText = "No communication with the ship: no control block installed"
+                    };
+                    SendMessageToOwnerRpc(new TranslatedNetworkText(warningMessage));
+                    Invoke(nameof(ExplodeShipOnServer), 5f);
+                }
             }
         }
         else
@@ -156,10 +167,10 @@ public class ShipGameStats : NetworkBehaviour
         {
             if (NetworkManager.Singleton.IsServer)
             {
-                if (MyPlayer == null)
+                if (isControlledByAI == false && MyPlayer == null)
                 {
-                    //игрок, управляющий кораблём, отключился
-                    ExplodeTheShipOnServer();
+                    //пїЅпїЅпїЅпїЅпїЅ, пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ, пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
+                    ExplodeShipOnServer();
                     return;
                 }
                 if (!_noControl)
@@ -173,11 +184,11 @@ public class ShipGameStats : NetworkBehaviour
                 }
                 else
                 {
-                    _myRigidbody2D.drag = MinDrag;
+                    _myRigidbody2D.linearDamping = MinDrag;
                 }
                 GenerateEnergy();
             }
-            if (IsOwner)
+            if (isControlledByAI == false && OnOwner())
             {
                 OwnerUI();
             }
@@ -334,17 +345,17 @@ public class ShipGameStats : NetworkBehaviour
 
     void RotateShip()
     {
-        //тут жоская физика
-        float F = AngularAccelerationPower * RotationForceMod; //крутящий момент (аналог силы)
-        float m = _myRigidbody2D.inertia; //момент инерции (аналог массы для вращательного движения)
+        //пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ
+        float F = AngularAccelerationPower * RotationForceMod; //пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ (пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ)
+        float m = _myRigidbody2D.inertia; //пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ (пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ)
 
-        float v2 = Mathf.Abs(Mathf.Pow(_myRigidbody2D.angularVelocity, 2)); //угловая скорость в квадрате
+        float v2 = Mathf.Abs(Mathf.Pow(_myRigidbody2D.angularVelocity, 2)); //пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
         if (_myRigidbody2D.angularVelocity < 0)
         {
             v2 *= -1;
         }
 
-        float a = F / m; //угловое ускорение
+        float a = F / m; //пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
         float S = Mathf.DeltaAngle(transform.eulerAngles.z, MovementJoystickDirInDegrees.Value);
 
         //Debug.Log($"S: {S}; v2: {v2}; a: {a}; 2as: {2 * a * S}");
@@ -360,14 +371,14 @@ public class ShipGameStats : NetworkBehaviour
         {
             if (TrySpendEnergy(EnginesConsumption.Value * 0.3f * Time.deltaTime))
             {
-                if (v2 * 1.2f < 2 * a * S) //ещё не разогнались достаточно, продолжаем ускоряться
+                if (v2 * 1.2f < 2 * a * S) //пїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ, пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
                 {
-                    //Debug.Log("S < 0, ускоряемся");
+                    //Debug.Log("S < 0, пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ");
                     _myRigidbody2D.AddTorque(F * Time.deltaTime);
                 }
-                else //тормозим дабы не возникло колебаний
+                else //пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
                 {
-                    //Debug.Log("S < 0, тормозим");
+                    //Debug.Log("S < 0, пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ");
                     _myRigidbody2D.AddTorque(-F * Time.deltaTime * 1.2f);
                 }
             }
@@ -391,26 +402,26 @@ public class ShipGameStats : NetworkBehaviour
         }
         else
         {
-            _myRigidbody2D.drag = MinDrag;
+            _myRigidbody2D.linearDamping = MinDrag;
         }
     }
 
     void ApplyFriction()
     {
-        Vector3 velocity = _myRigidbody2D.velocity;
+        Vector3 velocity = _myRigidbody2D.linearVelocity;
         float maxSpeed = Mathf.Pow(AccelerationPower / Mass, 1f / 2) * MaxSpeedMod;
 
         if (velocity.magnitude > maxSpeed)
         {
-            _myRigidbody2D.drag = MinDrag + ((velocity.magnitude - maxSpeed) * LinearDragMod);
+            _myRigidbody2D.linearDamping = MinDrag + ((velocity.magnitude - maxSpeed) * LinearDragMod);
         }
         else
         {
-            _myRigidbody2D.drag = MinDrag;
+            _myRigidbody2D.linearDamping = MinDrag;
         }
     }
 
-    public void ReduceShipСharacteristics(Durability destroyedModule)
+    public void ReduceShipпїЅharacteristics(Durability destroyedModule)
     {
         ItemData itemData = destroyedModule.GetComponent<ItemData>();
         Battery battery = destroyedModule.GetComponent<Battery>();
@@ -421,15 +432,46 @@ public class ShipGameStats : NetworkBehaviour
         {
             Mass -= itemData.Mass;
             _myRigidbody2D.mass = Mass;
-            if (!Destroyed.Value && itemData.Type == modulesTypes.ControlModules)
-            {   //блок управления уничтожен
-                ExplodeTheShipOnServer();
-                TranslatedText warningMessage = new TranslatedText
+            if (!Destroyed.Value)
+            {   
+                if (itemData.Type == modulesTypes.ControlModules)
                 {
-                    RussianText = "Связь с кораблём потеряна: блок управления уничтожен",
-                    EnglishText = "Contact with the ship has been lost: the control unit has been destroyed"
-                };
-                SendMessageToOwnerRpc(new TranslatedNetworkText(warningMessage));
+                    //пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
+                    ExplodeShipOnServer();
+                    TranslatedText warningMessage = new TranslatedText
+                    {
+                        RussianText = "пїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ: пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ",
+                        EnglishText = "Contact with the ship has been lost: the control unit has been destroyed"
+                    };
+                    CleatAllMessagesRpc();
+                    SendMessageToOwnerRpc(new TranslatedNetworkText(warningMessage));
+                }
+                if (itemData.Category == modulesCategories.Engines)
+                {
+                    numOfEngines--;
+                    if (numOfEngines == 0)
+                    {
+                        TranslatedText warningMessage = new TranslatedText
+                        {
+                            RussianText = "пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ, пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ",
+                            EnglishText = "All engines destroyed, no movement possible"
+                        };
+                        SendMessageToOwnerRpc(new TranslatedNetworkText(warningMessage));
+                    }
+                }
+                if (itemData.Category == modulesCategories.Weapon)
+                {
+                    numOfWeapons--;
+                    if (numOfWeapons == 0)
+                    {
+                        TranslatedText warningMessage = new TranslatedText
+                        {
+                            RussianText = "пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ",
+                            EnglishText = "All weapons destroyed"
+                        };
+                        SendMessageToOwnerRpc(new TranslatedNetworkText(warningMessage));
+                    }
+                }
             }
         }
         if (battery != null)
@@ -454,13 +496,13 @@ public class ShipGameStats : NetworkBehaviour
         ChangeOwnersInterfaceStateRpc(false);
     }
 
-    void ExplodeTheShipOnServer()
+    void ExplodeShipOnServer()
     {
         if (!Destroyed.Value)
         {
-            //отключаем все ещё оставшиеся системы корабля
+            //пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ
             enabled = false;
-            _myRigidbody2D.drag = MinDrag;
+            _myRigidbody2D.linearDamping = MinDrag;
             if (MyPlayer != null)
             {
                 DisconnectFromTheShip();
@@ -482,7 +524,12 @@ public class ShipGameStats : NetworkBehaviour
             _myRigidbody2D.AddTorque(rotationForce);
 
             DisableFlightEffectsRpc();
-            ShowDestroyEffectsRpc(_myRigidbody2D.velocity);
+            ShowDestroyEffectsRpc(_myRigidbody2D.linearVelocity);
+
+            if (MyPlayer != null)
+            {
+                MyPlayer.PlayerShipRespawner.ActivateRespawnTimer();
+            }
 
             Invoke(nameof(DissapearRpc), TimeToDisappearAfterDestroy);
         }
@@ -496,11 +543,13 @@ public class ShipGameStats : NetworkBehaviour
 
     private IEnumerator DissapearingEffect()
     {
-        while (_shipsSpriteRenderer.color.a > 0)
+        float disappearingProgress = 0;
+        while (disappearingProgress < 1)
         {
-            Color oldColor = _shipsSpriteRenderer.color;
-            _shipsSpriteRenderer.color = new Color(oldColor.r, oldColor.g, oldColor.b, oldColor.a - Time.deltaTime);
-            yield return new WaitForSeconds(Time.deltaTime);
+            disappearingProgress += Time.fixedDeltaTime;
+            Color oldColor = _mySpriteRenderer.color;
+            _mySpriteRenderer.color = new Color(oldColor.r, oldColor.g, oldColor.b, 1 - disappearingProgress);
+            yield return new WaitForSeconds(Time.fixedDeltaTime);
         }
         if (NetworkManager.Singleton.IsServer)
         {
@@ -537,6 +586,7 @@ public class ShipGameStats : NetworkBehaviour
     [Rpc(SendTo.Everyone)]
     void ShowDestroyEffectsRpc(Vector3 effectsSpeed)
     {
+        _mySpriteRenderer.color = Color.white;
         foreach (Effect effect in _destroyEffects)
         {
             List<GameObject> spawnedGOs = effect.SpawnEffectsFromPool(transform.position, Quaternion.identity);
@@ -566,6 +616,12 @@ public class ShipGameStats : NetworkBehaviour
     {
         TranslatedText message = networkMessage.GetTranslatedText();
         ShipInterfaceManager.Instance.ShowWarningText(message);
+    }
+
+    [Rpc(SendTo.Owner)]
+    void CleatAllMessagesRpc()
+    {
+        ShipInterfaceManager.Instance.ClearAllWarnings();
     }
 
     [Rpc(SendTo.Owner)]

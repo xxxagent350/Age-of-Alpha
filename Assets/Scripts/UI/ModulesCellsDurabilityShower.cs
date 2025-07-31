@@ -1,10 +1,9 @@
 using System;
 using System.Collections.Generic;
 using Unity.Netcode;
-using Unity.VisualScripting;
 using UnityEngine;
 
-public class ModulesCellsDurabilityShower : NetworkBehaviour
+public class ModulesCellsDurabilityShower : NetworkAuthorityChecker
 {
     [Header("Ќастройка")]
     [SerializeField] private Transform healthCellsParent;
@@ -32,6 +31,14 @@ public class ModulesCellsDurabilityShower : NetworkBehaviour
             return;
         }
         _maxCellAlpha = healthCellPrefab.GetComponent<SpriteRenderer>().color.a;
+        if (NetworkManager.Singleton.IsServer)
+        {
+            ActivateNetworkAuthorityChecker(GetComponent<ShipGameStats>().MyPlayer);
+        }
+        else
+        {
+            ActivateNetworkAuthorityChecker(null);
+        }
         Update();
     }
 
@@ -291,17 +298,20 @@ public class ModulesCellsDurabilityShower : NetworkBehaviour
     [Rpc(SendTo.Owner)]
     public void OnHealthCellDurabilityChangedRpc(float durabilityToMaxDurabilityRatio, Vector2Serializable[] healthCellsPositionsSerializable)
     {
-        foreach (Vector2Serializable healthCellPositionSerializable in healthCellsPositionsSerializable)
+        if (enabled && NetworkManager.Singleton.IsServer == false || OnOwner())
         {
-            HealthCell healthCellSpriteRenderer;
-            LowAccuracyVector2 lowAccuracyCellPosition = new LowAccuracyVector2(healthCellPositionSerializable.GetVector2());
-            if (_healthCellsSpawned.TryGetValue(lowAccuracyCellPosition, out healthCellSpriteRenderer))
+            foreach (Vector2Serializable healthCellPositionSerializable in healthCellsPositionsSerializable)
             {
-                RepaintDurabilityCell(healthCellSpriteRenderer, durabilityToMaxDurabilityRatio);
-            }
-            else
-            {
-                Debug.LogError($"ModulesCellsDurabilityShower: попытка изменить цвет не существующей €чейки, расположенной в {gameObject.name} и наход€щейс€ на localPosition {lowAccuracyCellPosition.GetVector2()} (но €чеек на этой позиции не зарегестрировано)");
+                HealthCell healthCellSpriteRenderer;
+                LowAccuracyVector2 lowAccuracyCellPosition = new LowAccuracyVector2(healthCellPositionSerializable.GetVector2());
+                if (_healthCellsSpawned.TryGetValue(lowAccuracyCellPosition, out healthCellSpriteRenderer))
+                {
+                    RepaintDurabilityCell(healthCellSpriteRenderer, durabilityToMaxDurabilityRatio);
+                }
+                else
+                {
+                    Debug.LogError($"ModulesCellsDurabilityShower: попытка изменить цвет не существующей €чейки, расположенной в {gameObject.name} и наход€щейс€ на localPosition {lowAccuracyCellPosition.GetVector2()} (но €чеек на этой позиции не зарегестрировано)");
+                }
             }
         }
     }
@@ -347,16 +357,47 @@ public class ModulesCellsDurabilityShower : NetworkBehaviour
     }
 
     [Rpc(SendTo.Owner)]
-    void RenderHealthCellRpc(Vector2 localPosition)
+    private void RenderHealthCellRpc(Vector2 localPosition)
     {
-        GameObject newHealthCellSpawned = Instantiate(healthCellPrefab, Vector3.zero, Quaternion.identity);
+        if (_networkAuthorityCheckerActivated == false)
+        {
+            if (NetworkManager.Singleton.IsServer)
+            {
+                ActivateNetworkAuthorityChecker(GetComponent<ShipGameStats>().MyPlayer);
+            }
+            else
+            {
+                ActivateNetworkAuthorityChecker(null);
+            }
+        }
 
-        newHealthCellSpawned.transform.parent = healthCellsParent;
-        newHealthCellSpawned.transform.localPosition = localPosition;
-        newHealthCellSpawned.transform.rotation = Quaternion.identity;
+        if (OnOwner())
+        {
+            GameObject newHealthCellSpawned = Instantiate(healthCellPrefab, Vector3.zero, Quaternion.identity);
 
-        _healthCellsSpawned.Add(new LowAccuracyVector2(localPosition), new HealthCell(newHealthCellSpawned.GetComponent<SpriteRenderer>()));
+            newHealthCellSpawned.transform.parent = healthCellsParent;
+            newHealthCellSpawned.transform.localPosition = localPosition;
+            newHealthCellSpawned.transform.rotation = Quaternion.identity;
+
+            _healthCellsSpawned.Add(new LowAccuracyVector2(localPosition), new HealthCell(newHealthCellSpawned.GetComponent<SpriteRenderer>()));
+        }
     }
+
+    [Rpc(SendTo.Owner)]
+    public void DisableHealthCellsRpc()
+    {
+        if (OnOwner())
+        {
+            foreach (var helthCellWithKey in _healthCellsSpawned)
+            {
+                Destroy(helthCellWithKey.Value.spriteRenderer.gameObject);
+            }
+            _healthCellsSpawned.Clear();
+            DeactivateNetworkAuthorityChecker();
+            enabled = false;
+        }
+    }
+
 
     class HealthCell
     {

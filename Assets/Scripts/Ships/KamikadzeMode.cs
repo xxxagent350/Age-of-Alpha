@@ -46,27 +46,30 @@ public class KamikadzeMode : NetworkAuthorityChecker
 
     private void Update()
     {
-        if (_kamikadzeModeEnabled.Value)
+        if (_shipGameStats.Destroyed.Value == false)
         {
-            if (_timerToExplode < _timeToExplode)
+            if (_kamikadzeModeEnabled.Value)
             {
-                _timerToExplode += Time.deltaTime;
-                _shipsSpriteRenderer.color = (Color.white * (1 - (_timerToExplode / _timeToExplode)))
-                    + (_kamikadzingShipColor * (_timerToExplode / _timeToExplode));
-            }
-            else
-            {
-                if (NetworkManager.Singleton.IsServer)
+                if (_timerToExplode < _timeToExplode)
                 {
-                    _kamikadzeModeEnabled.Value = false;
-                    _shipGameStats.ControlBlock.Explode();
+                    _timerToExplode += Time.deltaTime;
+                    _shipsSpriteRenderer.color = (Color.white * (1 - (_timerToExplode / _timeToExplode)))
+                        + (_kamikadzingShipColor * (_timerToExplode / _timeToExplode));
+                }
+                else
+                {
+                    if (NetworkManager.Singleton.IsServer)
+                    {
+                        _kamikadzeModeEnabled.Value = false;
+                        _shipGameStats.ControlBlock.Explode();
+                    }
                 }
             }
-        }
-        else if (_shipGameStats.Destroyed.Value)
-        {
-            _shipsSpriteRenderer.color = Color.white;
-            _timerToExplode = 0;
+            else if (_shipGameStats.Destroyed.Value)
+            {
+                _shipsSpriteRenderer.color = Color.white;
+                _timerToExplode = 0;
+            }
         }
     }
 }

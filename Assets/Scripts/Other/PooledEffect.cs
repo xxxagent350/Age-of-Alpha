@@ -3,9 +3,9 @@ using UnityEngine;
 public class PooledEffect : PooledBehaviour
 {
     [Header("Настройка")]
-    [SerializeField] float disablingDelay;
+    [SerializeField] private float disablingDelay;
 
-    [SerializeField] ParticleSystem[] myParticleSystems;
+    private ParticleSystem[] myParticleSystems;
     [HideInInspector] public Vector3 speed = Vector3.zero; 
 
     void Awake()
@@ -28,7 +28,7 @@ public class PooledEffect : PooledBehaviour
         }
     }
 
-    public virtual void FixedUpdate()
+    public virtual void Update()
     {
         transform.position += speed * Time.deltaTime;
     }

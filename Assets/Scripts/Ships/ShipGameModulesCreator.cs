@@ -6,9 +6,14 @@ public class ShipGameModulesCreator : NetworkBehaviour
     [HideInInspector] public ModuleOnShipData[] modulesOnShip;
     Transform modulesParent;
     [HideInInspector] public string teamID;
+    private ShipGameStats _myShipGameStats;
 
     public void CreateShipModules()
     {
+        if (_myShipGameStats == null)
+        {
+            _myShipGameStats = GetComponent<ShipGameStats>();
+        }
         TryFoundModulesParent();
         for (int moduleNum = 0; moduleNum < modulesOnShip.Length; moduleNum++)
         {
@@ -21,7 +26,15 @@ public class ShipGameModulesCreator : NetworkBehaviour
             ItemData itemData = moduleSpawned.GetComponent<ItemData>();
             if (itemData.Type == modulesTypes.ControlModules)
             {
-                GetComponent<ShipGameStats>().ControlBlock = moduleSpawned.GetComponent<Durability>();
+                _myShipGameStats.ControlBlock = moduleSpawned.GetComponent<Durability>();
+            }
+            if (itemData.Category == modulesCategories.Engines)
+            {
+                _myShipGameStats.numOfEngines++;
+            }
+            if (itemData.Category == modulesCategories.Weapon)
+            {
+                _myShipGameStats.numOfWeapons++;
             }
             Durability modulesDurability = moduleSpawned.GetComponent<Durability>();
             if (modulesDurability != null)

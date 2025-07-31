@@ -1,15 +1,17 @@
 using System;
 using Unity.Netcode;
 using UnityEngine;
+using System.Collections;
 using Random = UnityEngine.Random;
 
 public class Player : NetworkBehaviour
 {
     [Header("Настройка")]
-    [SerializeField] private uint playerShipNum;
+    public PlayerShipRespawner PlayerShipRespawner;
 
     [Header("Отладка")]
     [SerializeField] private Ship playerShip;
+    [SerializeField] private uint playerShipNum;
     [SerializeField] private ulong ownerClientID;
     [SerializeField] private NetworkVariable<NetworkString> teamID = new();
 
@@ -30,7 +32,7 @@ public class Player : NetworkBehaviour
         ownerClientID = myNetworkObject.OwnerClientId;
         if (NetworkManager.Singleton.IsServer)
         {
-            WaitingToSpawnPlayerShip();
+            StartCoroutine(WaitingToSpawnPlayerShip());
             teamID.Value = new NetworkString(Random.Range(1000000000, 2000000000) + "" + Random.Range(1000000000, 2000000000) + "" + Random.Range(1000000000, 2000000000));
         }
         if (IsOwner)
@@ -52,29 +54,33 @@ public class Player : NetworkBehaviour
         }
     }
 
-    private void WaitingToSpawnPlayerShip()
+    private IEnumerator WaitingToSpawnPlayerShip()
     {
-        if (readyToSpawn)
+        while (!readyToSpawn)
         {
-            SpawnPlayerShip();
+            yield return new WaitForSecondsRealtime(0.1f);
         }
-        else
-        {
-            Invoke(nameof(WaitingToSpawnPlayerShip), 0.1f);
-        }
+        SpawnPlayerShip();
     }
 
-    private void SpawnPlayerShip()
+    public void SpawnPlayerShip()
     {
-        if (playerShipGO != null)
+        if (playerShipGameStats != null && playerShipGameStats.Destroyed.Value == false)
         {
             Debug.LogWarning("Попытка заспавнить корабль игроку, у которого сейчас и так есть заспавненный корабль; откат");
             return;
         }
         if (playerShipNum < DataOperator.instance.shipsPrefabs.Length)
         {
+            if (playerShipGameStats != null) //у игрока есть корабль, но он уничтожен
+            {
+                playerShipGameStats.MyPlayer = null;
+                playerShipGameStats.DeactivateNetworkAuthorityChecker();
+                playerShipGameStats.GetComponent<ModulesCellsDurabilityShower>().DisableHealthCellsRpc();
+            }
+
             GameObject playerShipPrefab = DataOperator.instance.shipsPrefabs[playerShip.shipPrefabNum];
-            GameObject playerShipSpawned = Instantiate(playerShipPrefab, new Vector3(Random.Range(-20, 20), Random.Range(-20, 20), 0), Quaternion.identity);
+            GameObject playerShipSpawned = Instantiate(playerShipPrefab, new Vector3(Random.Range(-100, 100), Random.Range(-100, 100), 0), Quaternion.identity);
             playerShipGameStats = playerShipSpawned.GetComponent<ShipGameStats>();
 
             ModuleOnShipData[] modulesOnPlayerShipData = playerShip.modulesOnShipData;
@@ -93,6 +99,7 @@ public class Player : NetworkBehaviour
             playerShipSpawned.GetComponent<NetworkObject>().SpawnWithOwnership(ownerClientID);
 
             ModulesCellsDurabilityShower modulesCellsDurabilityShower = playerShipSpawned.GetComponent<ModulesCellsDurabilityShower>();
+            modulesCellsDurabilityShower.ActivateNetworkAuthorityChecker(this);
             modulesCellsDurabilityShower.RenderHealthCells();
 
             ShipGameStats shipGameStats = playerShipSpawned.GetComponent<ShipGameStats>();
@@ -142,108 +149,5 @@ public class Player : NetworkBehaviour
     private void ReceiveAttackButtonStateChangedRpc(uint index, bool pressed)
     {
         playerShipGameStats.SendFireStateChange(index, pressed);
-    }
-}
-
-[Serializable]
-public struct Ship : INetworkSerializable
-{
-    public uint shipPrefabNum;
-    public ModuleOnShipData[] modulesOnShipData;
-
-    public Ship(uint newShipPrefabNum, ModuleOnShipData[] newModulesOnShipData)
-    {
-        shipPrefabNum = newShipPrefabNum;
-        modulesOnShipData = newModulesOnShipData;
-    }
-
-    public void NetworkSerialize<T>(BufferSerializer<T> serializer) where T : IReaderWriter
-    {
-        serializer.SerializeValue(ref shipPrefabNum);
-
-        // Length
-        int length = 0;
-        if (!serializer.IsReader)
-        {
-            length = modulesOnShipData.Length;
-        }
-
-        serializer.SerializeValue(ref length);
-
-        // Array
-        if (serializer.IsReader)
-        {
-            modulesOnShipData = new ModuleOnShipData[length];
-        }
-
-        for (int n = 0; n < length; ++n)
-        {
-            serializer.SerializeValue(ref modulesOnShipData[n]);
-        }
-    }
-}
-
-
-[Serializable]
-public struct NetworkString : INetworkSerializable
-{
-    public char[] Symbols { get; private set; }
-
-    public NetworkString(string inputString)
-    {
-        if (inputString == null)
-        {
-            Debug.LogWarning("Не задана inputString для NetworkString");
-            Symbols = new char[0];
-            return;
-        }
-        Symbols = new char[inputString.Length];
-        for (int symbolNum = 0; symbolNum < inputString.Length; symbolNum++)
-        {
-            Symbols[symbolNum] = inputString[symbolNum];
-        }
-    }
-
-    public string String
-    {
-        get
-        {
-            string outputString = "";
-            if (Symbols == null)
-            {
-                Debug.LogWarning("Попытка получить не заданную string из NetworkString");
-            }
-            foreach (char symbol in Symbols)
-            {
-                outputString += symbol;
-            }
-            return outputString;
-        }
-    }
-
-    public void NetworkSerialize<T>(BufferSerializer<T> serializer) where T : IReaderWriter
-    {
-        // Length
-        int length = 0;
-        if (Symbols != null && !serializer.IsReader)
-        {
-            length = Symbols.Length;
-        }
-
-        serializer.SerializeValue(ref length);
-
-        // Array
-        if (serializer.IsReader)
-        {
-            Symbols = new char[length];
-        }
-
-        if (Symbols != null)
-        {
-            for (int n = 0; n < length; ++n)
-            {
-                serializer.SerializeValue(ref Symbols[n]);
-            }
-        }
     }
 }

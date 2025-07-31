@@ -5,9 +5,11 @@ public class GameObjectsSearcher : MonoBehaviour
 {
     private static GameObject[] _allModulesGameObjects = new GameObject[0];
     private static GameObject[] _allShipsGameObjects = new GameObject[0];
+    private static GameObject[] _allMissileGameObjects = new GameObject[0];
     private static GameObjectsSearcher _instance;
     private const string ModulesLayerMask = "Module";
     private const string ShipsLayerMask = "Ship";
+    private const string MissileLayerMask = "Missile";
 
     private void Awake()
     {
@@ -27,7 +29,6 @@ public class GameObjectsSearcher : MonoBehaviour
 
     public static GameObject[] GetAllModulesGameObjects()
     {
-
         foreach (GameObject gameObject in _allModulesGameObjects)
         {
             if (gameObject == null)
@@ -52,6 +53,19 @@ public class GameObjectsSearcher : MonoBehaviour
         return _allShipsGameObjects;
     }
 
+    public static GameObject[] GetAllMissileGameObjects()
+    {
+        foreach (GameObject gameObject in _allMissileGameObjects)
+        {
+            if (gameObject == null)
+            {
+                SearchMissileObjects();
+                break;
+            }
+        }
+        return _allMissileGameObjects;
+    }
+
     private IEnumerator LowUpdateCoroutine()
     {
         const float Frequency = 10;
@@ -59,6 +73,7 @@ public class GameObjectsSearcher : MonoBehaviour
         {
             SearchModulesGameObjects();
             SearchShipsGameObjects();
+            SearchMissileObjects();
             yield return new WaitForSeconds(1 / Frequency);
         }
     }
@@ -72,5 +87,10 @@ public class GameObjectsSearcher : MonoBehaviour
     private static void SearchShipsGameObjects()
     {
         _allShipsGameObjects = GameObject.FindGameObjectsWithTag(ShipsLayerMask);
+    }
+
+    private static void SearchMissileObjects()
+    {
+        _allMissileGameObjects = GameObject.FindGameObjectsWithTag(MissileLayerMask);
     }
 }

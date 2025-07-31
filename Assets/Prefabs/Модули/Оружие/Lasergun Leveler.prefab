@@ -80,7 +80,7 @@ BoxCollider2D:
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
-  m_Size: {x: 1.999, y: 1.999}
+  m_Size: {x: 0.999, y: 1.999}
   m_EdgeRadius: 0
 --- !u!114 &8523950870510647011
 MonoBehaviour:
@@ -102,8 +102,11 @@ MonoBehaviour:
     RussianText: "\u041B\u0430\u0437\u0435\u0440\u0433\u0430\u043D \"\u041D\u0438\u0432\u0435\u043B\u0438\u0440\""
     EnglishText: Lasergun "Leveler"
   Description:
-    RussianText: 
-    EnglishText: 
+    RussianText: "\u041B\u0430\u0437\u0435\u0440\u043D\u044B\u0439 \u0440\u0435\u0437\u0430\u043A,
+      \u0441\u043F\u043E\u0441\u043E\u0431\u043D\u044B\u0439 \u043E\u0441\u0442\u0430\u0432\u0438\u0442\u044C
+      \u0441\u043A\u0432\u043E\u0437\u043D\u044B\u0435 \u043E\u0442\u0432\u0435\u0440\u0441\u0442\u0438\u044F
+      \u0432 \u0432\u0430\u0448\u0438\u0445 \u0432\u0440\u0430\u0433\u0430\u0445"
+    EnglishText: A laser cutter capable of leaving through holes in your enemies
   Size: 0.105
   Mass: 1.2
   CellsOffset: {x: 0, y: 0.5}
@@ -138,6 +141,7 @@ MonoBehaviour:
   _explodeStrengthOnDestroy: 0
   TeamID: none
   _cellsLocalPositionsInShip: []
+  MyShipsGameStats: {fileID: 0}
 --- !u!114 &6996377433661902555
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -152,17 +156,22 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   isFiring: 0
   isWorking: 1
-  weaponNum: 0
-  "_\u0441ooldown": 0
+  WeaponIndex: 0
   myShipGameStats: {fileID: 0}
   _laserMainEffectName: Small laser
   _barrelPosition: {x: 0, y: 0.76}
-  _damagePerSecond:
-    fireDamage: 5
+  DamagePerSecond:
+    fireDamage: 35
     energyDamage: 0
     physicalDamage: 0
-  _energyPerSecond: 10
-  _maxLaserDistance: 50
+  EnergyPerSecond: 15
+  MaxLaserDistance: 50
+  _flashEffectsAtStartNames:
+  - Small laser start flash
+  _flashEffectsAtEndNames:
+  - Small laser end flash
+  _laserSoundEffectName: Small laser sound
+  _laserSoundVolumeMod: 0.3
   _modulesLayer:
     serializedVersion: 2
     m_Bits: 128
@@ -172,6 +181,8 @@ MonoBehaviour:
   _laserGlobalAlpha: 0
   _lasersEffectsNetworkSynchronizer: {fileID: 0}
   _myShipGameStats: {fileID: 0}
+  _attachedToShipEffectsSpawner: {fileID: 0}
+  _myShipRigidbody2D: {fileID: 0}
   _laserVisualDistance: 0
 --- !u!1 &7597412589461293852
 GameObject:

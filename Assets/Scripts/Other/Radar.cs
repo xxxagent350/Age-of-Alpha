@@ -8,6 +8,7 @@ public class Radar : MonoBehaviour
 {
     [Header("Настройка")]
     [SerializeField] private GameObject _shipIconPrefab;
+    [SerializeField] private GameObject _missileIconPrefab;
     [SerializeField] private Color allyColor = new(0, 1, 0);
     [SerializeField] private Color enemyColor = new(1, 0, 0);
 
@@ -70,13 +71,14 @@ public class Radar : MonoBehaviour
     {
         if (PlayerShipGameStats != null)
         {
-            CheckNullShips();
-            ManageRegisteredShips();
-            SetShipsIconsColors();
+            DeleteNullRadarObjects();
+            ManageRegisteredObjects(GameObjectsSearcher.GetAllShipGameObjects(), ObjectOnRadarType.ship);
+            ManageRegisteredObjects(GameObjectsSearcher.GetAllMissileGameObjects(), ObjectOnRadarType.missile);
+            SetIconsColors();
         }
     }
 
-    private void CheckNullShips()
+    private void DeleteNullRadarObjects()
     {
         foreach (ObjectOnRadar objectOnRadar in _objectsOnRadar)
         {
@@ -88,33 +90,49 @@ public class Radar : MonoBehaviour
         }
     }
 
-    private void ManageRegisteredShips()
+    private void ManageRegisteredObjects(GameObject[] GameObjectsOnScene, ObjectOnRadarType objectsType)
     {
-        int allShipsNum = GameObjectsSearcher.GetAllShipGameObjects().Length;
-        if (allShipsNum > _numOfRegisteredObjects)
+        int allGameObjectsNum = GameObjectsOnScene.Length;
+        int numOfRegisteredThisTypeObjects = 0;
+        foreach (ObjectOnRadar objectOnRadar in _objectsOnRadar)
         {
-            List<GameObject> allShips = new(0);
-            foreach (GameObject ship in GameObjectsSearcher.GetAllShipGameObjects())
+            if (objectOnRadar.Type == objectsType)
             {
-                allShips.Add(ship);
+                numOfRegisteredThisTypeObjects++;
             }
+        }    
 
-            for (int shipNum = 0; shipNum < allShips.Count; shipNum++)
+        if (allGameObjectsNum > numOfRegisteredThisTypeObjects) //если есть ещё не зарегестрированные на радаре объекты этого типа
+        {
+            List<GameObject> allThisTypeGameObjects = new(0);
+            foreach (GameObject gameObjectOfThisType in GameObjectsOnScene)
+            {
+                allThisTypeGameObjects.Add(gameObjectOfThisType);
+            }
+            //в allThisTypeGameObjects все объекты данного типа
+
+            for (int objectNum = 0; objectNum < allThisTypeGameObjects.Count; objectNum++)
             {
                 for (int objectOnRadarNum = 0; objectOnRadarNum < _objectsOnRadar.Count; objectOnRadarNum++)
                 {
-                    if (_objectsOnRadar[objectOnRadarNum].AttachedGameObject == allShips[shipNum])
+                    if (_objectsOnRadar[objectOnRadarNum].AttachedGameObject == allThisTypeGameObjects[objectNum])
                     {
-                        allShips.Remove(allShips[shipNum]);
+                        allThisTypeGameObjects.Remove(allThisTypeGameObjects[objectNum]);
+                        objectNum--;
                         break;
                     }
                 }
             }
 
-            //теперь в allShips остались только ещё не зарегестрированные на радаре корабли, регестрируем их
-            foreach (GameObject ship in allShips)
+            if (allThisTypeGameObjects.Count == 0)
             {
-                AddNewObjectOnRadar(ship, ObjectOnRadarType.ship);
+                Debug.LogError("Если вы это видите, значит Миша накосячил в классе Radar");
+            }
+
+            //теперь в allShips остались только ещё не зарегестрированные на радаре корабли, регестрируем их
+            foreach (GameObject thisTypeObject in allThisTypeGameObjects)
+            {
+                AddNewObjectOnRadar(thisTypeObject, objectsType);
             }
         }
     }
@@ -131,15 +149,24 @@ public class Radar : MonoBehaviour
             _objectsOnRadar.Add(newObjectOnRadar);
             _numOfRegisteredObjects++;
         }
+        if (objectOnRadarType == ObjectOnRadarType.missile)
+        {
+            RectTransform newIconTransform = Instantiate(_missileIconPrefab, transform).GetComponent<RectTransform>();
+            Image newMinimapImage = newIconTransform.GetComponent<Image>();
+            newMinimapImage.color = new Color(newMinimapImage.color.r, newMinimapImage.color.g, newMinimapImage.color.b, 0);
+            ObjectOnRadar newObjectOnRadar = new(objectOnRadarType, newGameObject_, newIconTransform, null, newMinimapImage);
+            _objectsOnRadar.Add(newObjectOnRadar);
+            _numOfRegisteredObjects++;
+        }
     }
 
-    private void SetShipsIconsColors()
+    private void SetIconsColors()
     {
         foreach (ObjectOnRadar objectOnRadar in _objectsOnRadar)
         {
-            if (!objectOnRadar.NoLongerExists && objectOnRadar.Type == ObjectOnRadarType.ship)
+            if (!objectOnRadar.NoLongerExists)
             {
-                if (objectOnRadar.AttachedShipGameStats.TeamID == PlayerShipGameStats.TeamID)
+                if (CheckTeamMatch(PlayerShipGameStats.gameObject, ObjectOnRadarType.ship, objectOnRadar.AttachedGameObject, objectOnRadar.Type))
                 {
                     objectOnRadar.AttachedMinimapImage.color = new Color(allyColor.r, allyColor.g, allyColor.b, objectOnRadar.AttachedMinimapImage.color.a);
                 }
@@ -169,7 +196,7 @@ public class Radar : MonoBehaviour
             }
 
             //прозрачность
-            if (_objectsOnRadar[objectNum].NoLongerExists == false && _objectsOnRadar[objectNum].AttachedShipGameStats.Destroyed.Value == false)
+            if (_objectsOnRadar[objectNum].NoLongerExists == false && (_objectsOnRadar[objectNum].AttachedShipGameStats == null || _objectsOnRadar[objectNum].AttachedShipGameStats.Destroyed.Value == false))
             {
                 if (_objectsOnRadar[objectNum].AttachedMinimapImage.color.a < 1)
                 {
@@ -187,7 +214,7 @@ public class Radar : MonoBehaviour
                 else
                 {
                     //удаление больше не нужных иконок
-                    if (_objectsOnRadar[objectNum].AttachedShipGameStats == null)
+                    if (_objectsOnRadar[objectNum].AttachedGameObject == null)
                     {
                         Destroy(_objectsOnRadar[objectNum].AttachedMinimapImage.gameObject);
                         _objectsOnRadar.Remove(_objectsOnRadar[objectNum]);
@@ -217,6 +244,27 @@ public class Radar : MonoBehaviour
             }
         }
     }
+
+    private bool CheckTeamMatch(GameObject firstObject, ObjectOnRadarType firstObjectOnRadarType, GameObject secondObject, ObjectOnRadarType secondObjectOnRadarType)
+    {
+        return GetTeamID(firstObject, firstObjectOnRadarType) == GetTeamID(secondObject, secondObjectOnRadarType);
+    }
+
+    private string GetTeamID(GameObject gameObject, ObjectOnRadarType objectOnRadarType)
+    {
+        if (objectOnRadarType == ObjectOnRadarType.ship)
+        {
+            ShipGameStats component = gameObject.GetComponent<ShipGameStats>();
+            return component.TeamID.Value.String;
+        }
+        if (objectOnRadarType == ObjectOnRadarType.missile)
+        {
+            Projectile component = gameObject.GetComponent<Projectile>();
+            return component.TeamID.Value.String;
+        }
+        Debug.LogError($"GetTeamID(GameObject gameObject, ObjectOnRadarType objectOnRadarType) не знает как узнать TeamID объекта objectOnRadarType, равным {objectOnRadarType}");
+        return "";
+    }
 }
 
 [Serializable]
@@ -243,5 +291,6 @@ public class ObjectOnRadar
 public enum ObjectOnRadarType
 {
     ship,
+    missile,
     asteroid
 }

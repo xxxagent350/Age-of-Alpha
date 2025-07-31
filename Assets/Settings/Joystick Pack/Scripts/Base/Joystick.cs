@@ -149,6 +149,12 @@ public class Joystick : MonoBehaviour, IPointerDownHandler, IDragHandler, IPoint
         return 0;
     }
 
+    private void OnDisable()
+    {
+        OnPointerUp(null);
+        ResetHandlePos();
+    }
+
     private void OnEnable()
     {
         OnPointerUp(null);

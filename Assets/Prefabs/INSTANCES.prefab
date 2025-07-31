@@ -508,6 +508,7 @@ MonoBehaviour:
   - {fileID: 1918197205442378303, guid: 94d41157d5ce30d4385f7de342b60b77, type: 3}
   - {fileID: 7279650089370981346, guid: 6a376f50c2640374d911d544f23431b1, type: 3}
   - {fileID: 4268818084638651296, guid: 9817d0242823e4d478b492430caea695, type: 3}
+  - {fileID: 5816094667399973769, guid: d6563de41171e8541bbafd9225f9bb1b, type: 3}
   UIAudioSource: {fileID: 1592101764647440592}
   defaultAudioSourcePrefab: {fileID: 5498154045212141642, guid: b4a1cc3d0bcc76249bbb4287755fb175, type: 3}
   DataPathAccessErrorScreen: {fileID: 4409338878380001049}

@@ -1,3 +1,4 @@
+
 using UnityEngine;
 using System;
 using System.Runtime.Serialization.Formatters.Binary;
@@ -183,7 +184,6 @@ public class DataOperator : MonoBehaviour
 
     public void PlayUISound(AudioClip sound, float volume)
     {
-        Debug.Log(sound);
         if (sound != null)
         {
             UIAudioSource.clip = sound;
@@ -435,12 +435,12 @@ public class DataOperator : MonoBehaviour
         return modulesOnStorageDataCloning;
     }
 
-    public float RoundFloat(float input)
+    public static float RoundFloat(float input)
     {
         return RoundFloat(input, 2);
     }
 
-    public float RoundFloat(float input, uint decimalPoints)
+    public static float RoundFloat(float input, uint decimalPoints)
     {
         float operatingValue = input * Mathf.Pow(10, decimalPoints);
         operatingValue = Mathf.RoundToInt(operatingValue);

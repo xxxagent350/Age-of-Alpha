@@ -1060,11 +1060,13 @@ GameObject:
   - component: {fileID: 1218646809974974622}
   - component: {fileID: 4040453327439477306}
   - component: {fileID: 2952308156068006858}
+  - component: {fileID: -624259141116004383}
   - component: {fileID: 2432220087295496015}
   - component: {fileID: 3666674793819445206}
   - component: {fileID: 8556905443401645706}
   - component: {fileID: 3882297844565426719}
   - component: {fileID: 8520827449793348807}
+  - component: {fileID: 7078149084025318685}
   - component: {fileID: 2994573376006907146}
   - component: {fileID: 7815603946113292692}
   m_Layer: 6
@@ -1142,16 +1144,16 @@ PolygonCollider2D:
   m_LayerOverridePriority: 0
   m_ForceSendLayers:
     serializedVersion: 2
-    m_Bits: 64
+    m_Bits: 4294967295
   m_ForceReceiveLayers:
     serializedVersion: 2
-    m_Bits: 64
+    m_Bits: 4294967295
   m_ContactCaptureLayers:
     serializedVersion: 2
-    m_Bits: 64
+    m_Bits: 4294967295
   m_CallbackLayers:
     serializedVersion: 2
-    m_Bits: 64
+    m_Bits: 4294967295
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_CompositeOperation: 0
@@ -1270,6 +1272,18 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c328f577ef8ac3249a40f12b8b0091a3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &-624259141116004383
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7745446731627448160}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d81082d25d1742045b12be817e7c4c56, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!114 &2432220087295496015
@@ -1423,6 +1437,21 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _ramEffectsData: {fileID: 11400000, guid: c4842beda5f0f364f96f988147eeafd1, type: 2}
   DamageAllies: 0
+--- !u!114 &7078149084025318685
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7745446731627448160}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 14880d7c6a18be748bfd96b874ac6dac, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  behaviourMode: 0
+  parametresPreset: {fileID: 0}
+  target: {fileID: 0}
 --- !u!114 &2994573376006907146
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1546,6 +1575,8 @@ MonoBehaviour:
   Destroyed:
     m_InternalValue: 0
   MyPlayer: {fileID: 0}
+  numOfEngines: 0
+  numOfWeapons: 0
 --- !u!1 &8711622178843180596
 GameObject:
   m_ObjectHideFlags: 0

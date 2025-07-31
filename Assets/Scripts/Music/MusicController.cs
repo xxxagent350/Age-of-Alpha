@@ -36,7 +36,7 @@ public class MusicController : MonoBehaviour
         {
             _calmChannelAudioSource.Play();
             _aggressiveChannelAudioSource.Play();
-            yield return new WaitForSecondsRealtime(_maxMusicLength);
+            yield return new WaitForSeconds(_maxMusicLength);
         }
     }
 

@@ -2,45 +2,50 @@ using System.Collections.Generic;
 using Unity.Netcode;
 using UnityEngine;
 
-public class Projectile : MonoBehaviour
+public class Projectile : NetworkBehaviour
 {
-    [Header("Настройка")]
-    [Tooltip("Урон")]
+    [Header("пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ")]
+    [Tooltip("пїЅпїЅпїЅпїЅ")]
     public Damage Damage;
-    [Tooltip("Позиция выхода луча для поиска целей, расположить чуть выше коллайдера снаряда")]
+    [Tooltip("пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ")]
+    public float ShockWavePower;
+    [Tooltip("пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ, пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ")]
     [SerializeField] private Vector2 _raycastPosition;
-    [Tooltip("Стартовая скорость")]
+    [Tooltip("пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ")]
     public float StartSpeed;
-    [Tooltip("Масса. От неё зависит импульс при выстреле и попадании")]
+    [Tooltip("пїЅпїЅпїЅпїЅпїЅ. пїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ")]
     public float Mass;
-    [Tooltip("Максимальное время существования снаряда")]
+    [Tooltip("пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ")]
     public float Lifetime;
-    [Tooltip("Обязательно ли снаряд уничтожится после первого попадания? Если вЫключено, снаряд будет лететь, попутно разрушая модули и вражеские снаряды, пока у него не кончится урон")]
+    [Tooltip("пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ? пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ, пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ, пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ, пїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ")]
     [SerializeField] private bool _selfDestructAfterHit;
-    [Tooltip("Взрываться ли когда заканчивается время жизни снаряда? Если выключено, снаряд просто пропадёт")]
+    [Tooltip("пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ? пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ, пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ")]
     [SerializeField] private bool _explodeOnLifetimeEnds = false;
-    [Tooltip("Если включено, будет поворачивать картинку в сторону движения")]
+    [Tooltip("пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ, пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ")]
     [SerializeField] private bool _rotateToVelocityVectorDir = false;
 
-    [Tooltip("Эффекты пробития обшивки корабля (укажите названия эффектов из префаба RpcHandlerForEffects)")]
+    [Tooltip("пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ (пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ RpcHandlerForEffects)")]
     [SerializeField] private List<string> _shipPenetrationEffects;
-    [Tooltip("Эффекты попадания в модули корабля, снаряды, астероиды и прочие игровые объекты (укажите названия эффектов из префаба RpcHandlerForEffects)")]
+    [Tooltip("пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ, пїЅпїЅпїЅпїЅпїЅпїЅпїЅ, пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ (пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ RpcHandlerForEffects)")]
     [SerializeField] private List<string> _moduleHitEffects;
-    [Tooltip("Эффекты взрыва снаряда (укажите названия эффектов из префаба RpcHandlerForEffects)")]
+    [Tooltip("пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ (пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ RpcHandlerForEffects)")]
     [SerializeField] private List<string> _explodeEffects;
 
-    [Header("Отладка")]
-    [Tooltip("Команда корабля, который выпустил снаряд")]
-    public string teamID = "none";
+    [Header("пїЅпїЅпїЅпїЅпїЅпїЅпїЅ")]
+    [Tooltip("пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ, пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ")]
+    public NetworkVariable<NetworkString> TeamID = new();
 
     private Rigidbody2D _myRigidbody2D;
     private bool _insideEnemyShip;
     private float _startFullDamage;
 
-    [Tooltip("Последняя точка, в которой был нанесён урон (нужно для определения положения эффекта взрыва)")]
-    private Vector3 _lastHitPoint;
-    [Tooltip("Скорость последнего объекта, в который врезался снаряд (нужно для скорости эффектов при взрыве снаряда)")]
+    [Tooltip("пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ, пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ (пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ)")]
+    private Vector3? _lastHitPoint = null;
+    [Tooltip("пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ, пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ (пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ)")]
     private Vector3 _lastHitCollidersSpeed = Vector3.one;
+
+    public delegate void OnProjectileDestroyContainer();
+    public event OnProjectileDestroyContainer OnProjectileDestroy;
 
     private void Start()
     {
@@ -57,13 +62,13 @@ public class Projectile : MonoBehaviour
 
             _startFullDamage = Damage.GetAllDamage();
             _myRigidbody2D = GetComponent<Rigidbody2D>();
-            _myRigidbody2D.velocity += DataOperator.RotateVector2(Vector2.up * StartSpeed, transform.eulerAngles.z);
+            _myRigidbody2D.linearVelocity += DataOperator.RotateVector2(Vector2.up * StartSpeed, transform.eulerAngles.z);
         }
     }
 
     public void ApplyImpulseToParentShip(Rigidbody2D parentShipRigidbody)
     {
-        //импульс стреляющему кораблю
+        //пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ
         Vector2 force = DataOperator.RotateVector2(Vector2.down * StartSpeed * Mass, transform.eulerAngles.z);
         Vector2 position = transform.position;
         parentShipRigidbody.AddForceAtPosition(force, position);
@@ -71,12 +76,15 @@ public class Projectile : MonoBehaviour
 
     public void ApplyImpulseToTargetShip(Rigidbody2D targetShipRigidbody, float damagePartUsed)
     {
-        //импульс кораблю в которого попали
+        //пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ
         if (targetShipRigidbody != null)
         {
-            Vector2 force = _myRigidbody2D.velocity * damagePartUsed * Mass;
+            Vector2 force = (_myRigidbody2D.linearVelocity - targetShipRigidbody.linearVelocity) * damagePartUsed * Mass;
             Vector2 position = transform.position;
-            targetShipRigidbody.AddForceAtPosition(force, position);
+            if (force.magnitude > 0.01f)
+            {
+                targetShipRigidbody.AddForceAtPosition(force, position);
+            }
         }
     }
 
@@ -102,10 +110,10 @@ public class Projectile : MonoBehaviour
         {
             return;
         }
-        float distanceToCheck = _myRigidbody2D.velocity.magnitude * Time.fixedDeltaTime;
+        float distanceToCheck = _myRigidbody2D.linearVelocity.magnitude * Time.fixedDeltaTime;
 
         Vector3 position = transform.position + (Vector3)DataOperator.RotateVector2(_raycastPosition, transform.eulerAngles.z);
-        Vector3 direction = _myRigidbody2D.velocity.normalized;
+        Vector3 direction = _myRigidbody2D.linearVelocity.normalized;
 
         RaycastHit2D[] mainLayerHits = Physics2D.RaycastAll(position, direction, distanceToCheck);
 
@@ -118,18 +126,18 @@ public class Projectile : MonoBehaviour
                 {
                     LayerMask hitInfoLayer = hitInfo.collider.gameObject.layer;
 
-                    Rigidbody2D collidersRigidbody2D = hitInfo.collider.GetComponent<Rigidbody2D>();
+                    Rigidbody2D collidersRigidbody2D = hitInfo.collider.GetComponentInParent<Rigidbody2D>();
                     Vector3 collidersSpeed = Vector3.zero;
                     if (collidersRigidbody2D != null)
                     {
-                        collidersSpeed = collidersRigidbody2D.velocity;
+                        collidersSpeed = collidersRigidbody2D.linearVelocity;
                         _lastHitCollidersSpeed = collidersSpeed;
                     }
 
                     if (hitInfoLayer == LayerMask.NameToLayer("Ship"))
                     {
                         ShipGameStats shipGameStats = hitInfo.collider.GetComponent<ShipGameStats>();
-                        if (shipGameStats != null && shipGameStats.TeamID.Value.String != teamID)
+                        if (shipGameStats != null && shipGameStats.TeamID.Value.String != TeamID.Value.String)
                         {
                             if (!_insideEnemyShip)
                             {
@@ -144,7 +152,7 @@ public class Projectile : MonoBehaviour
                         if (hitInfoLayer == LayerMask.NameToLayer("Projectile"))
                         {
                             Projectile hittedProjectile = hitInfo.collider.GetComponent<Projectile>();
-                            if (hittedProjectile != null && hittedProjectile.teamID != teamID)
+                            if (hittedProjectile != null && hittedProjectile.TeamID.Value.String != TeamID.Value.String)
                             {
                                 SpawnEffect(EffectType.moduleHit, hitInfo.point, transform.rotation, collidersSpeed);
                                 hittedProjectile.Damage.DamageOtherDamage(Damage);
@@ -154,7 +162,7 @@ public class Projectile : MonoBehaviour
                         if (hitInfoLayer == LayerMask.NameToLayer("Environment") || hitInfoLayer == LayerMask.NameToLayer("Module"))
                         {
                             Durability hittedObject = hitInfo.collider.GetComponent<Durability>();
-                            if (hittedObject != null && hittedObject.TeamID != teamID)
+                            if (hittedObject != null && hittedObject.TeamID != TeamID.Value.String)
                             {
                                 SpawnEffect(EffectType.moduleHit, hitInfo.point, transform.rotation, collidersSpeed);
                                 float previousDamage = Damage.GetAllDamage();
@@ -162,11 +170,11 @@ public class Projectile : MonoBehaviour
                                 float deltaDamage = previousDamage - Damage.GetAllDamage();
                                 ApplyImpulseToTargetShip(hitInfo.collider.GetComponentInParent<Rigidbody2D>(), deltaDamage / _startFullDamage);
                                 _lastHitPoint = hitInfo.point;
+                                if (_selfDestructAfterHit)
+                                {
+                                    Explode();
+                                }
                             }
-                        }
-                        if (_selfDestructAfterHit)
-                        {
-                            Explode();
                         }
                     }
                 }
@@ -188,13 +196,21 @@ public class Projectile : MonoBehaviour
     {
         if (!alreadyExploded)
         {
+            OnProjectileDestroy?.Invoke();
+
+            if (_lastHitPoint == null)
+            {
+                _lastHitPoint = transform.position;
+            }
+
+            ShockWave.CreateShockWave(ShockWavePower, _lastHitPoint.Value);
             if (_lastHitCollidersSpeed == Vector3.one)
             {
-                SpawnEffect(EffectType.explode, _lastHitPoint, transform.rotation, _myRigidbody2D.velocity);
+                SpawnEffect(EffectType.explode, _lastHitPoint.Value, transform.rotation, _myRigidbody2D.linearVelocity);
             }
             else
             {
-                SpawnEffect(EffectType.explode, _lastHitPoint, transform.rotation, _lastHitCollidersSpeed);
+                SpawnEffect(EffectType.explode, _lastHitPoint.Value, transform.rotation, _lastHitCollidersSpeed);
             }
             alreadyExploded = true;
             Destroy(gameObject);
@@ -203,7 +219,7 @@ public class Projectile : MonoBehaviour
 
     void SetDirAtMovingDir()
     {
-        transform.eulerAngles = new Vector3(0, 0, DataOperator.GetVector2DirInDegrees(_myRigidbody2D.velocity));
+        transform.eulerAngles = new Vector3(0, 0, DataOperator.GetVector2DirInDegrees(_myRigidbody2D.linearVelocity));
     }
 
     void SpawnEffect(EffectType effectType, Vector3 position, Quaternion rotation, Vector3 speed)
@@ -230,7 +246,7 @@ public class Projectile : MonoBehaviour
     }
 
 #if UNITY_EDITOR
-    //отрисовка позиции выхода raycast
+    //пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ raycast
     private void OnDrawGizmos()
     {
         if (!Application.isPlaying)

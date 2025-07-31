@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 8600434176050311957}
   - component: {fileID: 8548738174211512679}
   - component: {fileID: 5496215004604488668}
+  - component: {fileID: 3503569706742274531}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -66,12 +67,27 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 53c4a854b2c3cc745b2140583204fe0e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playerShipNum: 0
+  PlayerShipRespawner: {fileID: 3503569706742274531}
   playerShip:
     shipPrefabNum: 0
     modulesOnShipData: []
+  playerShipNum: 0
   ownerClientID: 0
   teamID: {}
   movementJoystickPressed: 0
   movementJoystickDirInDegrees: 0
   movementJoystickMagnitude: 0
+--- !u!114 &3503569706742274531
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7187572055764936245}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fcaf2de8268feec4e8eba0def2de25cf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _respawnTime: 5
+  _myPlayer: {fileID: 5496215004604488668}

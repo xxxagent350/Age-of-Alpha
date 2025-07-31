@@ -351,31 +351,44 @@ public class ModulesMenu : MonoBehaviour
         ItemData itemData = modulePrefab.GetComponent<ItemData>();
         Durability durabilityComponent = modulePrefab.GetComponent<Durability>();
         Engine engineComponent = modulePrefab.GetComponent<Engine>();
-        _ = modulePrefab.GetComponent<Weapon>();
         EnergyGenerator generatorComponent = modulePrefab.GetComponent<EnergyGenerator>();
         Battery batteryComponent = modulePrefab.GetComponent<Battery>();
+        BallisticWeapon ballisticWeaponComponent = modulePrefab.GetComponent<BallisticWeapon>();
+        Projectile projectileComponent = null;
+        RocketEngine rocketEngineComponent = null;
+        if (ballisticWeaponComponent != null)
+        {
+            projectileComponent = ballisticWeaponComponent.ProjectilePrefab.GetComponent<Projectile>();
+            rocketEngineComponent = ballisticWeaponComponent.ProjectilePrefab.GetComponent<RocketEngine>();
+        }
+        LaserWeapon laserWeaponComponent = modulePrefab.GetComponent<LaserWeapon>();
 
-        text.RussianText += "Масса: " + DataOperator.instance.RoundFloat(itemData.Mass);
-        text.EnglishText += "Mass: " + DataOperator.instance.RoundFloat(itemData.Mass);
+        text.RussianText += "Масса: " + DataOperator.RoundFloat(itemData.Mass);
+        text.EnglishText += "Mass: " + DataOperator.RoundFloat(itemData.Mass);
         if (durabilityComponent != null)
         {
-            text.RussianText += "\nПрочность: " + DataOperator.instance.RoundFloat(durabilityComponent.durability.maxDurability);
-            text.EnglishText += "\nDurability: " + DataOperator.instance.RoundFloat(durabilityComponent.durability.maxDurability);
+            text.RussianText += "\nПрочность: " + DataOperator.RoundFloat(durabilityComponent.durability.maxDurability);
+            text.EnglishText += "\nDurability: " + DataOperator.RoundFloat(durabilityComponent.durability.maxDurability);
 
             if (durabilityComponent.durability.resistanceToPhysicalDamage > 0)
             {
-                text.RussianText += "\nСопротивление к физическому урону: " + DataOperator.instance.RoundFloat(durabilityComponent.durability.resistanceToPhysicalDamage * 100) + "%";
-                text.EnglishText += "\nResistance to physical damage: " + DataOperator.instance.RoundFloat(durabilityComponent.durability.resistanceToPhysicalDamage * 100) + "%";
+                text.RussianText += "\nСопротивление к физическому урону: " + DataOperator.RoundFloat(durabilityComponent.durability.resistanceToPhysicalDamage * 100) + "%";
+                text.EnglishText += "\nResistance to physical damage: " + DataOperator.RoundFloat(durabilityComponent.durability.resistanceToPhysicalDamage * 100) + "%";
             }
             if (durabilityComponent.durability.resistanceToFireDamage > 0)
             {
-                text.RussianText += "\nСопротивление к тепловому урону: " + DataOperator.instance.RoundFloat(durabilityComponent.durability.resistanceToFireDamage * 100) + "%";
-                text.EnglishText += "\nResistance to heat damage: " + DataOperator.instance.RoundFloat(durabilityComponent.durability.resistanceToFireDamage * 100) + "%";
+                text.RussianText += "\nСопротивление к тепловому урону: " + DataOperator.RoundFloat(durabilityComponent.durability.resistanceToFireDamage * 100) + "%";
+                text.EnglishText += "\nResistance to heat damage: " + DataOperator.RoundFloat(durabilityComponent.durability.resistanceToFireDamage * 100) + "%";
             }
             if (durabilityComponent.durability.resistanceToEnergyDamage > 0)
             {
-                text.RussianText += "\nСопротивление к энерго урону: " + DataOperator.instance.RoundFloat(durabilityComponent.durability.resistanceToEnergyDamage * 100) + "%";
-                text.EnglishText += "\nResistance to energy damage: " + DataOperator.instance.RoundFloat(durabilityComponent.durability.resistanceToEnergyDamage * 100) + "%";
+                text.RussianText += "\nСопротивление к энерго урону: " + DataOperator.RoundFloat(durabilityComponent.durability.resistanceToEnergyDamage * 100) + "%";
+                text.EnglishText += "\nResistance to energy damage: " + DataOperator.RoundFloat(durabilityComponent.durability.resistanceToEnergyDamage * 100) + "%";
+            }
+            if (durabilityComponent.ExplodeStrengthOnDestroy > 0)
+            {
+                text.RussianText += "\nСила взрыва при уничтожении: " + DataOperator.RoundFloat(durabilityComponent.ExplodeStrengthOnDestroy);
+                text.EnglishText += "\nThe force of the explosion on destruction: " + DataOperator.RoundFloat(durabilityComponent.ExplodeStrengthOnDestroy);
             }
         }
         else
@@ -390,26 +403,123 @@ public class ModulesMenu : MonoBehaviour
         }
         if (generatorComponent != null)
         {
-            text.RussianText += "\nГенерация энергии в секунду: " + DataOperator.instance.RoundFloat(generatorComponent.power);
-            text.EnglishText += "\nEnergy generation per second: " + DataOperator.instance.RoundFloat(generatorComponent.power);
+            text.RussianText += "\nГенерация энергии в секунду: " + DataOperator.RoundFloat(generatorComponent.power);
+            text.EnglishText += "\nEnergy generation per second: " + DataOperator.RoundFloat(generatorComponent.power);
         }
         if (batteryComponent != null)
         {
-            text.RussianText += "\nЗапас энергии: " + DataOperator.instance.RoundFloat(batteryComponent.maxCapacity);
-            text.EnglishText += "\nEnergy reserve: " + DataOperator.instance.RoundFloat(batteryComponent.maxCapacity);
+            text.RussianText += "\nЗапас энергии: " + DataOperator.RoundFloat(batteryComponent.maxCapacity);
+            text.EnglishText += "\nEnergy reserve: " + DataOperator.RoundFloat(batteryComponent.maxCapacity);
         }
         if (engineComponent != null)
         {
-            text.RussianText += "\nТяга: " + DataOperator.instance.RoundFloat(engineComponent.accelerationPower);
-            text.EnglishText += "\nThrust: " + DataOperator.instance.RoundFloat(engineComponent.accelerationPower);
+            text.RussianText += "\nТяга: " + DataOperator.RoundFloat(engineComponent.accelerationPower);
+            text.EnglishText += "\nThrust: " + DataOperator.RoundFloat(engineComponent.accelerationPower);
 
-            text.RussianText += "\nКрутящий момент: " + DataOperator.instance.RoundFloat(engineComponent.angularPower);
-            text.EnglishText += "\nTorque: " + DataOperator.instance.RoundFloat(engineComponent.angularPower);
+            text.RussianText += "\nКрутящий момент: " + DataOperator.RoundFloat(engineComponent.angularPower);
+            text.EnglishText += "\nTorque: " + DataOperator.RoundFloat(engineComponent.angularPower);
 
-            text.RussianText += "\nПотребление энергии в секунду: " + DataOperator.instance.RoundFloat(engineComponent.powerConsumption);
-            text.EnglishText += "\nPower consumption per second: " + DataOperator.instance.RoundFloat(engineComponent.powerConsumption);
+            text.RussianText += "\nПотребление энергии в секунду: " + DataOperator.RoundFloat(engineComponent.powerConsumption);
+            text.EnglishText += "\nPower consumption per second: " + DataOperator.RoundFloat(engineComponent.powerConsumption);
         }
+        if (laserWeaponComponent != null)
+        {
+            if (laserWeaponComponent.DamagePerSecond.physicalDamage > 0)
+            {
+                text.RussianText += $"\nФизический урон в секунду: {DataOperator.RoundFloat(laserWeaponComponent.DamagePerSecond.physicalDamage)}";
+                text.EnglishText += $"\nPhysical damage per second: {DataOperator.RoundFloat(laserWeaponComponent.DamagePerSecond.physicalDamage)}";
+            }
+            if (laserWeaponComponent.DamagePerSecond.fireDamage > 0)
+            {
+                text.RussianText += $"\nТепловой урон в секунду: {DataOperator.RoundFloat(laserWeaponComponent.DamagePerSecond.fireDamage)}";
+                text.EnglishText += $"\nHeat damage per second: {DataOperator.RoundFloat(laserWeaponComponent.DamagePerSecond.fireDamage)}";
+            }
+            if (laserWeaponComponent.DamagePerSecond.energyDamage > 0)
+            {
+                text.RussianText += $"\nЭнергетический урон в секунду: {DataOperator.RoundFloat(laserWeaponComponent.DamagePerSecond.energyDamage)}";
+                text.EnglishText += $"\nEnergy damage per second: {DataOperator.RoundFloat(laserWeaponComponent.DamagePerSecond.energyDamage)}";
+            }
+            text.RussianText += $"\nЭнергопотребление в секунду: {DataOperator.RoundFloat(laserWeaponComponent.EnergyPerSecond)}";
+            text.EnglishText += $"\nPower consumption per second: {DataOperator.RoundFloat(laserWeaponComponent.EnergyPerSecond)}";
 
+            text.RussianText += $"\nДальность: {DataOperator.RoundFloat(laserWeaponComponent.MaxLaserDistance)}";
+            text.EnglishText += $"\nRange: {DataOperator.RoundFloat(laserWeaponComponent.MaxLaserDistance)}";
+        }
+        if (ballisticWeaponComponent != null)
+        {
+            text.RussianText += $"\nПерезарядка: {DataOperator.RoundFloat(ballisticWeaponComponent.ReloadTime)}с";
+            text.EnglishText += $"\nReload time: {DataOperator.RoundFloat(ballisticWeaponComponent.ReloadTime)}s";
+
+            text.RussianText += $"\nЭнергопотребление на залп: {DataOperator.RoundFloat(ballisticWeaponComponent.EnergyConsumption)}";
+            text.EnglishText += $"\nPower consumption per volley: {DataOperator.RoundFloat(ballisticWeaponComponent.EnergyConsumption)}";
+
+            if (ballisticWeaponComponent.ProjectilesPerSalvo > 1)
+            {
+                text.RussianText += $"\nСнарядов в залпе: {DataOperator.RoundFloat(ballisticWeaponComponent.ProjectilesPerSalvo)}";
+                text.EnglishText += $"\nProjectiles per salvo: {DataOperator.RoundFloat(ballisticWeaponComponent.ProjectilesPerSalvo)}";
+            }
+
+            text.RussianText += $"\nУгол разброса: {DataOperator.RoundFloat(ballisticWeaponComponent.ScatterAngle)}°";
+            text.EnglishText += $"\nScatter angle: {DataOperator.RoundFloat(ballisticWeaponComponent.ScatterAngle)}°";
+        }
+        if (projectileComponent != null)
+        {
+            text.RussianText += $"\n\nХарактеристики снаряда: ";
+            text.EnglishText += $"\n\nProjectile сharacteristics: ";
+
+            if (projectileComponent.Damage.physicalDamage > 0)
+            {
+                text.RussianText += $"\nФизический урон: {DataOperator.RoundFloat(projectileComponent.Damage.physicalDamage)}";
+                text.EnglishText += $"\nPhysical damage: {DataOperator.RoundFloat(projectileComponent.Damage.physicalDamage)}";
+            }
+            if (projectileComponent.Damage.fireDamage > 0)
+            {
+                text.RussianText += $"\nТепловой урон: {DataOperator.RoundFloat(projectileComponent.Damage.fireDamage)}";
+                text.EnglishText += $"\nHeat damage: {DataOperator.RoundFloat(projectileComponent.Damage.fireDamage)}";
+            }
+            if (projectileComponent.Damage.energyDamage > 0)
+            {
+                text.RussianText += $"\nЭнергетический урон: {DataOperator.RoundFloat(projectileComponent.Damage.energyDamage)}";
+                text.EnglishText += $"\nEnergy damage: {DataOperator.RoundFloat(projectileComponent.Damage.energyDamage)}";
+            }
+            if (projectileComponent.ShockWavePower > 0)
+            {
+                text.RussianText += $"\nМощь взрывной волны: {DataOperator.RoundFloat(projectileComponent.ShockWavePower)}";
+                text.EnglishText += $"\nShock wave power: {DataOperator.RoundFloat(projectileComponent.ShockWavePower)}";
+            }
+            if (rocketEngineComponent == null)
+            {
+                text.RussianText += $"\nСкорость: {DataOperator.RoundFloat(projectileComponent.StartSpeed)}";
+                text.EnglishText += $"\nSpeed: {DataOperator.RoundFloat(projectileComponent.StartSpeed)}";
+            }
+            else
+            {
+                text.RussianText += $"\nСкорость: {DataOperator.RoundFloat(projectileComponent.StartSpeed)}-{DataOperator.RoundFloat(rocketEngineComponent.MaxSpeed)}";
+                text.EnglishText += $"\nSpeed: {DataOperator.RoundFloat(projectileComponent.StartSpeed)}-{DataOperator.RoundFloat(rocketEngineComponent.MaxSpeed)}";
+            }
+            text.RussianText += $"\nМасса: {DataOperator.RoundFloat(projectileComponent.Mass) / 1000f}";
+            text.EnglishText += $"\nMass: {DataOperator.RoundFloat(projectileComponent.Mass) / 1000f}";
+
+            if (rocketEngineComponent == null)
+            {
+                text.RussianText += $"\nДальность: {DataOperator.RoundFloat(projectileComponent.StartSpeed * projectileComponent.Lifetime)}";
+                text.EnglishText += $"\nRange: {DataOperator.RoundFloat(projectileComponent.StartSpeed * projectileComponent.Lifetime)}";
+            }
+            else
+            {
+                text.RussianText += $"\nВремя полёта: {DataOperator.RoundFloat(projectileComponent.Lifetime)}с";
+                text.EnglishText += $"\nFlight time: {DataOperator.RoundFloat(projectileComponent.Lifetime)}s";
+            }
+        }
+        if (rocketEngineComponent != null)
+        {
+            text.RussianText += $"\nСкорость поворота: {DataOperator.RoundFloat(rocketEngineComponent.MaxRotateSpeed)}°/с";
+            text.EnglishText += $"\nRotate speed: {DataOperator.RoundFloat(rocketEngineComponent.MaxRotateSpeed)}°/s";
+
+            text.RussianText += $"\nДальность поиска целей: {DataOperator.RoundFloat(rocketEngineComponent.TargetsSearchingRadius)}";
+            text.EnglishText += $"\nTarget search range: {DataOperator.RoundFloat(rocketEngineComponent.TargetsSearchingRadius)}";
+        }
+        
         text.RussianText += "\n\n" + itemData.Description.RussianText;
         text.EnglishText += "\n\n" + itemData.Description.EnglishText;
         return text;
@@ -445,51 +555,51 @@ public class ModulesMenu : MonoBehaviour
             shipStats.CalculateShipStats();
 
             TranslatedText shipStatsTranslatedText = new();
-            shipStatsTranslatedText.RussianText += "Масса: " + DataOperator.instance.RoundFloat(shipStats.totalMass);
-            shipStatsTranslatedText.EnglishText += "Mass: " + DataOperator.instance.RoundFloat(shipStats.totalMass);
+            shipStatsTranslatedText.RussianText += "Масса: " + DataOperator.RoundFloat(shipStats.totalMass);
+            shipStatsTranslatedText.EnglishText += "Mass: " + DataOperator.RoundFloat(shipStats.totalMass);
 
-            shipStatsTranslatedText.RussianText += "\nЗапас энергии: " + DataOperator.instance.RoundFloat(shipStats.totalEnergyCapacity);
-            shipStatsTranslatedText.EnglishText += "\nEnergy capacity: " + DataOperator.instance.RoundFloat(shipStats.totalEnergyCapacity);
+            shipStatsTranslatedText.RussianText += "\nЗапас энергии: " + DataOperator.RoundFloat(shipStats.totalEnergyCapacity);
+            shipStatsTranslatedText.EnglishText += "\nEnergy capacity: " + DataOperator.RoundFloat(shipStats.totalEnergyCapacity);
 
-            shipStatsTranslatedText.RussianText += "\nГенерация энергии: " + DataOperator.instance.RoundFloat(shipStats.totalEnergyGeneration);
-            shipStatsTranslatedText.EnglishText += "\nEnergy generation: " + DataOperator.instance.RoundFloat(shipStats.totalEnergyGeneration);
+            shipStatsTranslatedText.RussianText += "\nГенерация энергии: " + DataOperator.RoundFloat(shipStats.totalEnergyGeneration);
+            shipStatsTranslatedText.EnglishText += "\nEnergy generation: " + DataOperator.RoundFloat(shipStats.totalEnergyGeneration);
 
             if (shipStats.totalEnginesConsumption > 0)
             {
                 if (shipStats.totalEnginesConsumption < shipStats.totalEnergyGeneration / 2)
                 {
-                    shipStatsTranslatedText.RussianText += "\nПотребление двигателями: <color=green>" + DataOperator.instance.RoundFloat(shipStats.totalEnginesConsumption) + "</color>";
-                    shipStatsTranslatedText.EnglishText += "\nEngines сonsumption: <color=green>" + DataOperator.instance.RoundFloat(shipStats.totalEnginesConsumption) + "</color>";
+                    shipStatsTranslatedText.RussianText += "\nПотребление двигателями: <color=green>" + DataOperator.RoundFloat(shipStats.totalEnginesConsumption) + "</color>";
+                    shipStatsTranslatedText.EnglishText += "\nEngines сonsumption: <color=green>" + DataOperator.RoundFloat(shipStats.totalEnginesConsumption) + "</color>";
                 }
                 if (shipStats.totalEnginesConsumption >= shipStats.totalEnergyGeneration / 2 && shipStats.totalEnginesConsumption <= shipStats.totalEnergyGeneration)
                 {
-                    shipStatsTranslatedText.RussianText += "\nПотребление двигателями: <color=yellow>" + DataOperator.instance.RoundFloat(shipStats.totalEnginesConsumption) + "</color>";
-                    shipStatsTranslatedText.EnglishText += "\nEngines сonsumption: <color=yellow>" + DataOperator.instance.RoundFloat(shipStats.totalEnginesConsumption) + "</color>";
+                    shipStatsTranslatedText.RussianText += "\nПотребление двигателями: <color=yellow>" + DataOperator.RoundFloat(shipStats.totalEnginesConsumption) + "</color>";
+                    shipStatsTranslatedText.EnglishText += "\nEngines сonsumption: <color=yellow>" + DataOperator.RoundFloat(shipStats.totalEnginesConsumption) + "</color>";
                 }
                 if (shipStats.totalEnginesConsumption > shipStats.totalEnergyGeneration)
                 {
-                    shipStatsTranslatedText.RussianText += "\nПотребление двигателями: <color=red>" + DataOperator.instance.RoundFloat(shipStats.totalEnginesConsumption) + "</color>";
-                    shipStatsTranslatedText.EnglishText += "\nEngines сonsumption: <color=red>" + DataOperator.instance.RoundFloat(shipStats.totalEnginesConsumption) + "</color>";
+                    shipStatsTranslatedText.RussianText += "\nПотребление двигателями: <color=red>" + DataOperator.RoundFloat(shipStats.totalEnginesConsumption) + "</color>";
+                    shipStatsTranslatedText.EnglishText += "\nEngines сonsumption: <color=red>" + DataOperator.RoundFloat(shipStats.totalEnginesConsumption) + "</color>";
                 }
             }
 
             if (shipStats.totalWeaponConsumption > 0)
             {
-                shipStatsTranslatedText.RussianText += "\nПотребление вооружением: " + DataOperator.instance.RoundFloat(shipStats.totalWeaponConsumption);
-                shipStatsTranslatedText.EnglishText += "\nWeapons consumption: " + DataOperator.instance.RoundFloat(shipStats.totalWeaponConsumption);
+                shipStatsTranslatedText.RussianText += "\nПотребление вооружением: " + DataOperator.RoundFloat(shipStats.totalWeaponConsumption);
+                shipStatsTranslatedText.EnglishText += "\nWeapons consumption: " + DataOperator.RoundFloat(shipStats.totalWeaponConsumption);
             }
 
             if (shipStats.totalSystemsConsumption > 0)
             {
-                shipStatsTranslatedText.RussianText += "\nПотребление системами: " + DataOperator.instance.RoundFloat(shipStats.totalSystemsConsumption);
-                shipStatsTranslatedText.EnglishText += "\nSystems consumption: " + DataOperator.instance.RoundFloat(shipStats.totalSystemsConsumption);
+                shipStatsTranslatedText.RussianText += "\nПотребление системами: " + DataOperator.RoundFloat(shipStats.totalSystemsConsumption);
+                shipStatsTranslatedText.EnglishText += "\nSystems consumption: " + DataOperator.RoundFloat(shipStats.totalSystemsConsumption);
             }
 
-            shipStatsTranslatedText.RussianText += "\nСкорость: " + DataOperator.instance.RoundFloat(shipStats.totalSpeed);
-            shipStatsTranslatedText.EnglishText += "\nSpeed: " + DataOperator.instance.RoundFloat(shipStats.totalSpeed);
+            shipStatsTranslatedText.RussianText += "\nСкорость: " + DataOperator.RoundFloat(shipStats.totalSpeed);
+            shipStatsTranslatedText.EnglishText += "\nSpeed: " + DataOperator.RoundFloat(shipStats.totalSpeed);
 
-            shipStatsTranslatedText.RussianText += "\nСкорость поворота: " + DataOperator.instance.RoundFloat(shipStats.totalAngularSpeed);
-            shipStatsTranslatedText.EnglishText += "\nRotation speed: " + DataOperator.instance.RoundFloat(shipStats.totalAngularSpeed);
+            shipStatsTranslatedText.RussianText += "\nСкорость поворота: " + DataOperator.RoundFloat(shipStats.totalAngularSpeed);
+            shipStatsTranslatedText.EnglishText += "\nRotation speed: " + DataOperator.RoundFloat(shipStats.totalAngularSpeed);
 
 
             shipStatsText.text = shipStatsTranslatedText.GetTranslatedString();
@@ -642,8 +752,7 @@ public class ModulesMenu : MonoBehaviour
                 RussianText = "Не установлен блок управления - вы не сможете управлять кораблём, всё равно продолжить?",
                 EnglishText = "No control block installed - you won't be able to control the ship, still continue?"
             };
-            applyingWarningPanel.transform.Find("Text").GetComponent<Text>().text = warningMessageText.GetTranslatedString();
-            applyingWarningPanel.SetActive(true);
+            ShowBuildWarning(warningMessageText);
             return;
         }
         if (!engineExists)
@@ -653,8 +762,7 @@ public class ModulesMenu : MonoBehaviour
                 RussianText = "Не установлено ни одного двигателя, всё равно продолжить?",
                 EnglishText = "No engine installed, still continue?"
             };
-            applyingWarningPanel.transform.Find("Text").GetComponent<Text>().text = warningMessageText.GetTranslatedString();
-            applyingWarningPanel.SetActive(true);
+            ShowBuildWarning(warningMessageText);
             return;
         }
         if (!weaponExists)
@@ -664,8 +772,7 @@ public class ModulesMenu : MonoBehaviour
                 RussianText = "На корабле нет оружия - вы сможете нанести урон только тараном, всё равно продолжить?",
                 EnglishText = "There are no weapons on the ship - you can only do damage with a battering ram, still continue?"
             };
-            applyingWarningPanel.transform.Find("Text").GetComponent<Text>().text = warningMessageText.GetTranslatedString();
-            applyingWarningPanel.SetActive(true);
+            ShowBuildWarning(warningMessageText);
             return;
         }
 
@@ -677,8 +784,33 @@ public class ModulesMenu : MonoBehaviour
                 RussianText = "Недостаточно генераторов энергии для непрерывной работы двигателей, всё равно продолжить?",
                 EnglishText = "Not enough power generators to keep the engines running continuously, still continue?"
             };
-            applyingWarningPanel.transform.Find("Text").GetComponent<Text>().text = warningMessageText.GetTranslatedString();
-            applyingWarningPanel.SetActive(true);
+            ShowBuildWarning(warningMessageText);
+            return;
+        }
+
+        float totalEnergyCapacity = shipStats.totalEnergyCapacity;
+        float maxEnergyPerSalvo = -1;
+        string weaponName = "";
+
+        foreach (ModuleOnShipData moduleOnShipData in shipStats.modulesOnShip)
+        {
+            GameObject modulePrefab = DataOperator.instance.modulesPrefabs[moduleOnShipData.module.moduleNum];
+            BallisticWeapon ballisticWeaponComponent = modulePrefab.GetComponent<BallisticWeapon>();
+            if (ballisticWeaponComponent != null && ballisticWeaponComponent.EnergyConsumption > maxEnergyPerSalvo)
+            {
+                maxEnergyPerSalvo = ballisticWeaponComponent.EnergyConsumption;
+                weaponName = modulePrefab.GetComponent<ItemData>().Name.GetTranslatedString();
+            }
+        }
+
+        if (maxEnergyPerSalvo > totalEnergyCapacity)
+        {
+            TranslatedText warningMessageText = new()
+            {
+                RussianText = $"Недостаточно батарей для залпа из {weaponName}, всё равно продолжить?",
+                EnglishText = $"Not enough batteries to salvo from {weaponName}, still continue?"
+            };
+            ShowBuildWarning(warningMessageText);
             return;
         }
 
@@ -688,6 +820,12 @@ public class ModulesMenu : MonoBehaviour
     public void LoadOKScene()
     {
         DataOperator.ChangeScene(OKSceneName);
+    }
+
+    private void ShowBuildWarning(TranslatedText warningMessageText)
+    {
+        applyingWarningPanel.transform.Find("Text").GetComponent<Text>().text = warningMessageText.GetTranslatedString();
+        applyingWarningPanel.SetActive(true);
     }
 }
 

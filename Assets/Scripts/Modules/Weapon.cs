@@ -10,13 +10,10 @@ public abstract class Weapon : MonoBehaviour
     [Tooltip("В рабочем ли состоянии орудие")]
     public bool isWorking = true;
     [Tooltip("Номер орудия (например если игрок хочет выстрелить из орудий обозначенных номером 2, то стреляют орудия у которых этот параметр равен 2), выставляется автоматически")]
-    public uint weaponNum;
-
-    [SerializeField] protected float _сooldown;
-    protected float _сurrentReloadTime = 0;
+    public uint WeaponIndex;
 
     [HideInInspector] public ShipGameStats myShipGameStats;
-    public string teamID { get; private set; }
+    public string TeamID { get; private set; }
     bool noControl = false;
     float serverUpdateDeltaTime;
     
@@ -36,18 +33,12 @@ public abstract class Weapon : MonoBehaviour
         serverUpdateDeltaTime = Time.fixedDeltaTime;
         myShipGameStats = GetComponentInParent<ShipGameStats>();
         myShipGameStats.attackButtonStateChangedMessage += ChangeFiringState;
-        teamID = myShipGameStats.TeamID.Value.String;
+        TeamID = myShipGameStats.TeamID.Value.String;
     }
 
     public void Disconnect()
     {
         noControl = true;
-    }
-
-    public void Reload()
-    {
-        if (_сurrentReloadTime < _сooldown)
-            _сurrentReloadTime += Time.deltaTime;
     }
 
     public void OnDestroy()
@@ -64,7 +55,7 @@ public abstract class Weapon : MonoBehaviour
 
     public void ChangeFiringState(uint index, bool fire)
     {
-        if (index == weaponNum)
+        if (index == WeaponIndex)
         {
             isFiring = fire;
         }
@@ -90,10 +81,11 @@ public abstract class Weapon : MonoBehaviour
     {
         while (!noControl)
         {
-            yield return new WaitForSeconds(Random.Range(serverUpdateDeltaTime * 0.5f, serverUpdateDeltaTime * 1.5f));
+            float deltaTime = Random.Range(serverUpdateDeltaTime * 0.5f, serverUpdateDeltaTime * 1.5f);
+            yield return new WaitForSeconds(deltaTime);
             if (NetworkManager.Singleton.IsServer)
             {
-                RandomizedServerUpdate();
+                RandomizedServerUpdate(deltaTime);
             }
         }
     }
@@ -103,7 +95,7 @@ public abstract class Weapon : MonoBehaviour
         //для переопределения наследуемыми классами
     }
 
-    public virtual void RandomizedServerUpdate()
+    public virtual void RandomizedServerUpdate(float deltaTime)
     {
         //для переопределения наследуемыми классами
     }

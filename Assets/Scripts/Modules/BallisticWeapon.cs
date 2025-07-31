@@ -4,37 +4,43 @@ using UnityEngine;
 
 public class BallisticWeapon : Weapon
 {
-    [Header("Настройка")]
-    [Tooltip("Префаб пули")]
-    [SerializeField] GameObject projectilePrefab;
-    [Tooltip("Энергопотребление на 1 залп")]
-    [SerializeField] float energyConsumption = 1;
-    [Tooltip("Позиции из которых по очереди будут вылетать пули(обозначены значком прицела в редакторе)")]
-    [SerializeField] List<Vector2> barrelsPositions;
-    [Tooltip("Время между выстрелами в секундах")]
-    [SerializeField] int projectilesPerSalvo = 1;
-    [Tooltip("Разброс в градусах")]
-    [SerializeField] float scatterAngle = 5;
-    [Tooltip("Эффекты и звуки выстрела")]
+    [Header("пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ")]
+    [Tooltip("пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ")]
+    public GameObject ProjectilePrefab;
+    [Tooltip("пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ")]
+    public float ReloadTime = 1;
+    [Tooltip("пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ 1 пїЅпїЅпїЅпїЅ")]
+    public float EnergyConsumption = 1;
+    [Tooltip("пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ(пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ)")]
+    public List<Vector2> BarrelsPositions;
+    [Tooltip("пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ")]
+    public int ProjectilesPerSalvo = 1;
+    [Tooltip("пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ")]
+    public float ScatterAngle = 5;
+
+    [Tooltip("пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ")]
     [SerializeField] List<string> shootEffectsNames;
 
-    private DestroyedModulesEffectsSpawner _destroyedModulesEffectsSpawner;
-    int currentBarrelNum;
-    Rigidbody2D myShipRigidbody2D;
+    private AttachedToShipEffectsSpawner _destroyedModulesEffectsSpawner;
+    private int currentBarrelNum;
+    private Rigidbody2D myShipRigidbody2D;
+    private float _пїЅurrentReloadTime = 0;
+    private ModulesVisualReloadStateSynchronizer _modulesVisualReloadStateSynchronizer;
 
     public override void Initialize()
     {
 #if UNITY_EDITOR
-        if (barrelsPositions.Count == 0)
+        if (BarrelsPositions.Count == 0)
         {
-            Debug.LogWarning($"Добавьте хотя бы одну позицию вылета снарядов в barrelsPositions для {gameObject.name}");
+            Debug.LogWarning($"пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ barrelsPositions пїЅпїЅпїЅ {gameObject.name}");
             isWorking = false;
         }
 #endif
         if (NetworkManager.Singleton.IsServer)
         {
             myShipRigidbody2D = myShipGameStats.GetComponent<Rigidbody2D>();
-            _destroyedModulesEffectsSpawner = GetComponentInParent<DestroyedModulesEffectsSpawner>();
+            _destroyedModulesEffectsSpawner = GetComponentInParent<AttachedToShipEffectsSpawner>();
+            _modulesVisualReloadStateSynchronizer = myShipGameStats.GetComponent<ModulesVisualReloadStateSynchronizer>();
         }
     }
 
@@ -46,7 +52,7 @@ public class BallisticWeapon : Weapon
         }
     }
 
-    public override void RandomizedServerUpdate()
+    public override void RandomizedServerUpdate(float deltaTime)
     {
         if (isWorking)
         {
@@ -57,20 +63,31 @@ public class BallisticWeapon : Weapon
         }
     }
 
-    //отвечает за перезарядку
+    //пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
+    public void Reload()
+    {
+        if (_пїЅurrentReloadTime < ReloadTime)
+        {
+            _пїЅurrentReloadTime += Time.deltaTime;
+            if (_пїЅurrentReloadTime > ReloadTime)
+            {
+                _пїЅurrentReloadTime = ReloadTime;
+            }
+            _modulesVisualReloadStateSynchronizer.AddRechargeProgressData(WeaponIndex, _пїЅurrentReloadTime / ReloadTime);
+        }
+    }
 
-
-    //отвечает за стрельбу
+    //пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
     public void Fire()
     {
-        if (_сurrentReloadTime >= _сooldown)
+        if (_пїЅurrentReloadTime >= ReloadTime)
         {
-            if (myShipGameStats.TrySpendEnergy(energyConsumption))
+            if (myShipGameStats.TrySpendEnergy(EnergyConsumption))
             {
-                _сurrentReloadTime = 0;
+                _пїЅurrentReloadTime = 0;
 
-                Vector2 shotPoint = (Vector2)transform.position + DataOperator.RotateVector2(barrelsPositions[currentBarrelNum], transform.eulerAngles.z);
-                Vector2 localShotPoint = (Vector2)transform.localPosition + barrelsPositions[currentBarrelNum];
+                Vector2 shotPoint = (Vector2)transform.position + DataOperator.RotateVector2(BarrelsPositions[currentBarrelNum], transform.eulerAngles.z);
+                Vector2 localShotPoint = (Vector2)transform.localPosition + BarrelsPositions[currentBarrelNum];
                 Salvo(shotPoint);
                 SpawnEffects(localShotPoint);
             }
@@ -79,21 +96,16 @@ public class BallisticWeapon : Weapon
 
     private void SpawnEffects(Vector2 localShotPoint)
     {
-        NetworkString[] effectsNamesNetworkStringArray = new NetworkString[shootEffectsNames.Count];
-        for (int numInList = 0; numInList < shootEffectsNames.Count; numInList++)
-        {
-            effectsNamesNetworkStringArray[numInList] = new NetworkString(shootEffectsNames[numInList]);
-        }
-        _destroyedModulesEffectsSpawner.SpawnAndAttachDestroyedModuleEffectRpc(effectsNamesNetworkStringArray, localShotPoint);
+        _destroyedModulesEffectsSpawner.SpawnAndAttachEffects(shootEffectsNames, localShotPoint, Quaternion.identity);
     }
 
-    //залп
+    //пїЅпїЅпїЅпїЅ
     void Salvo(Vector2 shotPoint)
     {
-        for (int projectileNum = 0; projectileNum < projectilesPerSalvo; projectileNum++)
+        for (int projectileNum = 0; projectileNum < ProjectilesPerSalvo; projectileNum++)
         {
             SpawnProjectile(shotPoint);
-            if (currentBarrelNum < barrelsPositions.Count - 1)
+            if (currentBarrelNum < BarrelsPositions.Count - 1)
             {
                 currentBarrelNum++;
             }
@@ -106,25 +118,25 @@ public class BallisticWeapon : Weapon
 
     void SpawnProjectile(Vector2 shotPoint)
     {
-        Quaternion rotation = transform.rotation * Quaternion.Euler(0, 0, Random.Range(-scatterAngle, scatterAngle));
-        GameObject projectile = Instantiate(projectilePrefab, shotPoint, rotation);
-        projectile.GetComponent<Rigidbody2D>().velocity = myShipRigidbody2D.velocity;
+        Quaternion rotation = transform.rotation * Quaternion.Euler(0, 0, Random.Range(-ScatterAngle, ScatterAngle));
+        GameObject projectile = Instantiate(ProjectilePrefab, shotPoint, rotation);
+        projectile.GetComponent<Rigidbody2D>().linearVelocity = myShipRigidbody2D.linearVelocity;
 
         Projectile projectileComponent = projectile.GetComponent<Projectile>();
-        projectileComponent.teamID = teamID;
         projectileComponent.ApplyImpulseToParentShip(myShipRigidbody2D);
 
         projectile.GetComponent<NetworkObject>().Spawn();
+        projectileComponent.TeamID.Value = new NetworkString(TeamID);
     }
 
-    //отрисовка позиций из которых вылетают снаряды для редактора
+    //пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
     private void OnDrawGizmos()
     {
         if (!Application.isPlaying)
         {
             Gizmos.color = Color.red;
             Vector2 myPosition = transform.position;
-            foreach (Vector2 barrelPos in barrelsPositions)
+            foreach (Vector2 barrelPos in BarrelsPositions)
             {
                 Gizmos.DrawIcon(myPosition + barrelPos, "Aim icon.png", false);
             }

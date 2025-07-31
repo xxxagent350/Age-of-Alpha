@@ -190,13 +190,9 @@ MonoBehaviour:
     EnglishText: Plasmogun "Splitter"
   Description:
     RussianText: "\u041E\u0440\u0443\u0434\u0438\u0435, \u0441\u0442\u0440\u0435\u043B\u044F\u044E\u0449\u0435\u0435
-      \u0441\u0433\u0443\u0441\u0442\u043A\u0430\u043C\u0438 \u043F\u043B\u0430\u0437\u043C\u044B.
-      \u0421\u0440\u0430\u0432\u043D\u0438\u0442\u0435\u043B\u044C\u043D\u043E \u043C\u0430\u043B\u044B\u0439
-      \u0443\u0440\u043E\u043D, \u0441\u0440\u0435\u0434\u043D\u044F\u044F \u0434\u0430\u043B\u044C\u043D\u043E\u0441\u0442\u044C,
-      \u0431\u044B\u0441\u0442\u0440\u0430\u044F \u043F\u0435\u0440\u0435\u0437\u0430\u0440\u044F\u0434\u043A\u0430,
-      \u043D\u0438\u0437\u043A\u043E\u0435 \u044D\u043D\u0435\u0440\u0433\u043E\u043F\u043E\u0442\u0440\u0435\u0431\u043B\u0435\u043D\u0438\u0435"
-    EnglishText: A weapon that fires plasma clots. Relatively low damage, medium
-      range, fast reloading, low power consumption
+      \u043D\u0430\u0441\u044B\u0449\u0435\u043D\u043D\u044B\u043C\u0438 \u0441\u0433\u0443\u0441\u0442\u043A\u0430\u043C\u0438
+      \u043F\u043B\u0430\u0437\u043C\u044B"
+    EnglishText: A weapon that fires saturated plasma clots
   Size: 0.055
   Mass: 0.7
   CellsOffset: {x: 0, y: 0}
@@ -227,8 +223,9 @@ MonoBehaviour:
   - small module destroyed
   _moduleDestroyOnShipEffects: []
   _explodeStrengthOnDestroy: 0
-  teamID: none
+  TeamID: none
   _cellsLocalPositionsInShip: []
+  MyShipsGameStats: {fileID: 0}
 --- !u!114 &1733610693317418674
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -241,18 +238,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: efd26ec3dd673d64aa8884efc9659a02, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  FIRE: 0
+  isFiring: 0
   isWorking: 1
   weaponNum: 0
-  "_\u0441ooldown": 0.3
   myShipGameStats: {fileID: 0}
-  teamID: 
-  projectilePrefab: {fileID: 2288871660798619471, guid: b2e6515e7e7ba5c4aaad7541b8331a23, type: 3}
-  energyConsumption: 1.5
-  barrelsPositions:
+  ProjectilePrefab: {fileID: 2288871660798619471, guid: b2e6515e7e7ba5c4aaad7541b8331a23, type: 3}
+  ReloadTime: 0.3
+  EnergyConsumption: 1.5
+  BarrelsPositions:
   - {x: 0, y: 0.43}
-  projectilesPerSalvo: 1
-  scatterAngle: 1
+  ProjectilesPerSalvo: 1
+  ScatterAngle: 1
   shootEffectsNames:
   - sound_Plasmogun Splitter shoot
   - plasmogun splitter shoot

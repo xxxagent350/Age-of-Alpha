@@ -1,8 +1,11 @@
 using UnityEngine;
 using Unity.Netcode;
+using System.Collections;
 
 public class SceneChanger : MonoBehaviour
 {
+    bool nowWaitingForChangingScene;
+
     public void ChangeScene(string scene)
     {
         if (!nowWaitingForChangingScene)
@@ -11,28 +14,21 @@ public class SceneChanger : MonoBehaviour
         }
     }
 
-
-    bool nowWaitingForChangingScene;
-    string delayedSceneName;
-    public void ShutdownNetworkAndChangeScene(string scene)
+    public void ShutdownNetworkAndChangeScene(string sceneName)
     {
         if (!nowWaitingForChangingScene)
         {
             nowWaitingForChangingScene = true;
-            delayedSceneName = scene;
             NetworkManager.Singleton.Shutdown();
-            ChangeScene_WaitingForShuttingDownNetwork();
+            StartCoroutine(ChangeScene_WaitingForShuttingDownNetworkCoroutine(sceneName));
         }
     }
-    void ChangeScene_WaitingForShuttingDownNetwork()
+    IEnumerator ChangeScene_WaitingForShuttingDownNetworkCoroutine(string sceneName)
     {
-        if (NetworkManager.Singleton.IsServer || NetworkManager.Singleton.IsClient)
+        while (NetworkManager.Singleton.IsServer || NetworkManager.Singleton.IsClient)
         {
-            Invoke(nameof(ChangeScene_WaitingForShuttingDownNetwork), 0.01f);
+            yield return new WaitForSecondsRealtime(0.1f);
         }
-        else
-        {
-            DataOperator.ChangeScene(delayedSceneName);
-        }
+        DataOperator.ChangeScene(sceneName);
     }
 }

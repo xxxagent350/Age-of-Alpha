@@ -243,3 +243,67 @@ MonoBehaviour:
       - {fileID: 6014609462268279273, guid: a43a2fb23ebd0824f8fbab94c9fa8fa2, type: 3}
       LowQualityEffects:
       - {fileID: 6014609462268279273, guid: a43a2fb23ebd0824f8fbab94c9fa8fa2, type: 3}
+  - effectName: Small laser start flash
+    effect:
+      HighQualityEffects:
+      - {fileID: 7479954137569038184, guid: 5bd472000470fd9418b78a4142edb565, type: 3}
+      MediumQualityEffects:
+      - {fileID: 7479954137569038184, guid: 5bd472000470fd9418b78a4142edb565, type: 3}
+      LowQualityEffects:
+      - {fileID: 7479954137569038184, guid: 5bd472000470fd9418b78a4142edb565, type: 3}
+  - effectName: Small laser end flash
+    effect:
+      HighQualityEffects:
+      - {fileID: 7479954137569038184, guid: 5bdc3ff276080b447adb45b7ad98d7d4, type: 3}
+      MediumQualityEffects:
+      - {fileID: 7479954137569038184, guid: 5bdc3ff276080b447adb45b7ad98d7d4, type: 3}
+      LowQualityEffects:
+      - {fileID: 7479954137569038184, guid: 5bdc3ff276080b447adb45b7ad98d7d4, type: 3}
+  - effectName: Small laser sound
+    effect:
+      HighQualityEffects:
+      - {fileID: 5498154045212141642, guid: f03f8db23a8a2e446b5c84afd7112c56, type: 3}
+      MediumQualityEffects:
+      - {fileID: 5498154045212141642, guid: f03f8db23a8a2e446b5c84afd7112c56, type: 3}
+      LowQualityEffects:
+      - {fileID: 5498154045212141642, guid: f03f8db23a8a2e446b5c84afd7112c56, type: 3}
+  - effectName: medium explode
+    effect:
+      HighQualityEffects:
+      - {fileID: 2067719033426604217, guid: 1a8d0e63c15ff634da4c7c9364191f75, type: 3}
+      MediumQualityEffects:
+      - {fileID: 2067719033426604217, guid: 1a8d0e63c15ff634da4c7c9364191f75, type: 3}
+      LowQualityEffects:
+      - {fileID: 2067719033426604217, guid: 1a8d0e63c15ff634da4c7c9364191f75, type: 3}
+  - effectName: sound_missle launch
+    effect:
+      HighQualityEffects:
+      - {fileID: 5077133317201384345, guid: 567ccd7a02710b04fb42a28dbdc1137c, type: 3}
+      MediumQualityEffects:
+      - {fileID: 5077133317201384345, guid: 567ccd7a02710b04fb42a28dbdc1137c, type: 3}
+      LowQualityEffects:
+      - {fileID: 5077133317201384345, guid: 567ccd7a02710b04fb42a28dbdc1137c, type: 3}
+  - effectName: sound_missle engine start
+    effect:
+      HighQualityEffects:
+      - {fileID: 5077133317201384345, guid: f748c3edf0506d344a8f361a8999203c, type: 3}
+      MediumQualityEffects:
+      - {fileID: 5077133317201384345, guid: f748c3edf0506d344a8f361a8999203c, type: 3}
+      LowQualityEffects:
+      - {fileID: 5077133317201384345, guid: f748c3edf0506d344a8f361a8999203c, type: 3}
+  - effectName: sound_missle explode
+    effect:
+      HighQualityEffects:
+      - {fileID: 5077133317201384345, guid: ef4366e9c65354a40bc2d3b4d7114a1d, type: 3}
+      MediumQualityEffects:
+      - {fileID: 5077133317201384345, guid: ef4366e9c65354a40bc2d3b4d7114a1d, type: 3}
+      LowQualityEffects:
+      - {fileID: 5077133317201384345, guid: ef4366e9c65354a40bc2d3b4d7114a1d, type: 3}
+  - effectName: small missile launch
+    effect:
+      HighQualityEffects:
+      - {fileID: 8953700420647001759, guid: 05e7f9a6c11210747a7caef22142f234, type: 3}
+      MediumQualityEffects:
+      - {fileID: 8953700420647001759, guid: 05e7f9a6c11210747a7caef22142f234, type: 3}
+      LowQualityEffects:
+      - {fileID: 8953700420647001759, guid: 05e7f9a6c11210747a7caef22142f234, type: 3}

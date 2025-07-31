@@ -2,10 +2,10 @@ using System.Collections.Generic;
 using Unity.Netcode;
 using UnityEngine;
 
-//класс отвечает за таран корабля
+//пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ
 public class ShipRammer : MonoBehaviour
 {
-    [Header("Настройка")]
+    [Header("пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ")]
     [SerializeField] private RamEffectsData _ramEffectsData;
     public bool DamageAllies = false;
 
@@ -35,7 +35,7 @@ public class ShipRammer : MonoBehaviour
     {
         if (NetworkManager.Singleton.IsServer)
         {
-            _lastFrameVelocity = _rigidbody2D.velocity;
+            _lastFrameVelocity = _rigidbody2D.linearVelocity;
         } 
     }
 
@@ -67,7 +67,7 @@ public class ShipRammer : MonoBehaviour
 
     private void SpawnShockWave(Collision2D collision)
     {
-        float deltaVelocity = (_rigidbody2D.velocity - _lastFrameVelocity).magnitude;
+        float deltaVelocity = (_rigidbody2D.linearVelocity - _lastFrameVelocity).magnitude;
         float shockWavePower = deltaVelocity * _rigidbody2D.mass * RamDamageMod;
 
         shockWavePower /= collision.contacts.Length;
@@ -97,6 +97,6 @@ public class ShipRammer : MonoBehaviour
         {
             effectsToSpawn = _ramEffectsData.HighDamageEffects;
         }
-        RpcHandlerForEffects.SpawnEffectsOnClients(effectsToSpawn, position, Quaternion.identity, _rigidbody2D.velocity);
+        RpcHandlerForEffects.SpawnEffectsOnClients(effectsToSpawn, position, Quaternion.identity, _rigidbody2D.linearVelocity);
     }
 }

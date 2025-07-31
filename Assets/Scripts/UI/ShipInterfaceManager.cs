@@ -10,7 +10,7 @@ public class ShipInterfaceManager : MonoBehaviour
     [Header("Настройка")]
     public EnergyBar energyBar;
 
-    [SerializeField] private AttackButton[] _attackButtons;
+    public AttackButton[] AttackButtons;
 
     [SerializeField] private TextMeshProUGUI _warningText;
     [SerializeField] private AudioClip _warningSound;
@@ -72,7 +72,7 @@ public class ShipInterfaceManager : MonoBehaviour
         {
             Instance = this;
         }
-        foreach (AttackButton attackButton in _attackButtons)
+        foreach (AttackButton attackButton in AttackButtons)
         {
             attackButton.pointerStateChangedMessage += SendAttackButtonStateChangedMessage;
         }
@@ -93,6 +93,9 @@ public class ShipInterfaceManager : MonoBehaviour
         {
             _radar.ClearRegisteredObjects();
             _radar.enabled = false;
+            _lastFrameMovementJoystickPressed = false;
+            _lastFrameMovementJoystickDirInDegrees = 0;
+            _lastFrameMovementJoystickMagnitude = 0;
         }
     }
 
@@ -149,7 +152,7 @@ public class ShipInterfaceManager : MonoBehaviour
 
     private void OnDestroy()
     {
-        foreach (AttackButton attackButton in _attackButtons)
+        foreach (AttackButton attackButton in AttackButtons)
         {
             attackButton.pointerStateChangedMessage -= SendAttackButtonStateChangedMessage;
         }
@@ -430,22 +433,30 @@ public class ShipInterfaceManager : MonoBehaviour
         attackButtonStateChangedMessage?.Invoke(index, pressed);
     }
 
-
     public void ShowWarningText(TranslatedText text_)
     {
         _warningMessagesList.Add(text_);
     }
 
-    [Serializable]
-    class InterfaceElement
+    public void ClearAllWarnings()
     {
-        public Image Image;
-        public TextMeshProUGUI TextMeshProUI;
-        [Tooltip("Не изменять прозрачность при включении интерфейса")]
-        public bool DontEnableOpacityOnSetActive;
-        [Tooltip("Непрозрачность объекта, которая будет установлена при включении интерфейса (менее 0 = авто)")]
-        [Range(-1, 1)] public float DefaultOpacity = -1;
-
-        public float opacityBeforeStartedToGrowingDown;
+        _warningText.text = "";
+        _warningMessagesList.Clear();
+        _warningLabelTimer = 0;
+        _warningLabelBlinkingTimer = 0;
+        _warningLabelBlinkedTimes = 0;
     }
+}
+
+[Serializable]
+class InterfaceElement
+{
+    public Image Image;
+    public TextMeshProUGUI TextMeshProUI;
+    [Tooltip("Не изменять прозрачность при включении интерфейса")]
+    public bool DontEnableOpacityOnSetActive;
+    [Tooltip("Непрозрачность объекта, которая будет установлена при включении интерфейса (менее 0 = авто)")]
+    [Range(-1, 1)] public float DefaultOpacity = -1;
+
+    public float opacityBeforeStartedToGrowingDown;
 }

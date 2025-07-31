@@ -143,9 +143,10 @@ MonoBehaviour:
   - sound_Small module destroyed
   - small module destroyed
   _moduleDestroyOnShipEffects: []
-  _explodeStrengthOnDestroy: 300
-  teamID: none
+  ExplodeStrengthOnDestroy: 100
+  TeamID: none
   _cellsLocalPositionsInShip: []
+  MyShipsGameStats: {fileID: 0}
 --- !u!114 &3364378279840454845
 MonoBehaviour:
   m_ObjectHideFlags: 0
