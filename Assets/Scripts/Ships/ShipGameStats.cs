@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class ShipGameStats : NetworkAuthorityChecker
 {
-    [Header("���������")]
+    [Header("Движение")]
     [SerializeField] private float _enginesVisualPowerChangingSpeed = 2;
     [SerializeField] private List<TrailRenderer> _trails;
     [SerializeField] private List<SpriteRenderer> _enginesLights;
@@ -14,21 +14,21 @@ public class ShipGameStats : NetworkAuthorityChecker
 
     [SerializeField] private List<Effect> _destroyEffects;
     [SerializeField] private Sprite _destroyedImage;
-    [Tooltip("������� ��� ����������� �������")]
+    [Tooltip("Сила для разлёта корабля при уничтожении")]
     [SerializeField] private float _forceOnDestroy;
-    [Tooltip("������������ ������� ��� ����������� �������")]
+    [Tooltip("Вращательная сила при уничтожении корабля")]
     [SerializeField] private float _rotationForceOnDestroy;
 
-    [Header("�������")]
+    [Header("Характеристики")]
     public NetworkVariable<NetworkString> TeamID = new(new());
     [HideInInspector] public Durability ControlBlock;
-    public float Mass; //����� ������� � ��������
-    public NetworkVariable<float> EnergyGeneration = new(); //��������� ��������� ������� �� ���� �������
-    public NetworkVariable<float> EnergyMaxCapacity = new(); //������������ ���������� ���������� ������� �� ���� �������
-    public NetworkVariable<float> Energy = new(); //������� ���������� ������� � ��������
-    public NetworkVariable<float> EnginesConsumption = new(); //����. ����������� ����������� ��� �����
-    public float AccelerationPower; //����� ������������� ���� ����������
-    public float AngularAccelerationPower; //����� ������������ ���� ����������
+    public float Mass; // Масса корабля в килограммах
+    public NetworkVariable<float> EnergyGeneration = new(); // Генерация энергии всеми модулями
+    public NetworkVariable<float> EnergyMaxCapacity = new(); // Максимальная ёмкость батарей
+    public NetworkVariable<float> Energy = new(); // Текущее количество энергии на корабле
+    public NetworkVariable<float> EnginesConsumption = new(); // Суммарное потребление энергии на двигатели
+    public float AccelerationPower; // Сила ускорения при движении
+    public float AngularAccelerationPower; // Сила вращения при манёврах
 
     private ShipStats _myShipStats;
     private ItemData _myItemData;
@@ -36,12 +36,12 @@ public class ShipGameStats : NetworkAuthorityChecker
     private Rigidbody2D _myRigidbody2D;
     [SerializeField] private NetworkVariable<bool> _noEnergy = new();
 
-    //������ � ��������� ������
+    // Управление и ввод игрока
     [HideInInspector] public NetworkVariable<bool> MovementJoystickPressed = new NetworkVariable<bool>();
     [HideInInspector] public NetworkVariable<float> MovementJoystickDirInDegrees = new NetworkVariable<float>();
     [HideInInspector] public NetworkVariable<float> MovementJoystickMagnitude = new NetworkVariable<float>();
 
-    //������������ �����
+    // Константы физики
     private const float IgnoredDirDifferenceDegrees = 60;
     private const float MinDrag = 0;
     private const float MaxSpeedMod = 200;
@@ -51,7 +51,7 @@ public class ShipGameStats : NetworkAuthorityChecker
 
     private const float MinJoystickMagnitudeToAccelerate = 0.7f;
 
-    private bool _noControl; //true ����� ���� ����� ����������
+    private bool _noControl; // true = корабль нельзя контролировать
     public NetworkVariable<bool> Destroyed = new NetworkVariable<bool>();
     private SpriteRenderer _mySpriteRenderer;
     [HideInInspector] public bool isControlledByAI = false;
@@ -63,7 +63,7 @@ public class ShipGameStats : NetworkAuthorityChecker
 
     private const float TimeToDisappearAfterDestroy = 60;
 
-    //����� ��� �������������� � ��� ��� �� �������� ����������/������
+    // Счётчики для статистики (например, сколько двигателей/оружия осталось)
     [HideInInspector] public int numOfEngines = 0;
     [HideInInspector] public int numOfWeapons = 0;
 
@@ -421,7 +421,7 @@ public class ShipGameStats : NetworkAuthorityChecker
         }
     }
 
-    public void ReduceShip�haracteristics(Durability destroyedModule)
+    public void ReduceShipCharacteristics(Durability destroyedModule)
     {
         ItemData itemData = destroyedModule.GetComponent<ItemData>();
         Battery battery = destroyedModule.GetComponent<Battery>();
@@ -433,14 +433,14 @@ public class ShipGameStats : NetworkAuthorityChecker
             Mass -= itemData.Mass;
             _myRigidbody2D.mass = Mass;
             if (!Destroyed.Value)
-            {   
+            {
                 if (itemData.Type == modulesTypes.ControlModules)
                 {
-                    //���� ���������� ���������
+                    // Если уничтожен управляющий модуль
                     ExplodeShipOnServer();
                     TranslatedText warningMessage = new TranslatedText
                     {
-                        RussianText = "����� � ������� ��������: ���� ���������� ���������",
+                        RussianText = "Связь с кораблём потеряна: уничтожен блок управления",
                         EnglishText = "Contact with the ship has been lost: the control unit has been destroyed"
                     };
                     CleatAllMessagesRpc();
@@ -453,7 +453,7 @@ public class ShipGameStats : NetworkAuthorityChecker
                     {
                         TranslatedText warningMessage = new TranslatedText
                         {
-                            RussianText = "��� ��������� ����������, �������� ����������",
+                            RussianText = "Все двигатели уничтожены, движение невозможно",
                             EnglishText = "All engines destroyed, no movement possible"
                         };
                         SendMessageToOwnerRpc(new TranslatedNetworkText(warningMessage));
@@ -466,7 +466,7 @@ public class ShipGameStats : NetworkAuthorityChecker
                     {
                         TranslatedText warningMessage = new TranslatedText
                         {
-                            RussianText = "��� ������ ����������",
+                            RussianText = "Все орудия уничтожены",
                             EnglishText = "All weapons destroyed"
                         };
                         SendMessageToOwnerRpc(new TranslatedNetworkText(warningMessage));

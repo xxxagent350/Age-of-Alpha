@@ -5,17 +5,21 @@ using UnityEngine;
 
 public class Durability : MonoBehaviour
 {
-    [Header("���������")]
-    [Tooltip("���������")]
+    [Header("Параметры прочности")]
+    [Tooltip("Структура прочности")]
     public DurabilityStruct durability;
+
     [SerializeField] private List<string> _moduleDestroyEffects;
-    [Tooltip("�������� �������� ����������� ������, ������� ����� ����������� � �������. ��������, ��������������� ������ ���� � ���� ����� ������ ����-�� ������������")]
+
+    [Tooltip("Эффекты при уничтожении модуля, которые будут созданы на корабле. Например, разрушенный модуль пушек может заспавнить эффект дыма прямо на корабле.")]
     [SerializeField] private List<string> _moduleDestroyOnShipEffects;
-    [Tooltip("���� ������ ��� ����������� ������. ��������, ���� ���������� �������� 5, �� ������ � ������� 1 ������ �� ������ ������� ���� 5, � ������ ������������� �������� ������� ������� ����. ������� ������ ����� ���������� ������� �����")]
+
+    [Tooltip("Сила взрыва при уничтожении модуля. Например, если параметр равен 5, то модуль при смерти создаст ударную волну силы 5, которая повредит всё вокруг.")]
     public float ExplodeStrengthOnDestroy = 0;
 
-    [Header("�������")]
+    [Header("Команда")]
     public string TeamID = "none";
+
     [SerializeField] private Vector2Serializable[] _cellsLocalPositionsInShip;
 
     public ShipGameStats MyShipsGameStats;
@@ -42,12 +46,14 @@ public class Durability : MonoBehaviour
             MyShipsGameStats = GetComponentInParent<ShipGameStats>();
             _shipsRigidbody2D = GetComponentInParent<Rigidbody2D>();
             _destroyedModulesEffectsSpawner = GetComponentInParent<AttachedToShipEffectsSpawner>();
+
             durability.SetMaxDurability();
             OnModuleDurabilityRatioChangedEvent += GetComponentInParent<ModulesCellsDurabilityShower>().OnHealthCellDurabilityChangedRpc;
             durability.OnDurabilityRatioChangedEvent += SendDurabilityChanged;
             durability.OnNoDurability += Explode;
         }
     }
+
     /*
     private void OnDestroy()
     {
@@ -59,15 +65,15 @@ public class Durability : MonoBehaviour
         }
     }
     */
-    private delegate void OnModuleDurabilityRatioChangedContainer(float durabilityToMaxDurability, Vector2Serializable[] cellsLocalPositionsInShip);
 
+    private delegate void OnModuleDurabilityRatioChangedContainer(float durabilityToMaxDurability, Vector2Serializable[] cellsLocalPositionsInShip);
     private event OnModuleDurabilityRatioChangedContainer OnModuleDurabilityRatioChangedEvent;
 
     public void SendDurabilityChanged(float durabilityToMaxDurability)
     {
         if (MyShipsGameStats.Destroyed.Value == false)
         {
-            OnModuleDurabilityRatioChangedEvent(durabilityToMaxDurability, _cellsLocalPositionsInShip);
+            OnModuleDurabilityRatioChangedEvent?.Invoke(durabilityToMaxDurability, _cellsLocalPositionsInShip);
         }
     }
 
@@ -88,7 +94,7 @@ public class Durability : MonoBehaviour
     {
         if (NetworkManager.Singleton.IsServer == false)
         {
-            Debug.LogError($"{gameObject}: Durability.Explode() ��� ������ �� �� �������, ���� ���� �� ������");
+            Debug.LogError($"{gameObject}: Durability.Explode() вызван на клиенте, а не на сервере!");
         }
 
         if (!AlreadyExploded)
@@ -97,11 +103,14 @@ public class Durability : MonoBehaviour
             durability.currentDurability = 0;
             durability.SendOnDurabilityRatioChangedEvent();
             DisableModuleColliders();
+
             if (ExplodeStrengthOnDestroy > 0)
             {
                 ShockWave.CreateShockWave(ExplodeStrengthOnDestroy, transform.position);
             }
+
             SpawnModuleDestroyEffects();
+
             if (_moduleDestroyOnShipEffects.Count > 0)
             {
                 SpawnOnShipModuleDestroyEffects();
@@ -109,8 +118,9 @@ public class Durability : MonoBehaviour
 
             if (MyShipsGameStats != null)
             {
-                MyShipsGameStats.ReduceShip�haracteristics(this);
+                MyShipsGameStats.ReduceShipCharacteristics(this);
             }
+
             Destroy(gameObject);
         }
     }
@@ -125,12 +135,21 @@ public class Durability : MonoBehaviour
 
     private void SpawnModuleDestroyEffects()
     {
-        RpcHandlerForEffects.SpawnEffectsOnClients(_moduleDestroyEffects, transform.position, Quaternion.identity, _shipsRigidbody2D.linearVelocity);
+        RpcHandlerForEffects.SpawnEffectsOnClients(
+            _moduleDestroyEffects,
+            transform.position,
+            Quaternion.identity,
+            _shipsRigidbody2D.linearVelocity
+        );
     }
 
     private void SpawnOnShipModuleDestroyEffects()
     {
-        _destroyedModulesEffectsSpawner.SpawnAndAttachEffects(_moduleDestroyOnShipEffects, transform.localPosition, Quaternion.identity);
+        _destroyedModulesEffectsSpawner.SpawnAndAttachEffects(
+            _moduleDestroyOnShipEffects,
+            transform.localPosition,
+            Quaternion.identity
+        );
     }
 }
 
@@ -145,14 +164,16 @@ public enum DamageTypes
 [Serializable]
 public class Damage
 {
-    [Tooltip("�������� ����")]
+    [Tooltip("Урон огнём")]
     public float fireDamage;
-    [Tooltip("�������������� ����")]
+
+    [Tooltip("Урон энергией")]
     public float energyDamage;
-    [Tooltip("���������� ����")]
+
+    [Tooltip("Физический урон")]
     public float physicalDamage;
 
-    [Tooltip("true ����� ���� ���� ������������")]
+    [Tooltip("true если весь урон уже использован")]
     private bool allDamageUsed = false;
 
     public Damage(float fireDamage_, float energyDamage_, float physicalDamage_)
@@ -162,34 +183,20 @@ public class Damage
         physicalDamage = physicalDamage_;
     }
 
-    public bool AllDamageUsed()
-    {
-        return allDamageUsed;
-    }
+    public bool AllDamageUsed() => allDamageUsed;
 
-    public float GetAllDamage()
-    {
-        return fireDamage + energyDamage + physicalDamage;
-    }
+    public float GetAllDamage() => fireDamage + energyDamage + physicalDamage;
 
     public void UseDamage(float usedFireDamage, float usedEnergyDamage, float usedPhysicalDamage)
-    {   //�������� ����
+    {
+        // Списываем урон
         fireDamage -= usedFireDamage;
         energyDamage -= usedEnergyDamage;
         physicalDamage -= usedPhysicalDamage;
 
-        if (fireDamage < -0.01f)
-        {
-            Debug.LogError("�������� ���� ������� ����� 0!");
-        }
-        if (energyDamage < -0.01f)
-        {
-            Debug.LogError("�������������� ���� ������� ����� 0!");
-        }
-        if (physicalDamage < -0.01f)
-        {
-            Debug.LogError("���������� ���� ������� ����� 0!");
-        }
+        if (fireDamage < -0.01f) Debug.LogError("Огненный урон ушёл меньше 0!");
+        if (energyDamage < -0.01f) Debug.LogError("Энергетический урон ушёл меньше 0!");
+        if (physicalDamage < -0.01f) Debug.LogError("Физический урон ушёл меньше 0!");
 
         if (fireDamage < 0.01f && energyDamage < 0.01f && physicalDamage < 0.01f)
         {
@@ -198,7 +205,8 @@ public class Damage
     }
 
     public void DamageOtherDamage(Damage otherDamage)
-    {   //��� ������������ ���� ��������
+    {
+        // Взаимодействие между двумя уронами
         float myFullDamage = fireDamage + energyDamage + physicalDamage;
         float otherFullDamage = otherDamage.fireDamage + otherDamage.energyDamage + otherDamage.physicalDamage;
 
@@ -220,17 +228,19 @@ public class Damage
 [Serializable]
 public struct DurabilityStruct
 {
-    [Tooltip("������������ ���������")]
+    [Tooltip("Максимальная прочность")]
     public float maxDurability;
 
-    [Tooltip("������������ � ��������� �����(0 == ��� ������ �� ��������� �����, 1 == �������� ��� ��������� �����)")]
+    [Tooltip("Сопротивление огненному урону (0 == не защищён, 1 == полностью защищён)")]
     [Range(0f, 1f)] public float resistanceToFireDamage;
-    [Tooltip("������������ � ������ �����(0 == ��� ������ �� ������ �����, 1 == �������� ��� ������ �����)")]
+
+    [Tooltip("Сопротивление энергетическому урону (0 == не защищён, 1 == полностью защищён)")]
     [Range(0f, 1f)] public float resistanceToEnergyDamage;
-    [Tooltip("������������ � ����������� �����(0 == ��� ������ �� ����������� �����, 1 == �������� ��� ����������� �����)")]
+
+    [Tooltip("Сопротивление физическому урону (0 == не защищён, 1 == полностью защищён)")]
     [Range(0f, 1f)] public float resistanceToPhysicalDamage;
 
-    [Tooltip("������� ��������� (�� �������)")]
+    [Tooltip("Текущая прочность (не больше maxDurability)")]
     public float currentDurability;
     private bool noDurability;
 
@@ -240,22 +250,16 @@ public struct DurabilityStruct
     public delegate void OnNoDurabilityContainer();
     public event OnNoDurabilityContainer OnNoDurability;
 
-    public bool NoDurability()
-    {
-        return noDurability;
-    }
+    public bool NoDurability() => noDurability;
 
-    public void SetMaxDurability()
-    {
-        currentDurability = maxDurability;
-    }
+    public void SetMaxDurability() => currentDurability = maxDurability;
 
     public void TakeDamage(Damage damage)
     {
-        //����� �������� �������� ���� � ����������� ������ Damage
+        // Считаем итоговый урон с учётом сопротивлений
         float fullDamage = (damage.fireDamage * (1 - resistanceToFireDamage))
-            + (damage.energyDamage * (1 - resistanceToEnergyDamage))
-            + (damage.physicalDamage * (1 - resistanceToPhysicalDamage));
+                         + (damage.energyDamage * (1 - resistanceToEnergyDamage))
+                         + (damage.physicalDamage * (1 - resistanceToPhysicalDamage));
 
         if (currentDurability > fullDamage)
         {
@@ -270,47 +274,33 @@ public struct DurabilityStruct
             currentDurability = 0;
             OnNoDurability?.Invoke();
         }
+
         SendOnDurabilityRatioChangedEvent();
     }
 
     public void SendOnDurabilityRatioChangedEvent()
     {
-        OnDurabilityRatioChangedEvent(currentDurability / maxDurability);
+        OnDurabilityRatioChangedEvent?.Invoke(currentDurability / maxDurability);
     }
 
     public void CheckResistancesLimits()
     {
-        if (resistanceToFireDamage < 0)
+        if (resistanceToFireDamage < 0 || resistanceToFireDamage > 1)
         {
-            Debug.LogWarning("������������� � ��������� ����� ������ ���������� � ������ (0 - 1), � ��� ���������� " + resistanceToFireDamage);
-            resistanceToFireDamage = 0;
-        }
-        if (resistanceToFireDamage > 1)
-        {
-            Debug.LogWarning("������������� � ��������� ����� ������ ���������� � ������ (0 - 1), � ��� ���������� " + resistanceToFireDamage);
-            resistanceToFireDamage = 1;
+            Debug.LogWarning($"Сопротивление огню должно быть в диапазоне 0-1. Получено: {resistanceToFireDamage}");
+            resistanceToFireDamage = Mathf.Clamp01(resistanceToFireDamage);
         }
 
-        if (resistanceToEnergyDamage < 0)
+        if (resistanceToEnergyDamage < 0 || resistanceToEnergyDamage > 1)
         {
-            Debug.LogWarning("������������� � ������ ����� ������ ���������� � ������ (0 - 1), � ��� ���������� " + resistanceToEnergyDamage);
-            resistanceToEnergyDamage = 0;
-        }
-        if (resistanceToEnergyDamage > 1)
-        {
-            Debug.LogWarning("������������� � ������ ����� ������ ���������� � ������ (0 - 1), � ��� ���������� " + resistanceToEnergyDamage);
-            resistanceToEnergyDamage = 1;
+            Debug.LogWarning($"Сопротивление энергии должно быть в диапазоне 0-1. Получено: {resistanceToEnergyDamage}");
+            resistanceToEnergyDamage = Mathf.Clamp01(resistanceToEnergyDamage);
         }
 
-        if (resistanceToPhysicalDamage < 0)
+        if (resistanceToPhysicalDamage < 0 || resistanceToPhysicalDamage > 1)
         {
-            Debug.LogWarning("������������� � ����������� ����� ������ ���������� � ������ (0 - 1), � ��� ���������� " + resistanceToPhysicalDamage);
-            resistanceToPhysicalDamage = 0;
-        }
-        if (resistanceToPhysicalDamage > 1)
-        {
-            Debug.LogWarning("������������� � ����������� ����� ������ ���������� � ������ (0 - 1), � ��� ���������� " + resistanceToPhysicalDamage);
-            resistanceToPhysicalDamage = 1;
+            Debug.LogWarning($"Сопротивление физическому урону должно быть в диапазоне 0-1. Получено: {resistanceToPhysicalDamage}");
+            resistanceToPhysicalDamage = Mathf.Clamp01(resistanceToPhysicalDamage);
         }
     }
 }
