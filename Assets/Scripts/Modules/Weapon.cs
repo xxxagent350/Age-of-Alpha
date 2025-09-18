@@ -47,7 +47,7 @@ public abstract class Weapon : MonoBehaviour
         {
             myShipGameStats.attackButtonStateChangedMessage -= ChangeFiringState;
         }
-        if (NetworkManager.Singleton.IsServer)
+        if (NetworkManager.Singleton != null && NetworkManager.Singleton.IsServer)
         {
             OnDestroyServer();
         }

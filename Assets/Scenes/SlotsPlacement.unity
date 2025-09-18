@@ -42,7 +42,8 @@ RenderSettings:
 --- !u!157 &3
 LightmapSettings:
   m_ObjectHideFlags: 0
-  serializedVersion: 12
+  serializedVersion: 13
+  m_BakeOnSceneLoad: 0
   m_GISettings:
     serializedVersion: 2
     m_BounceScale: 1
@@ -2029,7 +2030,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_FontData:
-    m_Font: {fileID: 12800000, guid: b7c9fe6c9e701b445b5365f485e70333, type: 3}
+    m_Font: {fileID: 12800000, guid: 1d608653c398f344bbce70b5bffb93e1, type: 3}
     m_FontSize: 14
     m_FontStyle: 0
     m_BestFit: 1
@@ -3328,7 +3329,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   editor: 1
-  itemData: {fileID: 0}
+  allCellsDeleteText: {fileID: 249643678}
   cellsUISizeMod: -1
   mainSlotButton: {fileID: 1697333490}
   mainSlotPrefab: {fileID: 6937352971062761732, guid: 3f7b37167d75c7745b998ccdd1fbea03, type: 3}
@@ -3342,7 +3343,8 @@ MonoBehaviour:
   slotPutSounds:
   - {fileID: 8300000, guid: 06b74d78d25a30f4db26a8a74e39007b, type: 3}
   slotPutSoundSource: {fileID: 1364359414}
-  allCellsDeleteText: {fileID: 249643678}
+  ItemData: {fileID: 0}
+  lastItemData: {fileID: 0}
   minCellsPositions: {x: 0, y: 0}
   maxCellsPositions: {x: 0, y: 0}
 --- !u!82 &1364359412
@@ -4293,7 +4295,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 502.5, y: 5}
+  m_AnchoredPosition: {x: 502.5, y: 4.3}
   m_SizeDelta: {x: 840.8925, y: 45.731}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1696216617
