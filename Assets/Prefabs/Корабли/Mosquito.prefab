@@ -1069,6 +1069,8 @@ GameObject:
   - component: {fileID: 7078149084025318685}
   - component: {fileID: 2994573376006907146}
   - component: {fileID: 7815603946113292692}
+  - component: {fileID: -8449465561460132633}
+  - component: {fileID: 6875932345483039094}
   m_Layer: 6
   m_Name: Mosquito
   m_TagString: Ship
@@ -1099,7 +1101,7 @@ Transform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!50 &3176008074283865633
 Rigidbody2D:
-  serializedVersion: 4
+  serializedVersion: 5
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -1110,8 +1112,8 @@ Rigidbody2D:
   m_UseFullKinematicContacts: 0
   m_UseAutoMass: 0
   m_Mass: 100
-  m_LinearDrag: 0
-  m_AngularDrag: 0
+  m_LinearDamping: 0
+  m_AngularDamping: 0
   m_GravityScale: 1
   m_Material: {fileID: 0}
   m_IncludeLayers:
@@ -1222,6 +1224,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   GlobalObjectIdHash: 3485373183
   InScenePlacedSourceGlobalObjectIdHash: 0
+  DeferredDespawnTick: 0
+  Ownership: 1
   AlwaysReplicateAsRoot: 0
   SynchronizeTransform: 1
   ActiveSceneSynchronization: 0
@@ -1229,6 +1233,8 @@ MonoBehaviour:
   SpawnWithObservers: 1
   DontDestroyWithOwner: 1
   AutoObjectParentSync: 1
+  SyncOwnerTransformWhenParented: 1
+  AllowOwnerToParent: 0
 --- !u!114 &1218646809974974622
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1241,6 +1247,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 972cb3968ee123342bbf8fe267569130, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  ShowTopMostFoldoutHeaderGroup: 1
   syncType:
     m_InternalValue: 2
   framesBuffering: 2
@@ -1260,6 +1267,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bae1b72956d08a54d8074caa1a766b82, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  ShowTopMostFoldoutHeaderGroup: 1
   _kamikadzingShipColor: {r: 1, g: 0.18564281, b: 0, a: 1}
   _timeToExplode: 1.5
 --- !u!114 &2952308156068006858
@@ -1274,6 +1282,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c328f577ef8ac3249a40f12b8b0091a3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  ShowTopMostFoldoutHeaderGroup: 1
 --- !u!114 &-624259141116004383
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1286,6 +1295,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d81082d25d1742045b12be817e7c4c56, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  ShowTopMostFoldoutHeaderGroup: 1
 --- !u!114 &2432220087295496015
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1298,6 +1308,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 44122159b45ccfd40bf9edda36674210, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  ShowTopMostFoldoutHeaderGroup: 1
   modulesOnShip: []
   teamID: 
 --- !u!114 &3666674793819445206
@@ -1312,6 +1323,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0e839a0912469724883c184e8014e368, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  ShowTopMostFoldoutHeaderGroup: 1
 --- !u!114 &8556905443401645706
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1324,6 +1336,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a6838540d4328af4dad508a19a0f668b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  ShowTopMostFoldoutHeaderGroup: 1
   healthCellsParent: {fileID: 1891941416809332306}
   healthCellPrefab: {fileID: 6937352971062761732, guid: 5781bbc72ee429945834d129b15e4f52, type: 3}
   destroyedHealthCellSprite: {fileID: 7290124768140145153, guid: 0087ffd6930c4b042af14d4f3928c68e, type: 3}
@@ -1524,6 +1537,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ff78f7028abc2e946ba31867f08e0a99, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  ShowTopMostFoldoutHeaderGroup: 1
   _enginesVisualPowerChangingSpeed: 2
   _trails:
   - {fileID: 2437571389615886368}
@@ -1574,9 +1588,73 @@ MonoBehaviour:
     m_InternalValue: 0
   Destroyed:
     m_InternalValue: 0
+  isControlledByAI: 0
   MyPlayer: {fileID: 0}
   numOfEngines: 0
   numOfWeapons: 0
+--- !u!114 &-8449465561460132633
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7745446731627448160}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e96cb6065543e43c4a752faaa1468eb1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ShowTopMostFoldoutHeaderGroup: 1
+  NetworkTransformExpanded: 0
+  AutoOwnerAuthorityTickOffset: 1
+  PositionInterpolationType: 0
+  RotationInterpolationType: 0
+  ScaleInterpolationType: 0
+  PositionLerpSmoothing: 1
+  PositionMaxInterpolationTime: 0.1
+  RotationLerpSmoothing: 1
+  RotationMaxInterpolationTime: 0.1
+  ScaleLerpSmoothing: 1
+  ScaleMaxInterpolationTime: 0.1
+  AuthorityMode: 0
+  TickSyncChildren: 0
+  UseUnreliableDeltas: 0
+  SyncPositionX: 1
+  SyncPositionY: 1
+  SyncPositionZ: 1
+  SyncRotAngleX: 1
+  SyncRotAngleY: 1
+  SyncRotAngleZ: 1
+  SyncScaleX: 1
+  SyncScaleY: 1
+  SyncScaleZ: 1
+  PositionThreshold: 0.001
+  RotAngleThreshold: 0.01
+  ScaleThreshold: 0.01
+  UseQuaternionSynchronization: 0
+  UseQuaternionCompression: 0
+  UseHalfFloatPrecision: 0
+  InLocalSpace: 0
+  SwitchTransformSpaceWhenParented: 0
+  Interpolate: 1
+  SlerpPosition: 0
+--- !u!114 &6875932345483039094
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7745446731627448160}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 80d7c879794dfda4687da0e400131852, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ShowTopMostFoldoutHeaderGroup: 1
+  NetworkRigidbodyBaseExpanded: 0
+  UseRigidBodyForMotion: 0
+  AutoUpdateKinematicState: 1
+  AutoSetKinematicOnDespawn: 1
 --- !u!1 &8711622178843180596
 GameObject:
   m_ObjectHideFlags: 0
